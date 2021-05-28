@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'mainapp.apps.MainappConfig',
     'corsheaders',
     'rest_framework',
-    'djoser'
+    'rest_framework.authtoken',
+    'djoser',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -135,6 +137,13 @@ AUTH_USER_MODEL = 'mainapp.Tutor'
 
 # rest framework region
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
 # end region
 
 # cors region
@@ -154,3 +163,13 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 # endregion
+
+# djoser region
+
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'SERIALIZERS': {},
+}
+
+#end region
