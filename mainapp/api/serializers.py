@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from mainapp.models import Group, Student, Kiberon
+from mainapp.models import Group, Student, Kiberon, Tutor
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -19,3 +19,9 @@ class KiberonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kiberon
         fields = '__all__'
+
+
+class TutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tutor
+        fields = ['full_name']
