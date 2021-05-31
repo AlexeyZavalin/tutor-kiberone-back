@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework import permissions
 
 from mainapp.api.serializers import GroupSerializer, StudentSerializer, KiberonSerializer, TutorSerializer
 from mainapp.models import Group, Student, Kiberon, Tutor

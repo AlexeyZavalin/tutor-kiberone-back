@@ -142,14 +142,20 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
 }
 
 # end region
 
 # cors region
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:9000"
+
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:9000'
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_HEADERS = [
     'accept',

@@ -1,5 +1,8 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import AbstractUser, User
+from django.utils import timezone
+from django.db.models import F
+from django.core.exceptions import ValidationError
 
 from mainapp.mixins import DeletedMixin
 
@@ -15,8 +18,10 @@ class ActiveStudentsManager(models.Manager):
 
 
 class Tutor(AbstractUser):
-    full_name = models.CharField(blank=False, max_length=80, verbose_name='Фамилия Имя тьютора')
-    email = models.EmailField(blank=False, max_length=50, verbose_name='Email тьютора', unique=True)
+    full_name = models.CharField(blank=False, max_length=80,
+                                 verbose_name='Фамилия Имя тьютора')
+    email = models.EmailField(blank=False, max_length=50, verbose_name='Email тьютора',
+                              unique=True)
 
     class Meta:
         verbose_name = 'Тьютор'
@@ -82,7 +87,8 @@ class Student(DeletedMixin):
     active = ActiveStudentsManager()
 
     name = models.CharField(max_length=50, blank=False, verbose_name='Фамилия Имя')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='Группа', related_name='students')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='Группа',
+                              related_name='students')
     kiberon_amount = models.PositiveIntegerField(default=0)
     info = models.TextField(max_length=250, blank=True, verbose_name='Информация')
 
@@ -94,11 +100,11 @@ class Student(DeletedMixin):
         return self.name
 
     def add_kiberons(self, amount):
-        self.kiberon_amount += amount
+        self.kiberon_amount = F('kiberon_amount') + amount
         self.save()
 
     def delete_kiberons(self, amount):
-        self.kiberon_amount -= amount
+        self.kiberon_amount = F('kiberon_amount') - amount
         self.save()
 
 
@@ -112,7 +118,8 @@ class Kiberon(models.Model):
         ('fastest', 'Быстрее всех завершил задание'),
         ('homework', 'За выполнение домашнего задания'),
         ('instagram', 'За пост в instagram'),
-        ('social', 'За посты в соц. сети')
+        ('social', 'За посты в соц. сети'),
+        ('custom', 'Свое достижение')
     )
     achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES, default=ACHIEVEMENT_CHOICES[0],
                                    unique=True, verbose_name='Достижение')
@@ -129,21 +136,38 @@ class Kiberon(models.Model):
 class KiberonStudentReg(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name='Студент')
     kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE, verbose_name='Достижение')
-    date = models.DateField(auto_now=True, verbose_name='Дата')
+    date = models.DateField(verbose_name='Дата', default=timezone.now)
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, verbose_name='Тьютор')
+    custom_kiberons = models.PositiveSmallIntegerField(verbose_name='Свое количество киберонов', default=0)
 
     class Meta:
         verbose_name = 'Запись о печати'
         verbose_name_plural = 'Записи о печатях'
-        unique_together = ('student', 'kiberon', 'date')
+        ordering = ('-date',)
 
     def __str__(self):
-        return f'{self.student.name} - {self.kiberon.achievement} - {self.date}'
+        return f'{self.student.name} - {self.kiberon.get_achievement_display()} - {self.date}'
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        self.student.add_kiberons(self.kiberon.value)
+    def clean(self):
+        if self.kiberon.achievement is not 'custom':
+            reg = KiberonStudentReg.objects.filter(student=self.student, kiberon=self.kiberon, date=self.date)
+            if reg.count() > 0:
+                raise ValidationError(f'Запись с достижением "{self.kiberon.get_achievement_display()}"' \
+                                      f' для {self.student.name} на {self.date} уже есть')
+        else:
+            super().clean()
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.kiberon.achievement is 'custom':
+            self.student.add_kiberons(self.custom_kiberons)
+        else:
+            self.student.add_kiberons(self.kiberon.value)
         super().save()
 
     def delete(self, using=None, keep_parents=False):
-        self.student.delete_kiberons(self.kiberon.value)
+        if self.kiberon.achievement is 'custom':
+            self.student.delete_kiberons(self.custom_kiberons)
+        else:
+            self.student.delete_kiberons(self.kiberon.value)
         super().delete()

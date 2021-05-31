@@ -11,9 +11,10 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['name', 'kiberon_amount']
+    ordering = ['kiberon_amount']
     search_fields = ['name']
-    list_filter = ['group']
+    list_filter = ['group', 'group__tutor']
 
 
 @admin.register(Kiberon)
@@ -24,6 +25,9 @@ class KiberonAdmin(admin.ModelAdmin):
 @admin.register(KiberonStudentReg)
 class KiberonStudentRegAdmin(admin.ModelAdmin):
     list_display = ['__str__']
+    date_hierarchy = 'date'
+    search_fields = ['student__name']
+    list_filter = ['tutor', 'kiberon']
 
 
 @admin.register(Tutor)

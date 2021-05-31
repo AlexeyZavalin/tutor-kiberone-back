@@ -6,7 +6,7 @@ from mainapp.models import Group, Student, Kiberon, Tutor
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = '__all__'
+        fields = ['pk', 'get_day_of_week_display', 'get_time_display', 'get_location_display']
 
 
 class StudentSerializer(serializers.ModelSerializer):
