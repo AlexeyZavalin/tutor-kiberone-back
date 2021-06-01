@@ -1,7 +1,15 @@
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 
-from mainapp.api.serializers import GroupSerializer, StudentSerializer, KiberonSerializer, TutorSerializer
-from mainapp.models import Group, Student, Kiberon, Tutor
+from mainapp.api.serializers import GroupSerializer, StudentSerializer, KiberonSerializer, TutorSerializer, \
+    KiberonStudentRegSerializer
+from mainapp.models import Group, Student, Kiberon, Tutor, KiberonStudentReg
+
+
+class KiberonStudentRegPagination(PageNumberPagination):
+    page_size = 50
+    page_query_param = 'page_size'
+    max_page_size = 200
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -25,3 +33,10 @@ class KiberonViewSet(viewsets.ModelViewSet):
 class TutorViewSet(viewsets.ModelViewSet):
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
+
+
+class KiberonStudentRegViewSet(viewsets.ModelViewSet):
+    queryset = KiberonStudentReg.objects.all()
+    serializer_class = KiberonStudentRegSerializer
+    pagination_class = KiberonStudentRegPagination
+    filterset_fields = ['date']
