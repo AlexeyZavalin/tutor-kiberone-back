@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-from mainapp.api.views import GroupViewSet, StudentViewSet, KiberonViewSet, TutorViewSet
+from mainapp.api.views import GroupViewSet, StudentViewSet, KiberonViewSet, TutorViewSet, KiberonStudentRegViewSet
 
 app_name = 'mainapp'
 
@@ -9,6 +9,7 @@ router.register(r'groups', GroupViewSet, basename='group')
 router.register(r'students', StudentViewSet, basename='student')
 router.register(r'kiberons', KiberonViewSet, basename='kiberon')
 router.register(r'tutors', TutorViewSet, basename='tutor')
+router.register(r'regs', KiberonStudentRegViewSet, basename='regs')
 
 urlpatterns = [
     path('', include(router.urls)),
