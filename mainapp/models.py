@@ -23,6 +23,9 @@ class Tutor(AbstractUser):
     email = models.EmailField(blank=False, max_length=50, verbose_name='Email тьютора',
                               unique=True)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
     class Meta:
         verbose_name = 'Тьютор'
         verbose_name_plural = 'Тьюторы'
