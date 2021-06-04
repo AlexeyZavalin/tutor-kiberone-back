@@ -68,7 +68,7 @@ class Group(DeletedMixin):
                                 verbose_name='Локация')
     day_of_week = models.CharField(max_length=2, choices=DAYS_OF_WEEK_CHOICES, default=DAYS_OF_WEEK_CHOICES[0],
                                    verbose_name='День недели')
-    tutor = models.ForeignKey(Tutor, on_delete=models.SET_DEFAULT, default=None)
+    tutor = models.ForeignKey(Tutor, on_delete=models.SET_DEFAULT, default=None, null=True)
 
     class Meta:
         verbose_name = 'Группа'
