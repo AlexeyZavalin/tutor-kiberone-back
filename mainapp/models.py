@@ -152,7 +152,7 @@ class KiberonStudentReg(models.Model):
         return f'{self.student.name} - {self.kiberon.get_achievement_display()} - {self.date}'
 
     def clean(self):
-        if self.kiberon.achievement is not 'custom':
+        if self.kiberon.achievement != 'custom':
             reg = KiberonStudentReg.objects.filter(student=self.student, kiberon=self.kiberon, date=self.date)
             if reg.count() > 0:
                 raise ValidationError(f'Запись с достижением "{self.kiberon.get_achievement_display()}"' \
@@ -162,14 +162,14 @@ class KiberonStudentReg(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.kiberon.achievement is 'custom':
+        if self.kiberon.achievement == 'custom':
             self.student.add_kiberons(self.custom_kiberons)
         else:
             self.student.add_kiberons(self.kiberon.value)
         super().save()
 
     def delete(self, using=None, keep_parents=False):
-        if self.kiberon.achievement is 'custom':
+        if self.kiberon.achievement == 'custom':
             self.student.delete_kiberons(self.custom_kiberons)
         else:
             self.student.delete_kiberons(self.kiberon.value)
