@@ -18,20 +18,19 @@ class ActiveStudentsManager(models.Manager):
 
 
 class Tutor(AbstractUser):
-    full_name = models.CharField(blank=False, max_length=80,
-                                 verbose_name='Фамилия Имя тьютора')
-    email = models.EmailField(blank=False, max_length=50, verbose_name='Email тьютора',
+    is_tutor = models.BooleanField(verbose_name='Статус тьютора',
+                                   default=False)
+    email = models.EmailField(verbose_name='email address', blank=False,
                               unique=True)
-
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     class Meta:
         verbose_name = 'Тьютор'
         verbose_name_plural = 'Тьюторы'
 
     def __str__(self):
-        return self.full_name
+        return self.email
 
 
 class Group(DeletedMixin):
@@ -63,12 +62,16 @@ class Group(DeletedMixin):
         ('sn', 'Воскресенье'),
     )
 
-    time = models.CharField(max_length=1, choices=TIMES_CHOICES, default=TIMES_CHOICES[0], verbose_name='Время')
-    location = models.CharField(max_length=1, choices=LOCATION_CHOICES, default=LOCATION_CHOICES[0],
+    time = models.CharField(max_length=1, choices=TIMES_CHOICES,
+                            default=TIMES_CHOICES[0], verbose_name='Время')
+    location = models.CharField(max_length=1, choices=LOCATION_CHOICES,
+                                default=LOCATION_CHOICES[0],
                                 verbose_name='Локация')
-    day_of_week = models.CharField(max_length=2, choices=DAYS_OF_WEEK_CHOICES, default=DAYS_OF_WEEK_CHOICES[0],
+    day_of_week = models.CharField(max_length=2, choices=DAYS_OF_WEEK_CHOICES,
+                                   default=DAYS_OF_WEEK_CHOICES[0],
                                    verbose_name='День недели')
-    tutor = models.ForeignKey(Tutor, on_delete=models.SET_DEFAULT, default=None, null=True)
+    tutor = models.ForeignKey(Tutor, on_delete=models.SET_DEFAULT,
+                              default=None, null=True)
 
     class Meta:
         verbose_name = 'Группа'
@@ -76,7 +79,8 @@ class Group(DeletedMixin):
         unique_together = ('time', 'location', 'day_of_week')
 
     def __str__(self):
-        return f'{self.get_day_of_week_display()} {self.get_location_display()} {self.get_time_display()}'
+        return f'{self.get_day_of_week_display()}' \
+               f'{self.get_location_display()} {self.get_time_display()}'
 
     def get_students_amount(self):
         return self.students.count()
@@ -89,11 +93,14 @@ class Student(DeletedMixin):
     objects = models.Manager()
     active = ActiveStudentsManager()
 
-    name = models.CharField(max_length=50, blank=False, verbose_name='Фамилия Имя')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='Группа',
+    name = models.CharField(max_length=50, blank=False,
+                            verbose_name='Фамилия Имя')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE,
+                              verbose_name='Группа',
                               related_name='students')
     kiberon_amount = models.PositiveIntegerField(default=0)
-    info = models.TextField(max_length=250, blank=True, verbose_name='Информация')
+    info = models.TextField(max_length=250, blank=True,
+                            verbose_name='Информация')
 
     class Meta:
         verbose_name = 'Студент'
@@ -124,9 +131,12 @@ class Kiberon(models.Model):
         ('social', 'За посты в соц. сети'),
         ('custom', 'Свое достижение')
     )
-    achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES, default=ACHIEVEMENT_CHOICES[0],
+    achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES,
+                                   default=ACHIEVEMENT_CHOICES[0],
                                    unique=True, verbose_name='Достижение')
-    value = models.PositiveSmallIntegerField(default=5, blank=False, verbose_name='Количество киберонов')
+    value = models.PositiveSmallIntegerField(default=5, blank=False,
+                                             verbose_name='Количество '
+                                                          'киберонов')
 
     class Meta:
         verbose_name = 'Печать'
@@ -137,11 +147,15 @@ class Kiberon(models.Model):
 
 
 class KiberonStudentReg(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name='Студент')
-    kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE, verbose_name='Достижение')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE,
+                                verbose_name='Студент')
+    kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE,
+                                verbose_name='Достижение')
     date = models.DateField(verbose_name='Дата', default=timezone.now)
-    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, verbose_name='Тьютор')
-    custom_kiberons = models.PositiveSmallIntegerField(verbose_name='Свое количество киберонов', default=0)
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE,
+                              verbose_name='Тьютор')
+    custom_kiberons = models.PositiveSmallIntegerField(
+        verbose_name='Свое количество киберонов', default=0)
 
     class Meta:
         verbose_name = 'Запись о печати'
@@ -149,14 +163,19 @@ class KiberonStudentReg(models.Model):
         ordering = ('-date',)
 
     def __str__(self):
-        return f'{self.student.name} - {self.kiberon.get_achievement_display()} - {self.date}'
+        return f'{self.student.name} - ' \
+               f'{self.kiberon.get_achievement_display()} - {self.date}'
 
     def clean(self):
         if self.kiberon.achievement != 'custom':
-            reg = KiberonStudentReg.objects.filter(student=self.student, kiberon=self.kiberon, date=self.date)
+            reg = KiberonStudentReg.objects.filter(student=self.student,
+                                                   kiberon=self.kiberon,
+                                                   date=self.date)
             if reg.count() > 0:
-                raise ValidationError(f'Запись с достижением "{self.kiberon.get_achievement_display()}"' \
-                                      f' для {self.student.name} на {self.date} уже есть')
+                raise ValidationError(
+                    f'Запись с достижением "'
+                    f'{self.kiberon.get_achievement_display()}"' \
+                    f' для {self.student.name} на {self.date} уже есть')
         else:
             super().clean()
 
