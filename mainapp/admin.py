@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from mainapp.models import Group, Student, Kiberon, KiberonStudentReg, Tutor
 
@@ -30,6 +31,4 @@ class KiberonStudentRegAdmin(admin.ModelAdmin):
     list_filter = ['tutor', 'kiberon']
 
 
-@admin.register(Tutor)
-class TutorAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'email']
+admin.site.register(Tutor, UserAdmin)
