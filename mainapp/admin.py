@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
+from solo.admin import SingletonModelAdmin
+from .models import SiteConfiguration
+
 from mainapp.models import Group, Student, Kiberon, KiberonStudentReg, Tutor
 
 
@@ -32,3 +35,5 @@ class KiberonStudentRegAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tutor, UserAdmin)
+
+admin.site.register(SiteConfiguration, SingletonModelAdmin)
