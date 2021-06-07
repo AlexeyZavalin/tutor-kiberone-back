@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'solo.apps.SoloAppConfig',
 ]
 
 MIDDLEWARE = [
