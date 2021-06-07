@@ -6,21 +6,6 @@ from django.core.exceptions import ValidationError
 
 from mainapp.mixins import DeletedMixin
 
-from solo.models import SingletonModel
-
-
-class SiteConfiguration(SingletonModel):
-    times = models.TextField(max_length=500, default='', verbose_name='Времена уроков в формате чч:мм')
-    locations = models.TextField(max_length=500, default='', verbose_name='Локации')
-    kiberons = models.TextField(max_length=500, default='',
-                                verbose_name='Кибероны в формате Достижение - количество киберонов (int)')
-
-    def __str__(self):
-        return 'Настройки сайта'
-
-    class Meta:
-        verbose_name = 'Настройки сайта'
-
 
 class ActiveGroupsManager(models.Manager):
     def get_queryset(self):
