@@ -9,7 +9,6 @@ class TutorAccessPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.query_params.get('tutor', None):
-            return bool(request.user and isinstance(request.user, Tutor)
-                        and request.user.pk == request.query_params.get('tutor'))
+            return bool(request.query_params.get('tutor') == request.user_id)
         else:
             return False
