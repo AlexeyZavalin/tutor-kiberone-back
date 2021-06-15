@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
     'django_filters',
 ]
 
@@ -170,13 +169,3 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 # endregion
-
-# djoser region
-
-DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    'SERIALIZERS': {},
-}
-
-#end region
