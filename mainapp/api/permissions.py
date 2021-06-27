@@ -1,5 +1,4 @@
 from rest_framework import permissions
-from mainapp.models import Tutor
 
 
 class TutorAccessPermission(permissions.BasePermission):
