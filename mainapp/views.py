@@ -1,27 +1,27 @@
-from django.shortcuts import render
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import reverse, reverse_lazy
 
-from mainapp.models import Tutor
 from mainapp.forms import LoginForm
 
 
+class MainRedirectView(RedirectView):
+    """ Редирект с главной страницы на страницу входа """
+    permanent = True
+    query_string = False
+    url = 'mainapp:login'
+
+
 class LoginTutor(LoginView):
+    """ Страница входа """
     form_class = LoginForm
     redirect_authenticated_user = True
     template_name = 'mainapp/login.html'
-    # redirect_field_name = reverse('groups')
 
 
-def LogoutTutor(LogoutView):
+def logout_view(request):
     """ Выход из учетной записи """
-    pass
-
-
-class MainRedirectView(RedirectView):
-    permanent = True
-    query_string = False
-    url = '/login/'
+    logout(request)
+    return HttpResponseRedirect(redirect_to=reverse_lazy('mainapp:login'))
