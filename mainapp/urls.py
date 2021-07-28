@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 # from mainapp.api.views import GroupViewSet, StudentViewSet, KiberonViewSet, TutorViewSet, KiberonStudentRegViewSet
-from mainapp.views import MainRedirectView, LoginTutor, logout_view
+from mainapp.views import MainRedirectView, LoginTutor, logout_view, GroupListView
 
 app_name = 'mainapp'
 
@@ -16,5 +16,6 @@ urlpatterns = [
     path('', MainRedirectView.as_view(), name='main_redirect'),
     path('login/', LoginTutor.as_view(), name='login'),
     path('logout/', logout_view, name='logout'),
+    path('groups/', GroupListView.as_view(), name='groups'),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
