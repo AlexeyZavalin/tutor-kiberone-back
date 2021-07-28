@@ -1,0 +1,38 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
+{% block page_title %}Мои группы{% endblock %}
+{% block inside_content %}
+    <div class="days-of-week">
+        {% for day_of_week_section in groups_by_days %}
+            <div class="days-of-week__section">
+                <div class="day-of-week subtitle">
+                    {{ day_of_week_section.day_of_week }}
+                </div>
+                <div class="groups-sublist">
+                    <table class="group-table">
+                        <tr class="group-table__row">
+                            <th>Время</th>
+                            <th>Локация</th>
+                            <th>Кол-во учеников</th>
+                            <th>Действия</th>
+                        </tr>
+                        {% for group in day_of_week_section.groups %}
+                            <tr class="group-table__row">
+                                <td>{{ group.get_time_display }}</td>
+                                <td>{{ group.get_location_display }}</td>
+                                <td>{{ group.students_amount }}</td>
+                                <td>
+                                    <button class="btn btn_blue">Войти</button>
+                                    <button class="btn btn_yellow">Редактировать</button>
+                                    <button class="btn btn_red">Удалить</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
