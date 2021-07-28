@@ -82,7 +82,8 @@ class Group(DeletedMixin):
         return f'{self.get_day_of_week_display()}' \
                f'{self.get_location_display()} {self.get_time_display()}'
 
-    def get_students_amount(self):
+    @property
+    def students_amount(self):
         return self.students.count()
 
 
