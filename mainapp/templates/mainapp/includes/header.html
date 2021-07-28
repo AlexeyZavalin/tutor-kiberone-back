@@ -1,0 +1,17 @@
+{% load static %}
+<header class="header">
+    <div class="container">
+        <div class="header__content">
+            <img src="{% static "img/logo.png" %}" alt="KiberOne" class="header__logo">
+            <nav class="header__nav nav">
+                <a href="#" class="nav__link">Мои группы</a>
+                <a href="#" class="nav__link">Добавить группу</a>
+            </nav>
+            <div class="header__user user">
+                <img src="{% static "img/user.svg" %}" alt="" class="user__icon">
+                <a href="#" class="user__name">Привет, {{ request.user.first_name }}</a>
+                <a href="{% url "mainapp:logout" %}" class="user__logout">Выход</a>
+            </div>
+        </div>
+    </div>
+</header>

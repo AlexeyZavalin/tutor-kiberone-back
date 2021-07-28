@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+    {% include "mainapp/includes/header.html" %}
+    <div class="container">
+    <h1 class="page-title"><span class="page-title__text">{% block page_title %}{% endblock %}</span></h1>
+        {% block inside_content %}
+        {% endblock %}
+    </div>
+    {% include "mainapp/includes/footer.html" %}
+{% endblock %}
