@@ -169,3 +169,5 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 # endregion
+
+LOGIN_REDIRECT_URL = 'mainapp:groups'
