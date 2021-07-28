@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Вход" %}{% endblock %}
+{% block content %}
+    <div class="login-page">
+        <div class="logo-wrapper">
+            <img src="{% static "img/logo.png" %}" alt="KiberOne">
+        </div>
+        <div class="login__form-wrapper">
+            <div class="login__title">
+                <span class="text-uppercase login-char text-blue">в</span>
+                <span class="text-uppercase login-char text-yellow">х</span>
+                <span class="text-uppercase login-char text-red">о</span>
+                <span class="text-uppercase login-char text-darkblue">д</span>
+            </div>
+            <form action="{% url 'mainapp:login' %}" method="post" class="login__form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-input form-input_login">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn_primary btn_big">{% trans "Войти" %}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
