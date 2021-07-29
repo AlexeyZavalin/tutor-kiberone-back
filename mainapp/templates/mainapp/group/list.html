@@ -26,7 +26,7 @@
                                 <td>
                                     <button class="btn btn_blue">Войти</button>
                                     <button class="btn btn_yellow">Редактировать</button>
-                                    <button class="btn btn_red">Удалить</button>
+                                    <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}" data-modal-id="remove-modal">Удалить</button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -34,5 +34,26 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+{% endblock %}
+{% block modals %}
+    <div id="remove-modal" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="remove-modal">&times;</span>
+            <form action="{% url "mainapp:remove-group" %}" method="post">
+                {% csrf_token %}
+                {% for field in remove_form %}
+                    {% if field not in remove_form.hidden_fields %}
+                    <div class="form-input form-input_login">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_red" type="submit">Удалить</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
