@@ -38,10 +38,10 @@ class KiberonSerializer(serializers.ModelSerializer):
 class TutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tutor
-        fields = ['full_name']
+        fields = ['first_name', 'last_name']
 
 
 class KiberonStudentRegSerializer(serializers.ModelSerializer):
     class Meta:
         model = KiberonStudentReg
-        fields = ('__str__',)
+        fields = '__all__'

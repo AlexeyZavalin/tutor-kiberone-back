@@ -142,7 +142,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'mainapp.api.permissions.TutorAccessPermission',
+        # 'mainapp.api.permissions.TutorAccessPermission',
         # 'rest_framework.permissions.IsAuthenticated',
     ),
 }
