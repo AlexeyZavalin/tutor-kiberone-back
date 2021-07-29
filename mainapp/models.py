@@ -112,11 +112,9 @@ class Student(DeletedMixin):
 
     def add_kiberons(self, amount):
         self.kiberon_amount = F('kiberon_amount') + amount
-        self.save()
 
     def delete_kiberons(self, amount):
         self.kiberon_amount = F('kiberon_amount') - amount
-        self.save()
 
 
 class Kiberon(models.Model):
