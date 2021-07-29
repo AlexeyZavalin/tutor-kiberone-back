@@ -1,12 +1,15 @@
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.list import ListView
+from django.views.generic.edit import DeleteView
+from django.shortcuts import get_object_or_404
 
-from mainapp.forms import LoginForm
+from mainapp.forms import LoginForm, RemoveGroupForm
 from mainapp.models import Group
 
 
@@ -38,11 +41,11 @@ class GroupListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        days_of_week = Group.objects.filter(tutor=self.request.user)\
+        days_of_week = Group.active.filter(tutor=self.request.user)\
             .values_list('day_of_week', flat=True).distinct()
         context['groups_by_days'] = []
         for day_of_week in days_of_week:
-            groups = Group.objects.filter(day_of_week=day_of_week)
+            groups = Group.active.filter(day_of_week=day_of_week)
             _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES if day[0] == day_of_week][0]
             context['groups_by_days'].append(
                 {
@@ -50,4 +53,20 @@ class GroupListView(LoginRequiredMixin, ListView):
                     'groups': groups
                 }
             )
+
+        context['remove_form'] = RemoveGroupForm()
         return context
+
+
+class RemoveGroup(DeleteView):
+
+    def post(self, request, *args, **kwargs):
+        group_id = request.POST.get('group_id')
+        password = request.POST.get('password')
+        username = request.user.email
+        group = get_object_or_404(Group, pk=group_id)
+        if group is not None:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                group.delete()
+        return HttpResponseRedirect(reverse_lazy('mainapp:groups'))
