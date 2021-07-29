@@ -4,7 +4,7 @@
         <div class="header__content">
             <img src="{% static "img/logo.png" %}" alt="KiberOne" class="header__logo">
             <nav class="header__nav nav">
-                <a href="#" class="nav__link">Мои группы</a>
+                <a href="{% url "mainapp:groups" %}" class="nav__link">Мои группы</a>
                 <a href="#" class="nav__link">Добавить группу</a>
             </nav>
             <div class="header__user user">

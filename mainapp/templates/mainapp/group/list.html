@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% block title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
-{% block page_title %}Мои группы{% endblock %}
+{% block page_title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block inside_content %}
     <div class="days-of-week">
         {% for day_of_week_section in groups_by_days %}
@@ -24,7 +24,7 @@
                                 <td>{{ group.get_location_display }}</td>
                                 <td>{{ group.students_amount }}</td>
                                 <td>
-                                    <button class="btn btn_blue">Войти</button>
+                                    <a href="{% url "mainapp:group-detail" group.pk %}" class="btn btn_blue">Войти</a>
                                     <button class="btn btn_yellow">Редактировать</button>
                                     <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}" data-modal-id="remove-modal">Удалить</button>
                                 </td>
