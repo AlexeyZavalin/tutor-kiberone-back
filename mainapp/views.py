@@ -6,11 +6,12 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from django.shortcuts import get_object_or_404
 
 from mainapp.forms import LoginForm, RemoveGroupForm
-from mainapp.models import Group
+from mainapp.models import Group, Student
 
 
 class MainRedirectView(RedirectView):
@@ -70,3 +71,15 @@ class RemoveGroup(DeleteView):
             if user is not None:
                 group.delete()
         return HttpResponseRedirect(reverse_lazy('mainapp:groups'))
+
+
+class GroupDetailView(LoginRequiredMixin, DetailView):
+    model = Group
+    template_name = 'mainapp/group/detail.html'
+    context_object_name = 'group'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['students'] = context['group'].students.filter(is_deleted=False)
+        return context
+
