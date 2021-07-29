@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% block title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
-{% block page_title %}Мои группы{% endblock %}
+{% block page_title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block inside_content %}
     <div class="days-of-week">
         {% for day_of_week_section in groups_by_days %}
@@ -24,9 +24,9 @@
                                 <td>{{ group.get_location_display }}</td>
                                 <td>{{ group.students_amount }}</td>
                                 <td>
-                                    <button class="btn btn_blue">Войти</button>
+                                    <a href="{% url "mainapp:group-detail" group.pk %}" class="btn btn_blue">Войти</a>
                                     <button class="btn btn_yellow">Редактировать</button>
-                                    <button class="btn btn_red">Удалить</button>
+                                    <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}" data-modal-id="remove-modal">Удалить</button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -34,5 +34,26 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+{% endblock %}
+{% block modals %}
+    <div id="remove-modal" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="remove-modal">&times;</span>
+            <form action="{% url "mainapp:remove-group" %}" method="post">
+                {% csrf_token %}
+                {% for field in remove_form %}
+                    {% if field not in remove_form.hidden_fields %}
+                    <div class="form-input form-input_login">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_red" type="submit">Удалить</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
