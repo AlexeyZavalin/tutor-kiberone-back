@@ -16,9 +16,15 @@
             </div>
             <form action="{% url 'mainapp:login' %}" method="post" class="login__form">
                 {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="form_errors">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 {% for field in form %}
                     <div class="form-input form-input_login">
-                        {{ field.errors }}
                         {{ field.label_tag }} {{ field }}
                     </div>
                 {% endfor %}
