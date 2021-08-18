@@ -304,3 +304,11 @@ input[type="text"], input[type="password"] {
     text-decoration: none;
     cursor: pointer;
 }
+
+.form_errors {
+    width: 340px;
+    margin-bottom: 25px;
+    padding: 10px;
+    border: 2px solid #692528;
+    background-color: rgba(105, 37, 40, 0.2);
+}

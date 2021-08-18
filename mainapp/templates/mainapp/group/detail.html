@@ -1,0 +1,26 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{{ group.get_location }} {{ group.get_time_display }}{% endblock %}
+{% block page_title %}{{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
+{% block inside_content %}
+    <table class="group-table">
+        <tr class="group-table__row">
+            <th>Фамилия Имя</th>
+            <th>Кол-во киберонов</th>
+            <th>Действия</th>
+        </tr>
+        {% for student in students %}
+            <tr class="group-table__row">
+                <td>{{ student.name }}</td>
+                <td>{{ student.kiberon_amount }}</td>
+                <td>
+                    <button class="btn btn_yellow" data-student-id="{{ student.pk }}">Редактировать</button>
+                    <button class="btn btn_red btn_modal" data-student-id="{{ student.pk }}"
+                            data-modal-id="remove-modal">Удалить
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
