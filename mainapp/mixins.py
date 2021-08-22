@@ -9,7 +9,8 @@ class DeletedMixin(models.Model):
     class Meta:
         abstract = True
 
-    is_deleted = models.BooleanField(verbose_name='Удалено', default=False, db_index=True)
+    is_deleted = models.BooleanField(verbose_name='Удалено', default=False,
+                                     db_index=True)
 
     def delete(self, *args, **kwargs):
         self.is_deleted = True
