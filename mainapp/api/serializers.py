@@ -1,10 +1,13 @@
 from rest_framework import serializers
 
-from mainapp.models import Group, Student, Kiberon, Tutor, KiberonStudentReg
+from authapp.models import Tutor
+
+from mainapp.models import Group, Student, Kiberon, KiberonStudentReg
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    students_amount = serializers.IntegerField(source='get_students_amount', read_only=True)
+    students_amount = serializers.IntegerField(source='get_students_amount',
+                                               read_only=True)
 
     class Meta:
         model = Group

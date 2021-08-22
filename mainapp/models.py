@@ -1,4 +1,3 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from django.db.models import F
@@ -15,22 +14,6 @@ class ActiveGroupsManager(models.Manager):
 class ActiveStudentsManager(models.Manager):
     def get_queryset(self):
         return Student.objects.filter(is_deleted=False)
-
-
-class Tutor(AbstractUser):
-    is_tutor = models.BooleanField(verbose_name='Статус тьютора',
-                                   default=False)
-    email = models.EmailField(verbose_name='email address', blank=False,
-                              unique=True)
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
-    class Meta:
-        verbose_name = 'Тьютор'
-        verbose_name_plural = 'Тьюторы'
-
-    def __str__(self):
-        return self.email
 
 
 class Group(DeletedMixin):
@@ -70,13 +53,14 @@ class Group(DeletedMixin):
     day_of_week = models.CharField(max_length=2, choices=DAYS_OF_WEEK_CHOICES,
                                    default=DAYS_OF_WEEK_CHOICES[0],
                                    verbose_name='День недели')
-    tutor = models.ForeignKey(Tutor, on_delete=models.SET_DEFAULT,
+    tutor = models.ForeignKey('authapp.Tutor', on_delete=models.SET_DEFAULT,
                               default=None, null=True)
 
     class Meta:
         verbose_name = 'Группа'
         verbose_name_plural = 'Группы'
         unique_together = ('time', 'location', 'day_of_week')
+        db_table = 'group'
 
     def __str__(self):
         return f'{self.get_day_of_week_display()}' \
@@ -106,6 +90,7 @@ class Student(DeletedMixin):
     class Meta:
         verbose_name = 'Студент'
         verbose_name_plural = 'Студенты'
+        db_table = 'student'
 
     def __str__(self):
         return self.name
@@ -140,6 +125,7 @@ class Kiberon(models.Model):
     class Meta:
         verbose_name = 'Печать'
         verbose_name_plural = 'Печати'
+        db_table = 'kiberon'
 
     def __str__(self):
         return f'{self.get_achievement_display()} - {self.value}к'
@@ -151,7 +137,7 @@ class KiberonStudentReg(models.Model):
     kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE,
                                 verbose_name='Достижение')
     date = models.DateField(verbose_name='Дата', default=timezone.now)
-    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE,
+    tutor = models.ForeignKey('authapp.Tutor', on_delete=models.CASCADE,
                               verbose_name='Тьютор')
     custom_kiberons = models.PositiveSmallIntegerField(
         verbose_name='Свое количество киберонов', default=0)
@@ -160,6 +146,7 @@ class KiberonStudentReg(models.Model):
         verbose_name = 'Запись о печати'
         verbose_name_plural = 'Записи о печатях'
         ordering = ('-date',)
+        db_table = 'kiberon_register'
 
     def __str__(self):
         return f'{self.student.name} - ' \

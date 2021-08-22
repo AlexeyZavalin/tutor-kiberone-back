@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
-from mainapp.models import Group, Student, Kiberon, KiberonStudentReg, Tutor
+from mainapp.models import Group, Student, Kiberon, KiberonStudentReg
 
 
 @admin.register(Group)
@@ -29,6 +28,3 @@ class KiberonStudentRegAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
     search_fields = ['student__name']
     list_filter = ['tutor', 'kiberon']
-
-
-admin.site.register(Tutor, UserAdmin)

@@ -4,9 +4,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
+from authapp.models import Tutor
+
 from mainapp.api.serializers import GroupSerializer, StudentSerializer, KiberonSerializer, TutorSerializer, \
     KiberonStudentRegSerializer
-from mainapp.models import Group, Student, Kiberon, Tutor, KiberonStudentReg
+from mainapp.models import Group, Student, Kiberon, KiberonStudentReg
 
 
 class CustomAuthToken(ObtainAuthToken):
