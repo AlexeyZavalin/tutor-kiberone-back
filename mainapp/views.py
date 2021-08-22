@@ -2,7 +2,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.list import ListView
@@ -12,6 +12,8 @@ from django.shortcuts import get_object_or_404
 
 from mainapp.forms import LoginForm, RemoveGroupForm
 from mainapp.models import Group, Student
+
+import json
 
 
 class MainRedirectView(RedirectView):
@@ -62,15 +64,21 @@ class GroupListView(LoginRequiredMixin, ListView):
 class RemoveGroup(DeleteView):
 
     def post(self, request, *args, **kwargs):
-        group_id = request.POST.get('group_id')
-        password = request.POST.get('password')
+        body = json.loads(request.body)
+        group_id = body.get('group_id')
+        password = body.get('password')
         username = request.user.email
         group = get_object_or_404(Group, pk=group_id)
         if group is not None:
+            if group.is_deleted:
+                return JsonResponse({'success': False, 'message': 'Группа уже удалена'})
             user = authenticate(username=username, password=password)
             if user is not None:
                 group.delete()
-        return HttpResponseRedirect(reverse_lazy('mainapp:groups'))
+                return JsonResponse({'success': True})
+            return JsonResponse({'success': False, 'message': 'Неверный пароль'})
+        return JsonResponse({'success': False, 'message': 'Изменилось id группы или где-то в другом месте ее удалили, '
+                                                          'обнови странццу'})
 
 
 class GroupDetailView(LoginRequiredMixin, DetailView):

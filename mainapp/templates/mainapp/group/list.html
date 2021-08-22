@@ -19,7 +19,7 @@
                             <th>Действия</th>
                         </tr>
                         {% for group in day_of_week_section.groups %}
-                            <tr class="group-table__row">
+                            <tr class="group-table__row" id="group-row-{{ group.pk }}">
                                 <td>{{ group.get_time_display }}</td>
                                 <td>{{ group.get_location_display }}</td>
                                 <td>{{ group.students_amount }}</td>
@@ -40,7 +40,7 @@
     <div id="remove-modal" class="modal">
         <div class="modal__content">
             <span class="close" data-close-modal-id="remove-modal">&times;</span>
-            <form action="{% url "mainapp:remove-group" %}" method="post">
+            <form id="removeGroupForm" data-action="{% url "mainapp:remove-group" %}">
                 {% csrf_token %}
                 {% for field in remove_form %}
                     {% if field not in remove_form.hidden_fields %}
