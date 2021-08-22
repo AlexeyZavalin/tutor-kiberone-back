@@ -1,10 +1,8 @@
 import json
 
 from django.contrib.auth import authenticate
-from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
@@ -12,7 +10,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from mainapp.forms import CreateGroupForm, LoginForm, RemoveGroupForm
+from mainapp.forms import CreateGroupForm, RemoveGroupForm
 from mainapp.models import Group
 
 
@@ -21,19 +19,6 @@ class MainRedirectView(RedirectView):
     permanent = True
     query_string = False
     pattern_name = 'mainapp:login'
-
-
-class LoginTutor(LoginView):
-    """ Страница входа """
-    form_class = LoginForm
-    redirect_authenticated_user = True
-    template_name = 'mainapp/login.html'
-
-
-def logout_view(request):
-    """ Выход из учетной записи """
-    logout(request)
-    return HttpResponseRedirect(redirect_to=reverse_lazy('mainapp:login'))
 
 
 class GroupListView(LoginRequiredMixin, ListView):

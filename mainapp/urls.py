@@ -4,8 +4,7 @@ from django.urls import path
 # TutorViewSet,
 # KiberonStudentRegViewSet
 
-from mainapp.views import CreateGroupView, GroupDetailView, GroupListView, \
-    LoginTutor, MainRedirectView, RemoveGroup, logout_view
+from mainapp import views
 
 app_name = 'mainapp'
 
@@ -17,13 +16,12 @@ app_name = 'mainapp'
 # router.register(r'regs', KiberonStudentRegViewSet, basename='regs')
 
 urlpatterns = [
-    path('', MainRedirectView.as_view(), name='main_redirect'),
-    path('login/', LoginTutor.as_view(), name='login'),
-    path('logout/', logout_view, name='logout'),
-    path('groups/<int:pk>', GroupDetailView.as_view(), name='group-detail'),
-    path('groups/', GroupListView.as_view(), name='groups'),
-    path('remove-group/', RemoveGroup.as_view(), name='remove-group'),
-    path('create-group/', CreateGroupView.as_view(), name='create-group')
+    path('', views.MainRedirectView.as_view(), name='main_redirect'),
+    path('groups/<int:pk>', views.GroupDetailView.as_view(),
+         name='group-detail'),
+    path('groups/', views.GroupListView.as_view(), name='groups'),
+    path('remove-group/', views.RemoveGroup.as_view(), name='remove-group'),
+    path('create-group/', views.CreateGroupView.as_view(), name='create-group')
     # path('api-auth/', include('rest_framework.urls',
     # namespace='rest_framework'))
 ]
