@@ -76,3 +76,39 @@ if (removeGroupForm) {
             });
     })
 }
+
+// создание группы
+let createGroupForm = document.getElementById('createGroupForm');
+
+if (createGroupForm) {
+    createGroupForm.addEventListener('submit', function (e) {
+        e.preventDefault()
+        if (createGroupForm.querySelector('.form_errors')) {
+            createGroupForm.querySelector('.form_errors').remove()
+        }
+        const url = createGroupForm.dataset['action']
+        const time = createGroupForm.querySelector('#id_time').value
+        const dayOfWeek = createGroupForm.querySelector('#id_day_of_week').value
+        const location = createGroupForm.querySelector('#id_location').value
+        const formData = {
+            'location': location,
+            'time': time,
+            'day_of_week': dayOfWeek
+        }
+        postData(url, formData)
+            .then((data) => {
+                if (data['success']) {
+                    if (data['redirect']) {
+                        window.location = data['redirect']
+                    }
+                } else {
+                    let errorSpan = document.createElement('div')
+                    errorSpan.textContent = data['message']
+                    errorSpan.classList.add('form_errors')
+                    const btn = createGroupForm.querySelector('.btn')
+                    const parent = btn.parentNode
+                    parent.insertBefore(errorSpan, btn)
+                }
+            });
+    })
+}

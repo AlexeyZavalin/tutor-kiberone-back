@@ -7,10 +7,10 @@ from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, CreateView
 from django.shortcuts import get_object_or_404
 
-from mainapp.forms import LoginForm, RemoveGroupForm
+from mainapp.forms import LoginForm, RemoveGroupForm, CreateGroupForm
 from mainapp.models import Group, Student
 
 import json
@@ -58,6 +58,7 @@ class GroupListView(LoginRequiredMixin, ListView):
             )
 
         context['remove_form'] = RemoveGroupForm()
+        context['create_group_form'] = CreateGroupForm()
         return context
 
 
@@ -79,6 +80,23 @@ class RemoveGroup(DeleteView):
             return JsonResponse({'success': False, 'message': 'Неверный пароль'})
         return JsonResponse({'success': False, 'message': 'Изменилось id группы или где-то в другом месте ее удалили, '
                                                           'обнови странццу'})
+
+
+class CreateGroupView(CreateView):
+
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        location = body.get('location')
+        time = body.get('time')
+        day_of_week = body.get('day_of_week')
+        group = Group.objects.filter(time=time, location=location, day_of_week=day_of_week)
+        if group.exists():
+            if group.first().is_deleted:
+                group.update(is_deleted=False)
+                return JsonResponse({'success': True, 'redirect': reverse_lazy('mainapp:groups')})
+            return JsonResponse({'success': False, 'message': 'Такая группа уже есть, измените параметры'})
+        Group.objects.create(location=location, time=time, day_of_week=day_of_week, tutor=request.user)
+        return JsonResponse({'success': True, 'redirect': reverse_lazy('mainapp:groups')})
 
 
 class GroupDetailView(LoginRequiredMixin, DetailView):

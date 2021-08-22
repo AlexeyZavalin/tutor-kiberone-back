@@ -56,4 +56,23 @@
             </form>
         </div>
     </div>
+    <div id="create-group-modal" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="create-group-modal">&times;</span>
+            <form id="createGroupForm" data-action="{% url "mainapp:create-group" %}">
+                {% csrf_token %}
+                {% for field in create_group_form %}
+                    {% if field not in remove_form.hidden_fields %}
+                    <div class="form-input form-input_login">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_blue" type="submit">Создать</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
