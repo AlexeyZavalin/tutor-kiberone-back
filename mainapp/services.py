@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
-from .models import Group
+from .models import Group, Student
 
 
 def get_response_for_remove_group(group_id: str, password: str,
@@ -48,3 +48,12 @@ def get_response_for_create_group(time: str, location: str,
                          day_of_week=day_of_week, tutor=user)
     return JsonResponse({'success': True,
                          'redirect': reverse_lazy('mainapp:groups')})
+
+
+def get_response_for_create_student(name: str, kiberon_amount: int,
+                                    info: str, group_id: int) -> JsonResponse:
+    """Получаем ответ при отправке формы добавления студента"""
+    Student.objects.create(name=name, kiberon_amount=kiberon_amount,
+                           info=info, group_id=group_id)
+    redirect = reverse_lazy('mainapp:group-detail', kwargs={'pk': group_id})
+    return JsonResponse({'success': True, 'redirect': redirect})
