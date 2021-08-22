@@ -14,7 +14,7 @@
                 <span class="text-uppercase login-char text-red">о</span>
                 <span class="text-uppercase login-char text-darkblue">д</span>
             </div>
-            <form action="{% url 'mainapp:login' %}" method="post" class="login__form">
+            <form action="{% url 'authapp:login' %}" method="post" class="login__form">
                 {% csrf_token %}
                 {% if form.non_field_errors %}
                     <div class="form_errors">
