@@ -1,17 +1,16 @@
 import json
 
-from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from mainapp.forms import CreateGroupForm, RemoveGroupForm
-from mainapp.models import Group
+from .forms import CreateGroupForm, RemoveGroupForm
+from .models import Group
+from .services import get_response_for_create_group, \
+    get_response_for_remove_group
 
 
 class MainRedirectView(RedirectView):
@@ -53,49 +52,20 @@ class RemoveGroup(DeleteView):
     """Прдеставление для удаления группы"""
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
-        group_id = body.get('group_id')
-        password = body.get('password')
-        username = request.user.email
-        group = get_object_or_404(Group, pk=group_id)
-        if group is not None:
-            if group.is_deleted:
-                return JsonResponse({'success': False,
-                                     'message': 'Группа уже удалена'})
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                group.delete()
-                return JsonResponse({'success': True})
-            return JsonResponse({'success': False,
-                                 'message': 'Неверный пароль'})
-        return JsonResponse({'success': False,
-                             'message': 'Изменилось id '
-                                        'группы или где-то'
-                                        ' в другом месте ее удалили, '
-                                        'обнови странццу'})
+        return get_response_for_remove_group(group_id=body.get('group_id'),
+                                             password=body.get('password'),
+                                             username=request.user.email)
 
 
 class CreateGroupView(CreateView):
     """Представление для создания группы"""
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
-        location = body.get('location')
-        time = body.get('time')
-        day_of_week = body.get('day_of_week')
-        group = Group.objects.filter(time=time, location=location,
-                                     day_of_week=day_of_week)
-        if group.exists():
-            if group.first().is_deleted:
-                group.update(is_deleted=False)
-                return JsonResponse({'success': True,
-                                     'redirect':
-                                         reverse_lazy('mainapp:groups')})
-            return JsonResponse({'success': False,
-                                 'message': 'Такая группа уже есть, '
-                                            'измените параметры'})
-        Group.objects.create(location=location, time=time,
-                             day_of_week=day_of_week, tutor=request.user)
-        return JsonResponse({'success': True,
-                             'redirect': reverse_lazy('mainapp:groups')})
+        return get_response_for_create_group(location=body.get('location'),
+                                             time=body.get('time'),
+                                             day_of_week=body.get(
+                                                 'day_of_week'),
+                                             user=request.user)
 
 
 class GroupDetailView(LoginRequiredMixin, DetailView):
