@@ -6,6 +6,7 @@ from .models import Group
 
 
 class LoginForm(AuthenticationForm):
+    """Форма входа на сайт"""
     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True}),
                              label="E-mail")
     password = forms.CharField(
@@ -16,11 +17,13 @@ class LoginForm(AuthenticationForm):
 
 
 class RemoveGroupForm(forms.Form):
+    """Форма для удаления группы"""
     password = forms.CharField(widget=forms.PasswordInput, label=_('Пароль'))
     group_id = forms.CharField(widget=forms.HiddenInput)
 
 
 class CreateGroupForm(forms.ModelForm):
+    """Форма для создания группы"""
     class Meta:
         model = Group
         fields = ['time', 'location', 'day_of_week']
