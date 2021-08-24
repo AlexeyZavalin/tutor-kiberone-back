@@ -7,10 +7,10 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from .forms import CreateGroupForm, RemoveGroupForm
+from .forms import CreateGroupForm, RemoveGroupForm, CreateStudentForm
 from .models import Group
 from .services import get_response_for_create_group, \
-    get_response_for_remove_group
+    get_response_for_remove_group, get_response_for_create_student
 
 
 class MainRedirectView(RedirectView):
@@ -78,4 +78,16 @@ class GroupDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['students'] = context['group'].students\
             .filter(is_deleted=False)
+        context['create_student_form'] = CreateStudentForm()
         return context
+
+
+class CreateStudentView(CreateView):
+    """Представление для добавления студента в группу"""
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        return get_response_for_create_student(name=body.get('name'),
+                                               kiberon_amount=body.get(
+                                                   'kiberon_amount'),
+                                               info=body.get('info'),
+                                               group_id=kwargs.get('group_id'))

@@ -112,3 +112,39 @@ if (createGroupForm) {
             });
     })
 }
+
+// добавление студента в группу
+let createStudentForm = document.getElementById('createStudentForm');
+
+if (createStudentForm) {
+    createStudentForm.addEventListener('submit', function (e) {
+        e.preventDefault()
+        if (createStudentForm.querySelector('.form_errors')) {
+            createStudentForm.querySelector('.form_errors').remove()
+        }
+        const url = createStudentForm.dataset['action']
+        const name = createStudentForm.querySelector('#id_name').value
+        const kiberonAmount = createStudentForm.querySelector('#id_kiberon_amount').value
+        const info = createStudentForm.querySelector('#id_info').value
+        const formData = {
+            'name': name,
+            'kiberon_amount': kiberonAmount,
+            'info': info
+        }
+        postData(url, formData)
+            .then((data) => {
+                if (data['success']) {
+                    if (data['redirect']) {
+                        window.location = data['redirect']
+                    }
+                } else {
+                    let errorSpan = document.createElement('div')
+                    errorSpan.textContent = data['message']
+                    errorSpan.classList.add('form_errors')
+                    const btn = createStudentForm.querySelector('.btn')
+                    const parent = btn.parentNode
+                    parent.insertBefore(errorSpan, btn)
+                }
+            });
+    })
+}
