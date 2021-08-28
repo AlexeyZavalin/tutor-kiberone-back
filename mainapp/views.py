@@ -17,12 +17,12 @@ class MainRedirectView(RedirectView):
     """ Редирект с главной страницы на страницу входа """
     permanent = True
     query_string = False
-    pattern_name = 'mainapp:login'
+    pattern_name = 'authapp:login'
 
 
 class GroupListView(LoginRequiredMixin, ListView):
     """Страница со списком групп для авторизованного тьютора"""
-    login_url = reverse_lazy('mainapp:login')
+    login_url = reverse_lazy('authapp:login')
     model = Group
     context_object_name = 'groups'
     template_name = 'mainapp/group/list.html'
