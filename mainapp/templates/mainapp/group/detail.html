@@ -38,28 +38,6 @@
                 {% csrf_token %}
                 {% for field in create_student_form %}
                     {% if field not in remove_form.hidden_fields %}
-                        <div class="form-input form-input_login">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_blue" type="submit">Добавить</button>
-            </form>
-        </div>
-    </div>
-{% endblock %}
-{% block modals %}
-    {{ block.super }}
-    <div id="create-student-modal" class="modal">
-        <div class="modal__content">
-            <span class="close" data-close-modal-id="create-student-modal">&times;</span>
-            <form id="createStudentForm" data-action="{% url "mainapp:create-student" group.pk %}">
-                {% csrf_token %}
-                {% for field in create_student_form %}
-                    {% if field not in remove_form.hidden_fields %}
                     <div class="form-input form-input_login">
                         {{ field.errors }}
                         {{ field.label_tag }} {{ field }}
