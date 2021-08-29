@@ -79,12 +79,6 @@ WSGI_APPLICATION = 'kiberone_tutor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-os.environ.setdefault('db_name', 'tutor_kiberone')
-os.environ.setdefault('db_user', 'postgres')
-os.environ.setdefault('db_password', 'postgres')
-os.environ.setdefault('db_host', '127.0.0.1')
-os.environ.setdefault('db_port', '5432')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
