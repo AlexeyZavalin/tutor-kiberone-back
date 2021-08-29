@@ -185,7 +185,3 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 ADMINS = [('Alexey', 'lehazavalin95@gmail.com')]
-
-SECURE_SSL_REDIRECT = True
-
-SECURE_HSTS_SECONDS = True
