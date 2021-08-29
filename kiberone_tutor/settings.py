@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ap7-v#3+f=!txrn8q@*v09#mp7#k&+5wern1&80s(i2j!4ys_w'
+SECRET_KEY = '9%28%mw|4~dnhg6bmmyzh{4$2}xo~{0xok7s9b1}c~8?i71w~k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -131,7 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/tutor-kiberone-back/static'
+STATIC_ROOT = '/home/alexey/tutor-kiberone/static'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
@@ -185,3 +185,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 ADMINS = [('Alexey', 'lehazavalin95@gmail.com')]
+
+SECURE_SSL_REDIRECT = True
+
+SECURE_HSTS_SECONDS = True
