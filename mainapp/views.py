@@ -33,7 +33,7 @@ class GroupListView(LoginRequiredMixin, ListView):
             .values_list('day_of_week', flat=True).distinct()
         context['groups_by_days'] = []
         for day_of_week in days_of_week:
-            groups = Group.active.filter(day_of_week=day_of_week)
+            groups = Group.active.filter(day_of_week=day_of_week, tutor=self.request.user)
             _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
                                       if day[0] == day_of_week][0]
             context['groups_by_days'].append(
