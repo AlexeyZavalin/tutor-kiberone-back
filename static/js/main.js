@@ -1,7 +1,5 @@
 "use strict";
 
-let removeFormGroupId = document.getElementById('id_group_id');
-
 let btnsModal = document.querySelectorAll('.btn_modal');
 
 btnsModal.forEach(function (element) {
@@ -50,6 +48,7 @@ async function postData(url = '', data = {}) {
 }
 
 // удаление группы
+let removeFormGroupId = document.getElementById('id_group_id');
 let removeGroupForm = document.getElementById('removeGroupForm');
 
 if (removeGroupForm) {
@@ -146,5 +145,67 @@ if (createStudentForm) {
                     parent.insertBefore(errorSpan, btn)
                 }
             });
+    })
+}
+
+// удаление студента
+let removeFormStudentId = document.getElementById('id_student_id');
+let removeStudentBtns = document.querySelectorAll('.btn_student_remove')
+
+if (removeStudentBtns) {
+    removeStudentBtns.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            removeFormStudentId.value = element.dataset['studentId']
+        })
+    })
+}
+let removeStudentForm = document.getElementById('removeStudentForm')
+
+if (removeStudentForm) {
+    removeStudentForm.addEventListener('submit', function (e) {
+        e.preventDefault()
+        if (removeStudentForm.querySelector('.form_errors')) {
+            removeStudentForm.querySelector('.form_errors').remove()
+        }
+        const url = removeStudentForm.dataset['action']
+        const studentId = removeStudentForm.querySelector('#id_student_id').value
+        const password = removeStudentForm.querySelector('#id_password').value
+        postData(url, {'student_id': studentId, 'password': password})
+            .then((data) => {
+                if (data['success']) {
+                    document.querySelector('#student-row-' + studentId).remove();
+                    let successSpan = document.createElement('div')
+                    successSpan.textContent = data['message']
+                    successSpan.classList.add('form_success')
+                    const btn = removeStudentForm.querySelector('.btn')
+                    const parent = btn.parentNode
+                    parent.insertBefore(successSpan, btn)
+                } else {
+                    let errorSpan = document.createElement('div')
+                    errorSpan.textContent = data['message']
+                    errorSpan.classList.add('form_errors')
+                    const btn = removeStudentForm.querySelector('.btn')
+                    const parent = btn.parentNode
+                    parent.insertBefore(errorSpan, btn)
+                }
+            });
+    })
+}
+
+// массовое выделение
+let studentIds = new Set()
+
+let studentCheckBoxes = document.querySelectorAll('.student-checkbox')
+
+if (studentCheckBoxes) {
+    studentCheckBoxes.forEach(function (element) {
+        element.addEventListener('change', function (event) {
+            if (element.checked) {
+                studentIds.add(element.dataset['studentId'])
+            } else {
+                studentIds.delete(element.dataset['studentId'])
+            }
+            document.getElementById('id_student_ids').value = Array.from(studentIds).join(',')
+        })
     })
 }

@@ -57,3 +57,24 @@ def get_response_for_create_student(name: str, kiberon_amount: int,
                            info=info, group_id=group_id)
     redirect = reverse_lazy('mainapp:group-detail', kwargs={'pk': group_id})
     return JsonResponse({'success': True, 'redirect': redirect})
+
+
+def get_response_for_remove_student(student_id: str, password: str,
+                                    username: str) -> JsonResponse:
+    """Получаем ответ для запроса удаления студента"""
+    student = get_object_or_404(Student, pk=student_id)
+    if student is not None:
+        if student.is_deleted:
+            return JsonResponse({'success': False,
+                                 'message': 'Студент уже удален'})
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            student.delete()
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False,
+                             'message': 'Неверный пароль'})
+    return JsonResponse({'success': False,
+                         'message': 'Изменилось id '
+                                    'студента или где-то'
+                                    ' в другом месте его удалили, '
+                                    'обнови странццу'})
