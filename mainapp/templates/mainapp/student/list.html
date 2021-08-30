@@ -1,0 +1,91 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{{ group.get_location }} {{ group.get_time_display }}{% endblock %}
+{% block page_title %}{{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
+{% block inside_content %}
+    <div class="group-form">
+        <form data-action="" id="bulk-actions">
+            {% csrf_token %}
+            {% for field in bulk_action_form %}
+                {% if field not in bulk_action_form.hidden_fields %}
+                    <div class="form-input form-input_login">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            {% endfor %}
+            <button class="btn btn_yellow" type="submit" id="bulk_submit">Выполнить</button>
+        </form>
+    </div>
+    <div class="btn btn_modal" data-modal-id="create-student-modal">Добавить ученика</div>
+    <table class="group-table">
+        <tr class="group-table__row">
+            <th>Фамилия Имя</th>
+            <th>Кол-во киберонов</th>
+            <th>Действия</th>
+        </tr>
+        {% for student in students %}
+            <tr class="group-table__row" id="student-row-{{ student.pk }}">
+                <td>{{ student.name }}</td>
+                <td>{{ student.kiberon_amount }}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn btn_yellow" data-student-id="{{ student.pk }}">Редактировать</button>
+                        <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
+                                data-modal-id="remove-student-modal">Удалить
+                        </button>
+                        <div class="checkbox">
+                            <input type="checkbox" data-student-id="{{ student.pk }}"
+                                   id="student-check-{{ student.pk }}" class="checkbox__native student-checkbox"/>
+                            <label for="student-check-{{ student.pk }}" class="checkbox__label"></label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+{% block modals %}
+    {{ block.super }}
+    <div id="create-student-modal" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="create-student-modal">&times;</span>
+            <form id="createStudentForm" data-action="{% url "mainapp:create-student" request.resolver_match.kwargs.group_id %}">
+                {% csrf_token %}
+                {% for field in create_student_form %}
+                    {% if field not in create_student_form.hidden_fields %}
+                        <div class="form-input form-input_login">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_blue" type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+    <div id="remove-student-modal" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="remove-student-modal">&times;</span>
+            <form id="removeStudentForm" data-action="{% url "mainapp:remove-student" %}">
+                {% csrf_token %}
+                {% for field in remove_student_form %}
+                    {% if field not in remove_form.hidden_fields %}
+                        <div class="form-input form-input_login">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_red" type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

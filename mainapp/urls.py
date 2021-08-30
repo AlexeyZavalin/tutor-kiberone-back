@@ -18,13 +18,15 @@ app_name = 'mainapp'
 urlpatterns = [
     path('', views.MainRedirectView.as_view(), name='main_redirect'),
     path('groups/', views.GroupListView.as_view(), name='groups'),
-    path('groups/<int:pk>', views.GroupDetailView.as_view(),
-         name='group-detail'),
+    path('groups/<int:group_id>', views.StudentListView.as_view(),
+         name='student-list'),
     path('remove-group/', views.RemoveGroup.as_view(), name='remove-group'),
     path('create-group/', views.CreateGroupView.as_view(),
          name='create-group'),
     path('create-student/<int:group_id>', views.CreateStudentView.as_view(),
-         name='create-student')
+         name='create-student'),
+    path('remove-student/', views.RemoveStudent.as_view(),
+         name='remove-student'),
     # path('api-auth/', include('rest_framework.urls',
     # namespace='rest_framework'))
 ]

@@ -312,3 +312,41 @@ input[type="text"], input[type="password"] {
     border: 2px solid #692528;
     background-color: rgba(105, 37, 40, 0.2);
 }
+
+.form_success {
+    width: 340px;
+    margin-bottom: 25px;
+    padding: 10px;
+    border: 2px solid #509a3f;
+    background-color: rgba(190, 255, 175, 0.2);
+}
+
+.checkbox__label {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    display: block;
+    border: 2px solid #4DAED1;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.checkbox__native {
+    display: none;
+}
+
+.checkbox__native:checked + .checkbox__label {
+    transform: rotate(40deg) translate(-3px, -3px);
+    border-top-width: 0;
+    border-color: #1d5f77;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    width: 15px;
+    margin-left: 10px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
