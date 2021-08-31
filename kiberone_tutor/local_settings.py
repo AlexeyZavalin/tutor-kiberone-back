@@ -172,3 +172,5 @@ CORS_ALLOW_HEADERS = [
 # endregion
 
 LOGIN_REDIRECT_URL = 'mainapp:groups'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
