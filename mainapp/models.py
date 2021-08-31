@@ -68,7 +68,7 @@ class Group(DeletedMixin):
 
     @property
     def students_amount(self):
-        return self.students.count()
+        return self.students.filter(is_deleted=False).count()
 
 
 class Student(DeletedMixin):
@@ -97,23 +97,32 @@ class Student(DeletedMixin):
 
     def add_kiberons(self, amount):
         self.kiberon_amount = F('kiberon_amount') + amount
+        self.save()
 
     def delete_kiberons(self, amount):
         self.kiberon_amount = F('kiberon_amount') - amount
+        self.save()
 
 
 class Kiberon(models.Model):
     """
     Модель для хранения значению киберона по достижениям
     """
+    VISIT = 'visit'
+    EYES = 'eyes'
+    FASTEST = 'fastest'
+    HOMEWORK = 'homework'
+    INSTAGRAM = 'instagram'
+    SOCIAL = 'social'
+    CUSTOM = 'custom'
     ACHIEVEMENT_CHOICES = (
-        ('visit', 'Посещение урока'),
-        ('eyes', 'Разминка глаз'),
-        ('fastest', 'Быстрее всех завершил задание'),
-        ('homework', 'За выполнение домашнего задания'),
-        ('instagram', 'За пост в instagram'),
-        ('social', 'За посты в соц. сети'),
-        ('custom', 'Свое достижение')
+        (VISIT, 'Посещение урока'),
+        (EYES, 'Разминка глаз'),
+        (FASTEST, 'Быстрее всех завершил задание'),
+        (HOMEWORK, 'За выполнение домашнего задания'),
+        (INSTAGRAM, 'За пост в instagram'),
+        (SOCIAL, 'За посты в соц. сети'),
+        (CUSTOM, 'Свое достижение')
     )
     achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES,
                                    default=ACHIEVEMENT_CHOICES[0],
@@ -153,24 +162,28 @@ class KiberonStudentReg(models.Model):
                f'{self.kiberon.get_achievement_display()} - {self.date}'
 
     def clean(self):
-        if self.kiberon.achievement != 'custom':
+        if self.kiberon.achievement != Kiberon.CUSTOM:
             reg = KiberonStudentReg.objects.filter(student=self.student,
                                                    kiberon=self.kiberon,
                                                    date=self.date)
             if reg.count() > 0:
                 raise ValidationError(
                     f'Запись с достижением "'
-                    f'{self.kiberon.get_achievement_display()}"' \
+                    f'{self.kiberon.get_achievement_display()}"'
                     f' для {self.student.name} на {self.date} уже есть')
         else:
             super().clean()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.kiberon.achievement == 'custom':
+        if self.kiberon.achievement == Kiberon.CUSTOM:
             self.student.add_kiberons(self.custom_kiberons)
         else:
-            self.student.add_kiberons(self.kiberon.value)
+            reg = KiberonStudentReg.objects.filter(student=self.student,
+                                                   kiberon=self.kiberon,
+                                                   date=self.date)
+            if reg.count() == 0:
+                self.student.add_kiberons(self.kiberon.value)
         super().save()
 
     def delete(self, using=None, keep_parents=False):

@@ -1,16 +1,18 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from .forms import CreateGroupForm, RemoveGroupForm, CreateStudentForm, \
-    RemoveStudentForm, BulkStudentActionsForm
+from .forms import BulkStudentActionsForm, CreateGroupForm, CreateStudentForm,\
+    RemoveGroupForm, RemoveStudentForm
 from .models import Group, Student
-from .services import get_response_for_create_group, \
-    get_response_for_remove_group, get_response_for_create_student, \
+from .services import form_data_processing, get_response_for_create_group, \
+    get_response_for_create_student, get_response_for_remove_group, \
     get_response_for_remove_student
 
 
@@ -83,6 +85,7 @@ class StudentListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['group'] = Group.objects.get(pk=self.kwargs.get('group_id'))
         context['create_student_form'] = CreateStudentForm()
         context['remove_student_form'] = RemoveStudentForm()
         context['bulk_action_form'] = BulkStudentActionsForm()
@@ -110,3 +113,13 @@ class RemoveStudent(DeleteView):
                                                .get('student_id'),
                                                password=body.get('password'),
                                                username=request.user.email)
+
+
+@require_http_methods(['POST'])
+def bulk_update_students(request, group_id):
+    """Представление для массовой обработки студентов"""
+    form = BulkStudentActionsForm(request.POST)
+    if form.is_valid():
+        form_data_processing(data=form.cleaned_data, tutor=request.user)
+    return HttpResponseRedirect(reverse_lazy('mainapp:student-list',
+                                             kwargs={'group_id': group_id}))
