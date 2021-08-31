@@ -24,7 +24,7 @@
                                 <td>{{ group.get_location_display }}</td>
                                 <td>{{ group.students_amount }}</td>
                                 <td>
-                                    <a href="{% url "mainapp:group-detail" group.pk %}" class="btn btn_blue">Войти</a>
+                                    <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
                                     <button class="btn btn_yellow">Редактировать</button>
                                     <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}" data-modal-id="remove-modal">Удалить</button>
                                 </td>

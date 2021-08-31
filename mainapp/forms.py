@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Group, Student
+from .models import Group, Student, Kiberon
 
 
 class RemoveGroupForm(forms.Form):
@@ -12,6 +12,7 @@ class RemoveGroupForm(forms.Form):
 
 class CreateGroupForm(forms.ModelForm):
     """Форма для создания группы"""
+
     class Meta:
         model = Group
         fields = ['time', 'location', 'day_of_week']
@@ -19,6 +20,7 @@ class CreateGroupForm(forms.ModelForm):
 
 class CreateStudentForm(forms.ModelForm):
     """Форма добавления студента в группу"""
+
     class Meta:
         model = Student
         fields = ['name', 'kiberon_amount', 'info']
@@ -32,11 +34,9 @@ class RemoveStudentForm(forms.Form):
 
 class BulkStudentActionsForm(forms.Form):
     """Форма массовых действий с ученикми"""
-    EYES_EXERCISE_ACTION = 'eyes_exercise'
-    VISIT_ACTION = 'visit_action'
     ACTION_CHOICES = (
-        (VISIT_ACTION, 'Поставить кибероны за посещение'),
-        (EYES_EXERCISE_ACTION, 'Поставить кибероны за разминку для глаз'),
+        (Kiberon.VISIT, 'Поставить кибероны за посещение'),
+        (Kiberon.EYES, 'Поставить кибероны за разминку для глаз'),
     )
     action = forms.ChoiceField(label='Действия', required=True,
                                choices=ACTION_CHOICES)
