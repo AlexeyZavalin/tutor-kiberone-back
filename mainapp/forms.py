@@ -22,3 +22,22 @@ class CreateStudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ['name', 'kiberon_amount', 'info']
+
+
+class RemoveStudentForm(forms.Form):
+    """Форма для удаления студента"""
+    password = forms.CharField(widget=forms.PasswordInput, label=_('Пароль'))
+    student_id = forms.CharField(widget=forms.HiddenInput)
+
+
+class BulkStudentActionsForm(forms.Form):
+    """Форма массовых действий с ученикми"""
+    EYES_EXERCISE_ACTION = 'eyes_exercise'
+    VISIT_ACTION = 'visit_action'
+    ACTION_CHOICES = (
+        (VISIT_ACTION, 'Поставить кибероны за посещение'),
+        (EYES_EXERCISE_ACTION, 'Поставить кибероны за разминку для глаз'),
+    )
+    action = forms.ChoiceField(label='Действия', required=True,
+                               choices=ACTION_CHOICES)
+    student_ids = forms.CharField(widget=forms.HiddenInput)

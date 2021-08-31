@@ -3,14 +3,15 @@ import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from .forms import CreateGroupForm, RemoveGroupForm, CreateStudentForm
-from .models import Group
+from .forms import CreateGroupForm, RemoveGroupForm, CreateStudentForm, \
+    RemoveStudentForm, BulkStudentActionsForm
+from .models import Group, Student
 from .services import get_response_for_create_group, \
-    get_response_for_remove_group, get_response_for_create_student
+    get_response_for_remove_group, get_response_for_create_student, \
+    get_response_for_remove_student
 
 
 class MainRedirectView(RedirectView):
@@ -29,11 +30,12 @@ class GroupListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        days_of_week = Group.active.filter(tutor=self.request.user)\
+        days_of_week = Group.active.filter(tutor=self.request.user) \
             .values_list('day_of_week', flat=True).distinct()
         context['groups_by_days'] = []
         for day_of_week in days_of_week:
-            groups = Group.active.filter(day_of_week=day_of_week, tutor=self.request.user)
+            groups = Group.active.filter(day_of_week=day_of_week,
+                                         tutor=self.request.user)
             _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
                                       if day[0] == day_of_week][0]
             context['groups_by_days'].append(
@@ -50,6 +52,7 @@ class GroupListView(LoginRequiredMixin, ListView):
 
 class RemoveGroup(DeleteView):
     """Прдеставление для удаления группы"""
+
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
         return get_response_for_remove_group(group_id=body.get('group_id'),
@@ -59,6 +62,7 @@ class RemoveGroup(DeleteView):
 
 class CreateGroupView(CreateView):
     """Представление для создания группы"""
+
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
         return get_response_for_create_group(location=body.get('location'),
@@ -68,22 +72,26 @@ class CreateGroupView(CreateView):
                                              user=request.user)
 
 
-class GroupDetailView(LoginRequiredMixin, DetailView):
-    """Представление страницы группы"""
-    model = Group
-    template_name = 'mainapp/group/detail.html'
-    context_object_name = 'group'
+class StudentListView(LoginRequiredMixin, ListView):
+    """Список студентов группы"""
+    model = Student
+    template_name = 'mainapp/student/list.html'
+    context_object_name = 'students'
+
+    def get_queryset(self):
+        return Student.active.filter(group_id=self.kwargs.get('group_id'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['students'] = context['group'].students\
-            .filter(is_deleted=False)
         context['create_student_form'] = CreateStudentForm()
+        context['remove_student_form'] = RemoveStudentForm()
+        context['bulk_action_form'] = BulkStudentActionsForm()
         return context
 
 
 class CreateStudentView(CreateView):
     """Представление для добавления студента в группу"""
+
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
         return get_response_for_create_student(name=body.get('name'),
@@ -91,3 +99,14 @@ class CreateStudentView(CreateView):
                                                    'kiberon_amount'),
                                                info=body.get('info'),
                                                group_id=kwargs.get('group_id'))
+
+
+class RemoveStudent(DeleteView):
+    """Прдеставление для удаления студента"""
+
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        return get_response_for_remove_student(student_id=body
+                                               .get('student_id'),
+                                               password=body.get('password'),
+                                               username=request.user.email)
