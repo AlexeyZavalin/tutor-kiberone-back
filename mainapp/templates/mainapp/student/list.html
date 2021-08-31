@@ -75,7 +75,7 @@
             <form id="removeStudentForm" data-action="{% url "mainapp:remove-student" %}">
                 {% csrf_token %}
                 {% for field in remove_student_form %}
-                    {% if field not in remove_form.hidden_fields %}
+                    {% if field not in remove_student_form.hidden_fields %}
                         <div class="form-input form-input_login">
                             {{ field.errors }}
                             {{ field.label_tag }} {{ field }}

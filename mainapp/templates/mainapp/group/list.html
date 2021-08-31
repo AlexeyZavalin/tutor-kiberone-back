@@ -62,7 +62,7 @@
             <form id="createGroupForm" data-action="{% url "mainapp:create-group" %}">
                 {% csrf_token %}
                 {% for field in create_group_form %}
-                    {% if field not in remove_form.hidden_fields %}
+                    {% if field not in create_group_form.hidden_fields %}
                     <div class="form-input form-input_login">
                         {{ field.errors }}
                         {{ field.label_tag }} {{ field }}
