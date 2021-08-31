@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
-from .models import Group, Student
+from .models import Group, Student, KiberonStudentReg, Kiberon
 
 
 def get_response_for_remove_group(group_id: str, password: str,
@@ -78,3 +78,13 @@ def get_response_for_remove_student(student_id: str, password: str,
                                     'студента или где-то'
                                     ' в другом месте его удалили, '
                                     'обнови странццу'})
+
+
+def form_data_processing(data: dict, tutor: Tutor) -> None:
+    """Обработка массового обновления учеников"""
+    students = Student.objects.filter(pk__in=data.get('student_ids')
+                                      .split(','))
+    kiberon = Kiberon.objects.get(achievement=data.get('action'))
+    for student in students:
+        KiberonStudentReg.objects.create(student=student, kiberon=kiberon,
+                                         tutor=tutor)

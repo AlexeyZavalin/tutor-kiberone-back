@@ -27,6 +27,8 @@ urlpatterns = [
          name='create-student'),
     path('remove-student/', views.RemoveStudent.as_view(),
          name='remove-student'),
+    path('bulk-update-students/<int:group_id>/', views.bulk_update_students,
+         name='bulk-update-students'),
     # path('api-auth/', include('rest_framework.urls',
     # namespace='rest_framework'))
 ]

@@ -5,7 +5,7 @@
 {% block page_title %}{{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
 {% block inside_content %}
     <div class="group-form">
-        <form data-action="" id="bulk-actions">
+        <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post">
             {% csrf_token %}
             {% for field in bulk_action_form %}
                 {% if field not in bulk_action_form.hidden_fields %}
