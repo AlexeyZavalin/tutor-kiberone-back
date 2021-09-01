@@ -20,7 +20,7 @@ class MainRedirectView(RedirectView):
     """ Редирект с главной страницы на страницу входа """
     permanent = True
     query_string = False
-    pattern_name = 'mainapp:login'
+    pattern_name = 'authapp:login'
 
 
 class GroupListView(LoginRequiredMixin, ListView):
