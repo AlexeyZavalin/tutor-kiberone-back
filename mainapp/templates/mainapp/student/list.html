@@ -5,11 +5,12 @@
 {% block page_title %}{{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
 {% block inside_content %}
     <div class="group-form">
-        <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post">
+        <div class="btn btn_modal btn_blue" data-modal-id="create-student-modal">Добавить ученика</div>
+        <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post" class="bulk-students-form">
             {% csrf_token %}
             {% for field in bulk_action_form %}
                 {% if field not in bulk_action_form.hidden_fields %}
-                    <div class="form-input form-input_login">
+                    <div class="form-input">
                         {{ field.errors }}
                         {{ field.label_tag }} {{ field }}
                     </div>
@@ -20,7 +21,6 @@
             <button class="btn btn_yellow" type="submit" id="bulk_submit">Выполнить</button>
         </form>
     </div>
-    <div class="btn btn_modal" data-modal-id="create-student-modal">Добавить ученика</div>
     <table class="group-table">
         <tr class="group-table__row">
             <th>Фамилия Имя</th>
@@ -53,7 +53,8 @@
     <div id="create-student-modal" class="modal">
         <div class="modal__content">
             <span class="close" data-close-modal-id="create-student-modal">&times;</span>
-            <form id="createStudentForm" data-action="{% url "mainapp:create-student" request.resolver_match.kwargs.group_id %}">
+            <form id="createStudentForm"
+                  data-action="{% url "mainapp:create-student" request.resolver_match.kwargs.group_id %}">
                 {% csrf_token %}
                 {% for field in create_student_form %}
                     {% if field not in create_student_form.hidden_fields %}
@@ -65,7 +66,7 @@
                         {{ field }}
                     {% endif %}
                 {% endfor %}
-                <button class="btn btn_blue" type="submit">Добавить</button>
+                <button class="btn btn_blue btn_center" type="submit">Добавить</button>
             </form>
         </div>
     </div>
@@ -84,7 +85,7 @@
                         {{ field }}
                     {% endif %}
                 {% endfor %}
-                <button class="btn btn_red" type="submit">Удалить</button>
+                <button class="btn btn_red btn_center" type="submit">Удалить</button>
             </form>
         </div>
     </div>

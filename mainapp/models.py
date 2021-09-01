@@ -83,7 +83,7 @@ class Student(DeletedMixin):
     group = models.ForeignKey(Group, on_delete=models.CASCADE,
                               verbose_name='Группа',
                               related_name='students')
-    kiberon_amount = models.PositiveIntegerField(default=0)
+    kiberon_amount = models.PositiveIntegerField(default=0, verbose_name='Количество киберонов')
     info = models.TextField(max_length=250, blank=True,
                             verbose_name='Информация')
 

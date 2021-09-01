@@ -26,7 +26,9 @@
                                 <td>
                                     <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
                                     <button class="btn btn_yellow">Редактировать</button>
-                                    <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}" data-modal-id="remove-modal">Удалить</button>
+                                    <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}"
+                                            data-modal-id="remove-modal">Удалить
+                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -44,34 +46,36 @@
                 {% csrf_token %}
                 {% for field in remove_form %}
                     {% if field not in remove_form.hidden_fields %}
-                    <div class="form-input form-input_login">
-                        {{ field.errors }}
-                        {{ field.label_tag }} {{ field }}
-                    </div>
+                        <div class="form-input">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                        </div>
                     {% else %}
                         {{ field }}
                     {% endif %}
                 {% endfor %}
-                <button class="btn btn_red" type="submit">Удалить</button>
+                <button class="btn btn_red btn_center" type="submit">Удалить</button>
             </form>
         </div>
     </div>
     <div id="create-group-modal" class="modal">
         <div class="modal__content">
             <span class="close" data-close-modal-id="create-group-modal">&times;</span>
-            <form id="createGroupForm" data-action="{% url "mainapp:create-group" %}">
+            <form id="createGroupForm" data-action="{% url "mainapp:create-group" %}" class="create-group-form">
                 {% csrf_token %}
-                {% for field in create_group_form %}
-                    {% if field not in create_group_form.hidden_fields %}
-                    <div class="form-input form-input_login">
-                        {{ field.errors }}
-                        {{ field.label_tag }} {{ field }}
-                    </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_blue" type="submit">Создать</button>
+                <div class="form-flex">
+                    {% for field in create_group_form %}
+                        {% if field not in create_group_form.hidden_fields %}
+                            <div class="form-input">
+                                {{ field.errors }}
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <button class="btn btn_blue btn_center" type="submit">Создать</button>
             </form>
         </div>
     </div>
