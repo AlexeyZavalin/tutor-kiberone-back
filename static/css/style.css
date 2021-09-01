@@ -143,8 +143,15 @@ input[type="text"], input[type="password"] {
     margin-bottom: 15px;
 }
 
+.btn_center {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .form-input {
     margin-bottom: 20px;
+    margin-right: 20px;
 }
 
 .form-input label {
@@ -283,8 +290,11 @@ input[type="text"], input[type="password"] {
     background-color: #fff;
     margin: 15% auto;
     padding: 35px;
-    width: 730px;
+    width: 460px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .close {
@@ -349,4 +359,21 @@ input[type="text"], input[type="password"] {
     display: flex;
     align-items: center;
     justify-content: space-around;
+}
+
+.group-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bulk-students-form {
+    display: flex;
+    align-items: center;
+}
+
+.form-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
