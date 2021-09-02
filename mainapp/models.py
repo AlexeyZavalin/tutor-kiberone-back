@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.db.models import F
 from django.core.exceptions import ValidationError
@@ -102,6 +103,9 @@ class Student(DeletedMixin):
     def delete_kiberons(self, amount):
         self.kiberon_amount = F('kiberon_amount') - amount
         self.save()
+
+    def get_absolute_url(self):
+        return reverse('mainapp:student-list', kwargs={'group_id': self.group.pk})
 
 
 class Kiberon(models.Model):
