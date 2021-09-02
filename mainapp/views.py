@@ -5,11 +5,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import RedirectView
-from django.views.generic.edit import CreateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-from .forms import BulkStudentActionsForm, CreateGroupForm, CreateStudentForm,\
-    RemoveGroupForm, RemoveStudentForm
+from .forms import BulkStudentActionsForm, CreateGroupForm, CreateStudentForm, \
+    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm
 from .models import Group, Student
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
@@ -88,6 +88,7 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['group'] = Group.objects.get(pk=self.kwargs.get('group_id'))
         context['create_student_form'] = CreateStudentForm()
         context['remove_student_form'] = RemoveStudentForm()
+        context['update_students_forms'] = tuple(UpdateStudentForm(instance=student) for student in context['students'])
         context['bulk_action_form'] = BulkStudentActionsForm()
         return context
 
@@ -102,6 +103,13 @@ class CreateStudentView(CreateView):
                                                    'kiberon_amount'),
                                                info=body.get('info'),
                                                group_id=kwargs.get('group_id'))
+
+
+class UpdateStudentView(UpdateView):
+    """Обновление студента"""
+    model = Student
+    form_class = UpdateStudentForm
+    require_http_methods = ['POST']
 
 
 class RemoveStudent(DeleteView):

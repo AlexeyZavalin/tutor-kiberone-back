@@ -55,7 +55,7 @@ def get_response_for_create_student(name: str, kiberon_amount: int,
     """Получаем ответ при отправке формы добавления студента"""
     Student.objects.create(name=name, kiberon_amount=kiberon_amount,
                            info=info, group_id=group_id)
-    redirect = reverse_lazy('mainapp:group-detail', kwargs={'pk': group_id})
+    redirect = reverse_lazy('mainapp:student-list', kwargs={'group_id': group_id})
     return JsonResponse({'success': True, 'redirect': redirect})
 
 
