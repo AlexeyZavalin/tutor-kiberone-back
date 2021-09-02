@@ -26,6 +26,14 @@ class CreateStudentForm(forms.ModelForm):
         fields = ['name', 'kiberon_amount', 'info']
 
 
+class UpdateStudentForm(CreateStudentForm):
+    """Форма добавления студента в группу"""
+
+    class Meta:
+        model = Student
+        fields = ['name', 'info']
+
+
 class RemoveStudentForm(forms.Form):
     """Форма для удаления студента"""
     password = forms.CharField(widget=forms.PasswordInput, label=_('Пароль'))

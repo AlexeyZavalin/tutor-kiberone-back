@@ -33,7 +33,7 @@
                 <td>{{ student.kiberon_amount }}</td>
                 <td>
                     <div class="actions">
-                        <button class="btn btn_yellow" data-student-id="{{ student.pk }}">Редактировать</button>
+                        <button class="btn btn_yellow btn_modal" data-student-id="{{ student.pk }}" data-modal-id="update-student-modal-{{ student.pk }}">Редактировать</button>
                         <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
                                 data-modal-id="remove-student-modal">Удалить
                         </button>
@@ -42,6 +42,7 @@
                                    id="student-check-{{ student.pk }}" class="checkbox__native student-checkbox"/>
                             <label for="student-check-{{ student.pk }}" class="checkbox__label"></label>
                         </div>
+                        <button class="btn btn_blue btn_modal btn_student_kiberon" title="Добавить кибероны">+</button>
                     </div>
                 </td>
             </tr>
@@ -89,4 +90,27 @@
             </form>
         </div>
     </div>
+    {% if update_students_forms %}
+        {% for update_student_form in update_students_forms %}
+            <div id="update-student-modal-{{ update_student_form.instance.pk }}" class="modal">
+                <div class="modal__content">
+                    <span class="close" data-close-modal-id="update-student-modal-{{ update_student_form.instance.pk }}">&times;</span>
+                    <form action="{% url "mainapp:update-student" update_student_form.instance.pk %}" method="post">
+                        {% csrf_token %}
+                        {% for field in update_student_form %}
+                            {% if field not in update_student_form.hidden_fields %}
+                                <div class="form-input form-input_login">
+                                    {{ field.errors }}
+                                    {{ field.label_tag }} {{ field }}
+                                </div>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                        {% endfor %}
+                        <button class="btn btn_yellow btn_center" type="submit">Обновить</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
