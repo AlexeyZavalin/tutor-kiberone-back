@@ -25,7 +25,13 @@
         <tr class="group-table__row">
             <th>Фамилия Имя</th>
             <th>Кол-во киберонов</th>
-            <th>Действия</th>
+            <th>Действия
+                <div class="checkbox" title="Выделить всех">
+                    <input type="checkbox"
+                           id="student-check-all" class="checkbox__native"/>
+                    <label for="student-check-all" class="checkbox__label"></label>
+                </div>
+            </th>
         </tr>
         {% for student in students %}
             <tr class="group-table__row" id="student-row-{{ student.pk }}">
