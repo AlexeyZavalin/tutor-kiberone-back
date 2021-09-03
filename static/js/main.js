@@ -196,16 +196,31 @@ if (removeStudentForm) {
 let studentIds = new Set()
 
 let studentCheckBoxes = document.querySelectorAll('.student-checkbox')
+let studentCheckAll = document.getElementById('student-check-all')
+
+function handleCheckBox(checked, value, input) {
+    if (checked) {
+        studentIds.add(value)
+    } else {
+        studentIds.delete(value)
+    }
+    input.value = Array.from(studentIds).join(',')
+}
 
 if (studentCheckBoxes) {
+    let studentIdsInput = document.getElementById('id_student_ids')
+    studentCheckAll.addEventListener('click', function (event) {
+        studentCheckBoxes.forEach(function (element) {
+            element.checked = studentCheckAll.checked
+            handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
+        })
+    })
     studentCheckBoxes.forEach(function (element) {
         element.addEventListener('change', function (event) {
-            if (element.checked) {
-                studentIds.add(element.dataset['studentId'])
-            } else {
-                studentIds.delete(element.dataset['studentId'])
+            handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
+            if (!element.checked) {
+                studentCheckAll.checked = false
             }
-            document.getElementById('id_student_ids').value = Array.from(studentIds).join(',')
         })
     })
 }
