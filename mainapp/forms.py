@@ -31,7 +31,7 @@ class UpdateStudentForm(CreateStudentForm):
 
     class Meta:
         model = Student
-        fields = ['name', 'info']
+        fields = ['name', 'kiberon_amount', 'info']
 
 
 class RemoveStudentForm(forms.Form):
@@ -42,10 +42,7 @@ class RemoveStudentForm(forms.Form):
 
 class BulkStudentActionsForm(forms.Form):
     """Форма массовых действий с ученикми"""
-    ACTION_CHOICES = (
-        (Kiberon.VISIT, 'Поставить кибероны за посещение'),
-        (Kiberon.EYES, 'Поставить кибероны за разминку для глаз'),
-    )
+    ACTION_CHOICES = [choice for choice in Kiberon.ACHIEVEMENT_CHOICES if choice[0] != Kiberon.CUSTOM]
     action = forms.ChoiceField(label='Действия', required=True,
                                choices=ACTION_CHOICES)
     student_ids = forms.CharField(widget=forms.HiddenInput)

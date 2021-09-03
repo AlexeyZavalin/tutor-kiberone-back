@@ -30,6 +30,9 @@ urlpatterns = [
     path('bulk-update-students/<int:group_id>/', views.bulk_update_students,
          name='bulk-update-students'),
     path('update-student/<int:pk>', views.UpdateStudentView.as_view(), name='update-student'),
+    path('kiberon-log/', views.KiberonLogList.as_view(), name='kiberon-log'),
+    path('kiberon-log-search/', views.search_reg, name='kiberon-log-search'),
+    path('kiberon-reg-delete/', views.KiberonRegDelete.as_view(), name='kiberon-reg-delete'),
     # path('api-auth/', include('rest_framework.urls',
     # namespace='rest_framework'))
 ]

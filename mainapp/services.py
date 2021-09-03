@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from authapp.models import Tutor
 
 from django.contrib.auth import authenticate
@@ -88,3 +90,11 @@ def form_data_processing(data: dict, tutor: Tutor) -> None:
     for student in students:
         KiberonStudentReg.objects.create(student=student, kiberon=kiberon,
                                          tutor=tutor)
+
+
+def get_response_for_remove_kiberon_reg(reg_id: int) -> JsonResponse:
+    try:
+        KiberonStudentReg.objects.get(pk=reg_id).delete()
+        return JsonResponse({'success': True})
+    except ObjectDoesNotExist:
+        return JsonResponse({'success': False})

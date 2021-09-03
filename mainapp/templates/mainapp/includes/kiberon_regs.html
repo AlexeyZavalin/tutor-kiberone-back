@@ -1,0 +1,11 @@
+{% for kiberon_reg in kiberon_regs %}
+    <div class="kiberon-reg" id="kiberon-reg-{{ kiberon_reg.pk }}">
+        <div class="kiberon-reg__student-name">{{ kiberon_reg.student.name }}</div>
+        <div class="kiberon-reg__student-name">{{ kiberon_reg.student.group }}</div>
+        <div class="kiberon-reg__achievement">{{ kiberon_reg.kiberon.get_achievement_display }}</div>
+        <div class="kiberon-reg__date">{{ kiberon_reg.date }}</div>
+        <div class="kiberon-reg__remove">
+            <button class="btn btn_red btn_remove-reg" data-reg-id="{{ kiberon_reg.pk }}" data-url="{% url "mainapp:kiberon-reg-delete" %}">Удалить</button>
+        </div>
+    </div>
+{% endfor %}
