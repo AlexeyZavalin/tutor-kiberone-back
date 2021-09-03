@@ -400,3 +400,15 @@ select {
     align-items: center;
     justify-content: space-between;
 }
+
+.kiberon-reg {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 120px;
+    border-bottom: 2px solid #4DAED1;
+    padding: 10px 15px;
+    transition: .3s;
+}
+
+.kiberon-reg:hover {
+    background-color: rgba(97, 185, 217, 0.51);
+}

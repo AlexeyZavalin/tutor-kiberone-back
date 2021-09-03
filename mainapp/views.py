@@ -1,7 +1,8 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import RedirectView
@@ -10,10 +11,10 @@ from django.views.generic.list import ListView
 
 from .forms import BulkStudentActionsForm, CreateGroupForm, CreateStudentForm, \
     RemoveGroupForm, RemoveStudentForm, UpdateStudentForm
-from .models import Group, Student
+from .models import Group, Student, KiberonStudentReg
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
-    get_response_for_remove_student
+    get_response_for_remove_student, get_response_for_remove_kiberon_reg
 
 
 class MainRedirectView(RedirectView):
@@ -131,3 +132,27 @@ def bulk_update_students(request, group_id):
         form_data_processing(data=form.cleaned_data, tutor=request.user)
     return HttpResponseRedirect(reverse_lazy('mainapp:student-list',
                                              kwargs={'group_id': group_id}))
+
+
+class KiberonLogList(ListView):
+    """ Журнал печатей """
+    template_name = 'mainapp/kiberon_reg/list.html'
+    model = KiberonStudentReg
+    paginate_by = 30
+    context_object_name = 'kiberon_regs'
+
+    def get_queryset(self):
+        return KiberonStudentReg.objects.filter(tutor=self.request.user).select_related('student', 'kiberon')
+
+
+def search_reg(request):
+    """ фильтрация печатей """
+    result = KiberonStudentReg.objects.filter(student__name__icontains=request.GET.get('name'))
+    return JsonResponse({'markup': render_to_string('mainapp/includes/kiberon_regs.html', {'kiberon_regs': result})})
+
+
+class KiberonRegDelete(DeleteView):
+
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        return get_response_for_remove_kiberon_reg(reg_id=body.get('reg_id'))
