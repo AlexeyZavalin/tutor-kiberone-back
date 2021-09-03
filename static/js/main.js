@@ -196,16 +196,88 @@ if (removeStudentForm) {
 let studentIds = new Set()
 
 let studentCheckBoxes = document.querySelectorAll('.student-checkbox')
+let studentCheckAll = document.getElementById('student-check-all')
 
-if (studentCheckBoxes) {
-    studentCheckBoxes.forEach(function (element) {
-        element.addEventListener('change', function (event) {
-            if (element.checked) {
-                studentIds.add(element.dataset['studentId'])
-            } else {
-                studentIds.delete(element.dataset['studentId'])
-            }
-            document.getElementById('id_student_ids').value = Array.from(studentIds).join(',')
+function handleCheckBox(checked, value, input) {
+    if (checked) {
+        studentIds.add(value)
+    } else {
+        studentIds.delete(value)
+    }
+    input.value = Array.from(studentIds).join(',')
+}
+
+if (studentCheckBoxes.length > 0) {
+    let studentIdsInput = document.getElementById('id_student_ids')
+    studentCheckAll.addEventListener('click', function (event) {
+        studentCheckBoxes.forEach(function (element) {
+            element.checked = studentCheckAll.checked
+            handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
         })
     })
+    studentCheckBoxes.forEach(function (element) {
+        element.addEventListener('change', function (event) {
+            handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
+            if (!element.checked) {
+                studentCheckAll.checked = false
+            }
+        })
+    })
+}
+
+
+// фильтрация записей
+async function getData(url = '', data = {}) {
+    const csrftoken = getCookie('csrftoken')
+    const response = await fetch(url, {
+        mode: 'cors',
+        credentials: 'same-origin',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: data
+    });
+    return await response.json();
+}
+
+let regStudentName = document.getElementById('reg-student-name')
+
+function handleRemoveReg(btns) {
+    btns.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            const regId = element.dataset['regId']
+            const url = element.dataset['url']
+            const formData = {
+                'reg_id': regId
+            }
+            postData(url, formData)
+                .then((data) => {
+                    if (data['success']) {
+                        document.getElementById('kiberon-reg-' + regId).remove()
+                    }
+                })
+        })
+    })
+}
+
+if (regStudentName !== null) {
+    console.log('test')
+    regStudentName.addEventListener('input', function (event) {
+        let name = event.target.value
+        let url = event.target.dataset['url'] + '?name=' + name
+        getData(url, {'name': name})
+            .then(data => {
+                document.querySelector('.kiberon-log').innerHTML = data['markup']
+                let btnsRemoveReg = document.querySelectorAll('.btn_remove-reg')
+                handleRemoveReg(btnsRemoveReg)
+            })
+    })
+}
+
+// удаление записи из журнала
+
+let btnsRemoveReg = document.querySelectorAll('.btn_remove-reg')
+
+if (btnsRemoveReg) {
+    handleRemoveReg(btnsRemoveReg)
 }

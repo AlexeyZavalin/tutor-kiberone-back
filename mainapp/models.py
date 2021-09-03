@@ -64,7 +64,7 @@ class Group(DeletedMixin):
         db_table = 'group'
 
     def __str__(self):
-        return f'{self.get_day_of_week_display()}' \
+        return f'{self.get_day_of_week_display()} ' \
                f'{self.get_location_display()} {self.get_time_display()}'
 
     @property

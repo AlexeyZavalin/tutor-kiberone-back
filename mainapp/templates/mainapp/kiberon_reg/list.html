@@ -1,0 +1,46 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block page_title %}{% endblock %}
+{% block inside_content %}
+    <div class="form-input">
+        <label for="reg-student-name">Имя</label>
+        <input type="text" id="reg-student-name" data-url="{% url "mainapp:kiberon-log-search" %}">
+    </div>
+    <div class="kiberon-reg">
+        <div class="kiberon-reg__student-name"><b>Имя</b></div>
+        <div class="kiberon-reg__student-name"><b>Группа</b></div>
+        <div class="kiberon-reg__achievement"><b>Достижение</b></div>
+        <div class="kiberon-reg__date"><b>Дата</b></div>
+        <div class="kiberon-reg__remove"><b>Действие</b></div>
+    </div>
+    <div class="kiberon-log">
+        {% for kiberon_reg in kiberon_regs %}
+            <div class="kiberon-reg" id="kiberon-reg-{{ kiberon_reg.pk }}">
+                <div class="kiberon-reg__student-name">{{ kiberon_reg.student.name }}</div>
+                <div class="kiberon-reg__student-name">{{ kiberon_reg.student.group }}</div>
+                <div class="kiberon-reg__achievement">{{ kiberon_reg.kiberon.get_achievement_display }}</div>
+                <div class="kiberon-reg__date">{{ kiberon_reg.date }}</div>
+                <div class="kiberon-reg__remove">
+                    <button class="btn btn_red btn_remove-reg" data-reg-id="{{ kiberon_reg.pk }}" data-url="{% url "mainapp:kiberon-reg-delete" %}">Удалить</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+            {% endif %}
+            <span class="current">
+                страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}
