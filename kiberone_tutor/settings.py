@@ -179,3 +179,5 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 ADMINS = [('Alexey', 'lehazavalin95@gmail.com')]
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'

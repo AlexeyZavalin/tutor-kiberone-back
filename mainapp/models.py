@@ -118,6 +118,7 @@ class Kiberon(models.Model):
     HOMEWORK = 'homework'
     INSTAGRAM = 'instagram'
     SOCIAL = 'social'
+    ANSWER = 'answer'
     CUSTOM = 'custom'
     ACHIEVEMENT_CHOICES = (
         (VISIT, 'Посещение урока'),
@@ -126,6 +127,7 @@ class Kiberon(models.Model):
         (HOMEWORK, 'За выполнение домашнего задания'),
         (INSTAGRAM, 'За пост в instagram'),
         (SOCIAL, 'За посты в соц. сети'),
+        (ANSWER, 'За ответ в конце урока'),
         (CUSTOM, 'Свое достижение')
     )
     achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES,
@@ -160,23 +162,11 @@ class KiberonStudentReg(models.Model):
         verbose_name_plural = 'Записи о печатях'
         ordering = ('-date',)
         db_table = 'kiberon_register'
+        unique_together = ('student', 'kiberon', 'date')
 
     def __str__(self):
         return f'{self.student.name} - ' \
                f'{self.kiberon.get_achievement_display()} - {self.date}'
-
-    def clean(self):
-        if self.kiberon.achievement != Kiberon.CUSTOM:
-            reg = KiberonStudentReg.objects.filter(student=self.student,
-                                                   kiberon=self.kiberon,
-                                                   date=self.date)
-            if reg.count() > 0:
-                raise ValidationError(
-                    f'Запись с достижением "'
-                    f'{self.kiberon.get_achievement_display()}"'
-                    f' для {self.student.name} на {self.date} уже есть')
-        else:
-            super().clean()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
