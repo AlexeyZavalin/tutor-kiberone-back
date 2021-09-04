@@ -1,4 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import QuerySet
+from django.db.utils import IntegrityError
 
 from authapp.models import Tutor
 
@@ -82,19 +84,53 @@ def get_response_for_remove_student(student_id: str, password: str,
                                     'обнови странццу'})
 
 
-def form_data_processing(data: dict, tutor: Tutor) -> None:
-    """Обработка массового обновления учеников"""
+def form_data_processing(data: dict, tutor: Tutor) -> dict:
+    """Обработка массового обновления учеников
+    Получаем словарь с информацией о добавлении записей"""
     students = Student.objects.filter(pk__in=data.get('student_ids')
                                       .split(','))
-    kiberon = Kiberon.objects.get(achievement=data.get('action'))
-    for student in students:
-        KiberonStudentReg.objects.create(student=student, kiberon=kiberon,
-                                         tutor=tutor)
+    messages = {
+        'success': [],
+        'error': []
+    }
+    try:
+        kiberon = Kiberon.objects.get(achievement=data.get('action'))
+        for student in students:
+            try:
+                KiberonStudentReg.objects.create(student=student, kiberon=kiberon, tutor=tutor)
+                messages['success'].append(f'{student.name} - {kiberon.value}к - '
+                                           f'достижение "{kiberon.get_achievement_display()}"')
+            except IntegrityError:
+                # запись уже есть
+                messages['error'].append(f'для {student.name} запись с достижением на текущую дату '
+                                           f'"{kiberon.get_achievement_display()}" уже есть')
+    except ObjectDoesNotExist:
+        # такого не должно случиться, но на всякий случай, вдруг как-то исчезнет киберон
+        messages['error'].append('Такого достижения нет')
+    return messages
 
 
 def get_response_for_remove_kiberon_reg(reg_id: int) -> JsonResponse:
+    """Получаем ответ для удаления записи из журнала киберонов"""
     try:
         KiberonStudentReg.objects.get(pk=reg_id).delete()
         return JsonResponse({'success': True})
     except ObjectDoesNotExist:
         return JsonResponse({'success': False})
+
+
+def get_days_of_week(tutor: Tutor) -> QuerySet:
+    """Получаем доступные дни недели"""
+    return Group.active.filter(tutor=tutor).values_list('day_of_week', flat=True).distinct()
+
+
+def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
+    """получем словарь ловарь с днем недели и группами для этого дня"""
+
+    groups = Group.active.filter(day_of_week=day_of_week, tutor=tutor)
+    _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
+                              if day[0] == day_of_week][0]
+    return {
+        'day_of_week': day_of_week_display,
+        'groups': groups
+    }

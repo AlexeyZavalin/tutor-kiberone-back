@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib.auth.forms import AuthenticationForm, UsernameField, PasswordChangeForm, PasswordResetForm
 from django.utils.translation import gettext_lazy as _
 
 
@@ -12,3 +12,11 @@ class LoginForm(AuthenticationForm):
         strip=False,
         widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
     )
+
+
+class TutorPasswordChangeForm(PasswordChangeForm):
+    pass
+
+
+class TutorPasswordResetForm(PasswordResetForm):
+    pass

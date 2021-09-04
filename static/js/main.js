@@ -281,3 +281,14 @@ let btnsRemoveReg = document.querySelectorAll('.btn_remove-reg')
 if (btnsRemoveReg) {
     handleRemoveReg(btnsRemoveReg)
 }
+
+// закрыть списки сообщений
+let messagesClose = document.querySelectorAll('.messages__close')
+
+if (messagesClose) {
+    messagesClose.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            element.parentNode.remove()
+        })
+    })
+}

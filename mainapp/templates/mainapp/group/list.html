@@ -4,6 +4,7 @@
 {% block title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block page_title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block inside_content %}
+    <div class="btn btn_modal btn_blue" data-modal-id="create-group-modal">Добавить группу</div>
     <div class="days-of-week">
         {% for day_of_week_section in groups_by_days %}
             <div class="days-of-week__section">
