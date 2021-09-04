@@ -32,21 +32,6 @@ window.onclick = function (event) {
     })
 }
 
-async function postData(url = '', data = {}) {
-    const csrftoken = getCookie('csrftoken')
-    const response = await fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify(data)
-    });
-    return await response.json();
-}
-
 // удаление группы
 let removeFormGroupId = document.getElementById('id_group_id');
 let removeGroupForm = document.getElementById('removeGroupForm');
@@ -227,18 +212,6 @@ if (studentCheckBoxes.length > 0) {
 
 
 // фильтрация записей
-async function getData(url = '', data = {}) {
-    const csrftoken = getCookie('csrftoken')
-    const response = await fetch(url, {
-        mode: 'cors',
-        credentials: 'same-origin',
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data: data
-    });
-    return await response.json();
-}
 
 let regStudentName = document.getElementById('reg-student-name')
 
@@ -280,4 +253,15 @@ let btnsRemoveReg = document.querySelectorAll('.btn_remove-reg')
 
 if (btnsRemoveReg) {
     handleRemoveReg(btnsRemoveReg)
+}
+
+// закрыть списки сообщений
+let messagesClose = document.querySelectorAll('.messages__close')
+
+if (messagesClose) {
+    messagesClose.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            element.parentNode.remove()
+        })
+    })
 }

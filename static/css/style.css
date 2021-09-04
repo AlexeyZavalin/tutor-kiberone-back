@@ -412,3 +412,44 @@ select {
 .kiberon-reg:hover {
     background-color: rgba(97, 185, 217, 0.51);
 }
+
+.messages {
+    padding: 15px;
+    position: relative;
+    list-style: none;
+    margin-bottom: 15px;
+}
+
+.messages_error {
+    border: 2px solid #692528;
+    background-color: rgba(105, 37, 40, 0.2);
+    color: #1c0405;
+}
+
+.messages_success {
+    border: 2px solid #36c555;
+    background-color: rgba(126, 241, 144, 0.2);
+    color: #051e05;
+}
+
+.messages__close {
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+.messages__message {
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+.messages__message_error {
+    background-color: rgba(105, 37, 40, 0.1);
+}
+
+.messages__message_success {
+    background-color: rgba(126, 241, 144, 0.1);
+}

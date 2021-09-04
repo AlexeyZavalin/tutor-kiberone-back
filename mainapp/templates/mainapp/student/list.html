@@ -1,8 +1,8 @@
 {% extends "mainapp/base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{{ group.get_location }} {{ group.get_time_display }}{% endblock %}
-{% block page_title %}{{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
+{% block title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
+{% block page_title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
 {% block inside_content %}
     <div class="group-form">
         <div class="btn btn_modal btn_blue" data-modal-id="create-student-modal">Добавить ученика</div>
@@ -21,6 +21,24 @@
             <button class="btn btn_yellow" type="submit" id="bulk_submit">Выполнить</button>
         </form>
     </div>
+    {% if messages %}
+        <ul class="messages messages_success">
+            <div class="messages__close" title="Закрыть">&times;</div>
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <ul class="messages messages_error">
+            <div class="messages__close" title="Закрыть">&times;</div>
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
     <table class="group-table">
         <tr class="group-table__row">
             <th>Фамилия Имя</th>
@@ -39,7 +57,9 @@
                 <td>{{ student.kiberon_amount }}</td>
                 <td>
                     <div class="actions">
-                        <button class="btn btn_yellow btn_modal" data-student-id="{{ student.pk }}" data-modal-id="update-student-modal-{{ student.pk }}">Редактировать</button>
+                        <button class="btn btn_yellow btn_modal" data-student-id="{{ student.pk }}"
+                                data-modal-id="update-student-modal-{{ student.pk }}">Редактировать
+                        </button>
                         <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
                                 data-modal-id="remove-student-modal">Удалить
                         </button>
@@ -100,7 +120,8 @@
         {% for update_student_form in update_students_forms %}
             <div id="update-student-modal-{{ update_student_form.instance.pk }}" class="modal">
                 <div class="modal__content">
-                    <span class="close" data-close-modal-id="update-student-modal-{{ update_student_form.instance.pk }}">&times;</span>
+                    <span class="close"
+                          data-close-modal-id="update-student-modal-{{ update_student_form.instance.pk }}">&times;</span>
                     <form action="{% url "mainapp:update-student" update_student_form.instance.pk %}" method="post">
                         {% csrf_token %}
                         {% for field in update_student_form %}

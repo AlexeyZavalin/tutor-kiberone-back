@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -14,7 +15,7 @@ from .forms import BulkStudentActionsForm, CreateGroupForm, CreateStudentForm, \
 from .models import Group, Student, KiberonStudentReg
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
-    get_response_for_remove_student, get_response_for_remove_kiberon_reg
+    get_response_for_remove_student, get_response_for_remove_kiberon_reg, get_days_of_week, get_groups_by_day_of_week
 
 
 class MainRedirectView(RedirectView):
@@ -33,20 +34,11 @@ class GroupListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        days_of_week = Group.active.filter(tutor=self.request.user) \
-            .values_list('day_of_week', flat=True).distinct()
+        days_of_week = get_days_of_week(tutor=self.request.user)
         context['groups_by_days'] = []
         for day_of_week in days_of_week:
-            groups = Group.active.filter(day_of_week=day_of_week,
-                                         tutor=self.request.user)
-            _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
-                                      if day[0] == day_of_week][0]
-            context['groups_by_days'].append(
-                {
-                    'day_of_week': day_of_week_display,
-                    'groups': groups
-                }
-            )
+            groups_for_day_of_week = get_groups_by_day_of_week(day_of_week=day_of_week, tutor=self.request.user)
+            context['groups_by_days'].append(groups_for_day_of_week)
 
         context['remove_form'] = RemoveGroupForm()
         context['create_group_form'] = CreateGroupForm()
@@ -77,6 +69,7 @@ class CreateGroupView(CreateView):
 
 class StudentListView(LoginRequiredMixin, ListView):
     """Список студентов группы"""
+    login_url = reverse_lazy('authapp:login')
     model = Student
     template_name = 'mainapp/student/list.html'
     context_object_name = 'students'
@@ -106,15 +99,17 @@ class CreateStudentView(CreateView):
                                                group_id=kwargs.get('group_id'))
 
 
-class UpdateStudentView(UpdateView):
+class UpdateStudentView(UpdateView, LoginRequiredMixin):
     """Обновление студента"""
+    login_url = reverse_lazy('authapp:login')
     model = Student
     form_class = UpdateStudentForm
     require_http_methods = ['POST']
 
 
-class RemoveStudent(DeleteView):
+class RemoveStudent(DeleteView, LoginRequiredMixin):
     """Прдеставление для удаления студента"""
+    login_url = reverse_lazy('authapp:login')
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
@@ -129,12 +124,18 @@ def bulk_update_students(request, group_id):
     """Представление для массовой обработки студентов"""
     form = BulkStudentActionsForm(request.POST)
     if form.is_valid():
-        form_data_processing(data=form.cleaned_data, tutor=request.user)
+        result = form_data_processing(data=form.cleaned_data, tutor=request.user)
+        for success_message in result['success']:
+            messages.success(request, success_message)
+        for error_message in result['error']:
+            messages.error(request, error_message)
+    else:
+        messages.error(request, 'Необходимо выделить хотя бы одного ученика')
     return HttpResponseRedirect(reverse_lazy('mainapp:student-list',
                                              kwargs={'group_id': group_id}))
 
 
-class KiberonLogList(ListView):
+class KiberonLogList(ListView, LoginRequiredMixin):
     """ Журнал печатей """
     template_name = 'mainapp/kiberon_reg/list.html'
     model = KiberonStudentReg
@@ -147,11 +148,13 @@ class KiberonLogList(ListView):
 
 def search_reg(request):
     """ фильтрация печатей """
-    result = KiberonStudentReg.objects.filter(student__name__icontains=request.GET.get('name'))
+    result = KiberonStudentReg.objects.filter(student__name__icontains=request.GET.get('name'))[:50]
     return JsonResponse({'markup': render_to_string('mainapp/includes/kiberon_regs.html', {'kiberon_regs': result})})
 
 
-class KiberonRegDelete(DeleteView):
+class KiberonRegDelete(DeleteView, LoginRequiredMixin):
+    """ удаление записи о киберонах из журнала """
+    require_http_methods = ['post']
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)

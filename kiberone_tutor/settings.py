@@ -195,3 +195,5 @@ EMAIL_HOST_PASSWORD = 'uBKC4QEk37hzcW2'
 EMAIL_USE_TLS = True
 
 # enregion
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
