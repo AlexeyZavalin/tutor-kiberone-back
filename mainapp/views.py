@@ -2,20 +2,22 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.decorators.http import require_http_methods
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-from .forms import BulkStudentActionsForm, CreateGroupForm, CreateStudentForm, \
-    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm
+from .forms import BulkStudentActionsForm, CreateStudentForm, \
+    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm, CreateUpdateGroupForm, CustomKiberonAddForm
 from .models import Group, Student, KiberonStudentReg
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
-    get_response_for_remove_student, get_response_for_remove_kiberon_reg, get_days_of_week, get_groups_by_day_of_week
+    get_response_for_remove_student, get_response_for_remove_kiberon_reg, get_days_of_week, get_groups_by_day_of_week, \
+    get_response_for_custom_adding_kiberons
 
 
 class MainRedirectView(RedirectView):
@@ -32,6 +34,9 @@ class GroupListView(LoginRequiredMixin, ListView):
     context_object_name = 'groups'
     template_name = 'mainapp/group/list.html'
 
+    def get_queryset(self):
+        return Group.active.filter(tutor=self.request.user)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         days_of_week = get_days_of_week(tutor=self.request.user)
@@ -39,9 +44,9 @@ class GroupListView(LoginRequiredMixin, ListView):
         for day_of_week in days_of_week:
             groups_for_day_of_week = get_groups_by_day_of_week(day_of_week=day_of_week, tutor=self.request.user)
             context['groups_by_days'].append(groups_for_day_of_week)
-
+        context['update_group_forms'] = tuple(CreateUpdateGroupForm(instance=group) for group in context['groups'])
         context['remove_form'] = RemoveGroupForm()
-        context['create_group_form'] = CreateGroupForm()
+        context['create_group_form'] = CreateUpdateGroupForm()
         return context
 
 
@@ -67,6 +72,23 @@ class CreateGroupView(CreateView):
                                              user=request.user)
 
 
+class UpdateGroupView(UpdateView, LoginRequiredMixin, SuccessMessageMixin):
+    """Обновление группы"""
+    login_url = reverse_lazy('authapp:login')
+    model = Group
+    form_class = CreateUpdateGroupForm
+    success_url = reverse_lazy('mainapp:groups')
+    url = reverse_lazy('mainapp:groups')
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Такая группа уже есть')
+        return HttpResponseRedirect(reverse_lazy('mainapp:groups'))
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Группа обновлена')
+        return super().form_valid(form)
+
+
 class StudentListView(LoginRequiredMixin, ListView):
     """Список студентов группы"""
     login_url = reverse_lazy('authapp:login')
@@ -75,7 +97,7 @@ class StudentListView(LoginRequiredMixin, ListView):
     context_object_name = 'students'
 
     def get_queryset(self):
-        return Student.active.filter(group_id=self.kwargs.get('group_id'))
+        return Student.active.filter(group_id=self.kwargs.get('group_id')).order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,6 +106,7 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['remove_student_form'] = RemoveStudentForm()
         context['update_students_forms'] = tuple(UpdateStudentForm(instance=student) for student in context['students'])
         context['bulk_action_form'] = BulkStudentActionsForm()
+        context['custom_kiberon_form'] = CustomKiberonAddForm()
         return context
 
 
@@ -99,7 +122,7 @@ class CreateStudentView(CreateView):
                                                group_id=kwargs.get('group_id'))
 
 
-class UpdateStudentView(UpdateView, LoginRequiredMixin):
+class UpdateStudentView(UpdateView, LoginRequiredMixin, SuccessMessageMixin):
     """Обновление студента"""
     login_url = reverse_lazy('authapp:login')
     model = Student
@@ -107,7 +130,20 @@ class UpdateStudentView(UpdateView, LoginRequiredMixin):
     require_http_methods = ['POST']
 
 
-class RemoveStudent(DeleteView, LoginRequiredMixin):
+class CreateCustomKiberonRegView(CreateView):
+    """Создаем запись в журнале с кастомным количеством киберонов"""
+    form_class = CustomKiberonAddForm
+
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        return get_response_for_custom_adding_kiberons(kiberon_amount=body.get('kiberon_amount'),
+                                                       student_id=body.get('student_id'),
+                                                       achievement=body.get('achievement'),
+                                                       group_id=kwargs.get('group_id'),
+                                                       tutor=self.request.user)
+
+
+class RemoveStudentView(DeleteView, LoginRequiredMixin):
     """Прдеставление для удаления студента"""
     login_url = reverse_lazy('authapp:login')
 

@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import F
@@ -156,13 +156,13 @@ class KiberonStudentReg(models.Model):
                               verbose_name='Тьютор')
     custom_kiberons = models.PositiveSmallIntegerField(
         verbose_name='Свое количество киберонов', default=0)
+    custom_achievement = models.CharField(max_length=100, default='', blank=True, verbose_name='Кастомное достижение')
 
     class Meta:
         verbose_name = 'Запись о печати'
         verbose_name_plural = 'Записи о печатях'
         ordering = ('-date',)
         db_table = 'kiberon_register'
-        unique_together = ('student', 'kiberon', 'date')
 
     def __str__(self):
         return f'{self.student.name} - ' \
@@ -178,6 +178,8 @@ class KiberonStudentReg(models.Model):
                                                    date=self.date)
             if reg.count() == 0:
                 self.student.add_kiberons(self.kiberon.value)
+            else:
+                raise IntegrityError
         super().save()
 
     def delete(self, using=None, keep_parents=False):
