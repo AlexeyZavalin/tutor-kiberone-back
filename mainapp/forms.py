@@ -10,7 +10,7 @@ class RemoveGroupForm(forms.Form):
     group_id = forms.CharField(widget=forms.HiddenInput)
 
 
-class CreateGroupForm(forms.ModelForm):
+class CreateUpdateGroupForm(forms.ModelForm):
     """Форма для создания группы"""
 
     class Meta:
@@ -46,3 +46,10 @@ class BulkStudentActionsForm(forms.Form):
     action = forms.ChoiceField(label='Действия', required=True,
                                choices=ACTION_CHOICES)
     student_ids = forms.CharField(widget=forms.HiddenInput)
+
+
+class CustomKiberonAddForm(forms.Form):
+    """Форма для добавления костомного количества киберонов"""
+    achievement = forms.CharField(max_length=100, label='Достижение', required=True)
+    kiberons_amount = forms.IntegerField(max_value=50, label='Количество киберонов', min_value=5)
+    student_id = forms.CharField(widget=forms.HiddenInput)

@@ -5,6 +5,24 @@
 {% block page_title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block inside_content %}
     <div class="btn btn_modal btn_blue" data-modal-id="create-group-modal">Добавить группу</div>
+    {% if messages %}
+        <ul class="messages messages_success">
+            <div class="messages__close" title="Закрыть">&times;</div>
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <ul class="messages messages_error">
+            <div class="messages__close" title="Закрыть">&times;</div>
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
     <div class="days-of-week">
         {% for day_of_week_section in groups_by_days %}
             <div class="days-of-week__section">
@@ -26,7 +44,9 @@
                                 <td>{{ group.students_amount }}</td>
                                 <td>
                                     <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
-                                    <button class="btn btn_yellow">Редактировать</button>
+                                    <button class="btn btn_yellow btn_modal" data-group-id="{{ group.pk }}"
+                                            data-modal-id="update-group-modal-{{ group.pk }}">Редактировать
+                                    </button>
                                     <button class="btn btn_red btn_modal" data-group-id="{{ group.pk }}"
                                             data-modal-id="remove-modal">Удалить
                                     </button>
@@ -80,4 +100,30 @@
             </form>
         </div>
     </div>
+    {% if update_group_forms %}
+        {% for update_group_form in update_group_forms %}
+            <div id="update-group-modal-{{ update_group_form.instance.pk }}" class="modal">
+                <div class="modal__content">
+                    <span class="close"
+                          data-close-modal-id="update-group-modal-{{ update_group_form.instance.pk }}">&times;</span>
+                    <form action="{% url "mainapp:update-group" update_group_form.instance.pk %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-flex">
+                            {% for field in update_group_form %}
+                                {% if field not in update_group_form.hidden_fields %}
+                                    <div class="form-input">
+                                        {{ field.errors }}
+                                        {{ field.label_tag }} {{ field }}
+                                    </div>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <button class="btn btn_yellow btn_center" type="submit">Обновить</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

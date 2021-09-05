@@ -20,7 +20,11 @@
             <div class="kiberon-reg" id="kiberon-reg-{{ kiberon_reg.pk }}">
                 <div class="kiberon-reg__student-name">{{ kiberon_reg.student.name }}</div>
                 <div class="kiberon-reg__student-name">{{ kiberon_reg.student.group }}</div>
-                <div class="kiberon-reg__achievement">{{ kiberon_reg.kiberon.get_achievement_display }}</div>
+                {% if kiberon_reg.kiberon.achievement == 'custom' %}
+                    <div class="kiberon-reg__achievement">{{ kiberon_reg.custom_achievement }}</div>
+                {% else %}
+                    <div class="kiberon-reg__achievement">{{ kiberon_reg.kiberon.get_achievement_display }}</div>
+                {% endif %}
                 <div class="kiberon-reg__date">{{ kiberon_reg.date }}</div>
                 <div class="kiberon-reg__remove">
                     <button class="btn btn_red btn_remove-reg" data-reg-id="{{ kiberon_reg.pk }}" data-url="{% url "mainapp:kiberon-reg-delete" %}">Удалить</button>

@@ -7,7 +7,7 @@ from authapp.models import Tutor
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, Resolver404
 
 from .models import Group, Student, KiberonStudentReg, Kiberon
 
@@ -119,9 +119,10 @@ def get_response_for_remove_kiberon_reg(reg_id: int) -> JsonResponse:
         return JsonResponse({'success': False})
 
 
-def get_days_of_week(tutor: Tutor) -> QuerySet:
+def get_days_of_week(tutor: Tutor) -> tuple:
     """Получаем доступные дни недели"""
-    return Group.active.filter(tutor=tutor).values_list('day_of_week', flat=True).distinct()
+    days_of_week = Group.active.filter(tutor=tutor).distinct().values_list('day_of_week', flat=True)
+    return tuple(day_of_week[0] for day_of_week in Group.DAYS_OF_WEEK_CHOICES if day_of_week[0] in days_of_week)
 
 
 def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
@@ -134,3 +135,19 @@ def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
         'day_of_week': day_of_week_display,
         'groups': groups
     }
+
+
+def get_response_for_custom_adding_kiberons(kiberon_amount: int, student_id: int,
+                                            group_id: int, achievement: str, tutor: Tutor) -> JsonResponse:
+    """Получаем ответ для кастомного добавления киберонов"""
+    try:
+        student = Student.objects.get(pk=student_id)
+        redirect = reverse_lazy('mainapp:student-list', kwargs={'group_id': group_id})
+        kiberon = Kiberon.objects.get(achievement=Kiberon.CUSTOM)
+        KiberonStudentReg.objects.create(student=student, kiberon=kiberon, custom_kiberons=kiberon_amount,
+                                         custom_achievement=achievement, tutor=tutor)
+        return JsonResponse({'success': True, 'redirect': redirect})
+    except ObjectDoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Такого ученика нет'})
+    except Exception:
+        return JsonResponse({'success': False, 'message': 'Что-то пошло не так'})
