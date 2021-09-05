@@ -22,6 +22,11 @@
         </form>
     </div>
     {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endif %}
+        {% endfor %}
         <ul class="messages messages_success">
             <div class="messages__close" title="Закрыть">&times;</div>
             {% for message in messages %}
@@ -43,7 +48,8 @@
         <tr class="group-table__row">
             <th>Фамилия Имя</th>
             <th>Кол-во киберонов</th>
-            <th>Действия
+            <th>Действия</th>
+            <th>
                 <div class="checkbox" title="Выделить всех">
                     <input type="checkbox"
                            id="student-check-all" class="checkbox__native"/>
@@ -63,12 +69,17 @@
                         <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
                                 data-modal-id="remove-student-modal">Удалить
                         </button>
-                        <div class="checkbox">
-                            <input type="checkbox" data-student-id="{{ student.pk }}"
-                                   id="student-check-{{ student.pk }}" class="checkbox__native student-checkbox"/>
-                            <label for="student-check-{{ student.pk }}" class="checkbox__label"></label>
-                        </div>
-                        <button class="btn btn_blue btn_modal btn_student_kiberon" title="Добавить кибероны">+</button>
+                        <button class="btn btn_blue btn_modal btn_student_kiberon"
+                                title="Добавить кибероны"
+                                data-modal-id="custom-kiberon"
+                                data-student-id="{{ student.pk }}">+</button>
+                    </div>
+                </td>
+                <td>
+                    <div class="checkbox">
+                        <input type="checkbox" data-student-id="{{ student.pk }}"
+                               id="student-check-{{ student.pk }}" class="checkbox__native student-checkbox"/>
+                        <label for="student-check-{{ student.pk }}" class="checkbox__label"></label>
                     </div>
                 </td>
             </tr>
@@ -97,6 +108,26 @@
             </form>
         </div>
     </div>
+    <div id="custom-kiberon" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="custom-kiberon">&times;</span>
+            <form id="customKiberonAdd"
+                  data-action="{% url "mainapp:add-custom-kiberons" request.resolver_match.kwargs.group_id %}">
+                {% csrf_token %}
+                {% for field in custom_kiberon_form %}
+                    {% if field not in custom_kiberon_form.hidden_fields %}
+                        <div class="form-input form-input_login">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_blue btn_center" type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
     <div id="remove-student-modal" class="modal">
         <div class="modal__content">
             <span class="close" data-close-modal-id="remove-student-modal">&times;</span>
@@ -104,7 +135,7 @@
                 {% csrf_token %}
                 {% for field in remove_student_form %}
                     {% if field not in remove_student_form.hidden_fields %}
-                        <div class="form-input form-input_login">
+                        <div class="form-input">
                             {{ field.errors }}
                             {{ field.label_tag }} {{ field }}
                         </div>
