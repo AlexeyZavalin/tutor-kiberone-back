@@ -37,7 +37,7 @@ class UpdateStudentForm(CreateStudentForm):
 class RemoveStudentForm(forms.Form):
     """Форма для удаления студента"""
     password = forms.CharField(widget=forms.PasswordInput, label=_('Пароль'))
-    student_id = forms.CharField(widget=forms.HiddenInput)
+    remove_student_id = forms.CharField(widget=forms.HiddenInput)
 
 
 class BulkStudentActionsForm(forms.Form):
@@ -51,5 +51,5 @@ class BulkStudentActionsForm(forms.Form):
 class CustomKiberonAddForm(forms.Form):
     """Форма для добавления костомного количества киберонов"""
     achievement = forms.CharField(max_length=100, label='Достижение', required=True)
-    kiberons_amount = forms.IntegerField(max_value=50, label='Количество киберонов', min_value=5)
+    kiberons_amount = forms.IntegerField(max_value=50, label='Количество киберонов', min_value=5, initial=5)
     student_id = forms.CharField(widget=forms.HiddenInput)
