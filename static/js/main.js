@@ -4,10 +4,8 @@ let btnsModal = document.querySelectorAll('.btn_modal');
 
 btnsModal.forEach(function (element) {
     element.addEventListener('click', function (event) {
-        const groupId = element.dataset['groupId'];
-        let removeModal = document.getElementById(element.dataset['modalId']);
-        removeModal.style.display = "block";
-        removeFormGroupId.value = groupId;
+        let modal = document.getElementById(element.dataset['modalId']);
+        modal.style.display = "block";
     })
 })
 
@@ -17,7 +15,6 @@ closeBtns.forEach(function (element) {
     element.addEventListener('click', function (event) {
         const modalId = element.dataset['closeModalId'];
         document.getElementById(modalId).style.display = "none";
-        removeFormGroupId.value = null;
     })
 })
 
@@ -27,13 +24,23 @@ window.onclick = function (event) {
     modals.forEach(function (element) {
         if (event.target === element) {
             element.style.display = "none";
-            removeFormGroupId.value = null;
         }
     })
 }
 
 // удаление группы
+let removeGroupBtns = document.querySelectorAll('.btn_group_remove')
 let removeFormGroupId = document.getElementById('id_group_id');
+
+if (removeGroupBtns) {
+    removeGroupBtns.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            const groupId = element.dataset['groupId'];
+            removeFormGroupId.value = groupId;
+        })
+    })
+}
+
 let removeGroupForm = document.getElementById('removeGroupForm');
 
 if (removeGroupForm) {
@@ -134,13 +141,14 @@ if (createStudentForm) {
 }
 
 // удаление студента
-let removeFormStudentId = document.getElementById('id_student_id');
+let removeFormStudentId = document.getElementById('id_remove_student_id');
 let removeStudentBtns = document.querySelectorAll('.btn_student_remove')
 
 if (removeStudentBtns) {
     removeStudentBtns.forEach(function (element) {
         element.addEventListener('click', function (event) {
             removeFormStudentId.value = element.dataset['studentId']
+            console.log(removeFormStudentId)
         })
     })
 }
@@ -152,8 +160,11 @@ if (removeStudentForm) {
         if (removeStudentForm.querySelector('.form_errors')) {
             removeStudentForm.querySelector('.form_errors').remove()
         }
+        if (removeStudentForm.querySelector('.form_success')) {
+            removeStudentForm.querySelector('.form_success').remove()
+        }
         const url = removeStudentForm.dataset['action']
-        const studentId = removeStudentForm.querySelector('#id_student_id').value
+        const studentId = removeFormStudentId.value
         const password = removeStudentForm.querySelector('#id_password').value
         postData(url, {'student_id': studentId, 'password': password})
             .then((data) => {
