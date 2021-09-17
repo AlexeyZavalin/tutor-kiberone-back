@@ -53,3 +53,10 @@ class CustomKiberonAddForm(forms.Form):
     achievement = forms.CharField(max_length=100, label='Достижение', required=True)
     kiberons_amount = forms.IntegerField(max_value=50, label='Количество киберонов', min_value=5, initial=5)
     student_id = forms.CharField(widget=forms.HiddenInput)
+
+
+class FilterStudentsForm(forms.Form):
+    """Форма для фильтрации студентов"""
+    visited_today = forms.BooleanField(label='Присутствуют сегодня',
+                                       widget=forms.CheckboxInput(attrs={'class': 'checkbox__native'}),
+                                       required=False)
