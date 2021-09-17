@@ -104,6 +104,8 @@ class StudentListView(LoginRequiredMixin, ListView):
         if any(('visited_today' in self.request.GET, 'visited_today' in self.request.session)):
             if 'visited_today' not in self.request.session:
                 self.request.session['visited_today'] = True
+            else:
+                del self.request.session['visited_today']
             queryset = queryset.filter(visited_date=date.today())
         return queryset
 
