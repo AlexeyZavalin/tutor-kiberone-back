@@ -371,6 +371,17 @@ select {
 
 .checkbox__label {
     position: relative;
+    padding-left: 40px;
+    cursor: pointer;
+}
+
+.checkbox__label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
     width: 25px;
     height: 25px;
     display: block;
@@ -383,8 +394,8 @@ select {
     display: none;
 }
 
-.checkbox__native:checked + .checkbox__label {
-    transform: rotate(40deg) translate(-3px, -3px);
+.checkbox__native:checked + .checkbox__label:before {
+    transform: rotate(40deg) translate(-7px, -4px);
     border-top-width: 0;
     border-color: #1d5f77;
     border-top-color: transparent;
