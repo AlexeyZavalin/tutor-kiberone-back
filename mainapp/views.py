@@ -1,4 +1,6 @@
 import json
+from collections import defaultdict
+from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -12,7 +14,8 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from .forms import BulkStudentActionsForm, CreateStudentForm, \
-    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm, CreateUpdateGroupForm, CustomKiberonAddForm
+    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm, CreateUpdateGroupForm, CustomKiberonAddForm, \
+    FilterStudentsForm
 from .models import Group, Student, KiberonStudentReg
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
@@ -97,7 +100,12 @@ class StudentListView(LoginRequiredMixin, ListView):
     context_object_name = 'students'
 
     def get_queryset(self):
-        return Student.active.filter(group_id=self.kwargs.get('group_id')).order_by('name')
+        queryset = Student.active.filter(group_id=self.kwargs.get('group_id')).order_by('name')
+        if any(('visited_today' in self.request.GET, 'visited_today' in self.request.session)):
+            if 'visited_today' not in self.request.session:
+                self.request.session['visited_today'] = True
+            queryset = queryset.filter(visited_date=date.today())
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -106,7 +114,11 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['remove_student_form'] = RemoveStudentForm()
         context['update_students_forms'] = tuple(UpdateStudentForm(instance=student) for student in context['students'])
         context['bulk_action_form'] = BulkStudentActionsForm()
+        initial_filters = {}
+        if any(('visited_today' in self.request.GET, 'visited_today' in self.request.session)):
+            initial_filters['visited_today'] = True
         context['custom_kiberon_form'] = CustomKiberonAddForm()
+        context['filter_students_form'] = FilterStudentsForm(initial=initial_filters)
         return context
 
 
