@@ -120,6 +120,10 @@ class Kiberon(models.Model):
     SOCIAL = 'social'
     ANSWER = 'answer'
     CUSTOM = 'custom'
+    PERFECT_BEHAVIOUR_IN_MODULE = 'behavior'
+    HELP_TO_FRIEND = 'help'
+    HELP_TO_ASSISTENT = 'assist'
+    USEFUL_RULE = 'rule'
     ACHIEVEMENT_CHOICES = (
         (VISIT, 'Посещение урока'),
         (EYES, 'Разминка глаз'),
@@ -128,7 +132,11 @@ class Kiberon(models.Model):
         (INSTAGRAM, 'За пост в instagram'),
         (SOCIAL, 'За посты в соц. сети'),
         (ANSWER, 'За ответ в конце урока'),
-        (CUSTOM, 'Свое достижение')
+        (CUSTOM, 'Свое достижение'),
+        (PERFECT_BEHAVIOUR_IN_MODULE, 'Прошел модуль без замечаний по поведению'),
+        (HELP_TO_FRIEND, 'Помог другу'),
+        (HELP_TO_ASSISTENT, 'Помог ассистенту с уборкой'),
+        (USEFUL_RULE, 'Придумал полезное правило для школы')
     )
     achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES,
                                    default=ACHIEVEMENT_CHOICES[0],
