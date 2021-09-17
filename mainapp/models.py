@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models, IntegrityError
 from django.urls import reverse
 from django.utils import timezone
@@ -87,6 +89,7 @@ class Student(DeletedMixin):
     kiberon_amount = models.PositiveIntegerField(default=0, verbose_name='Количество киберонов')
     info = models.TextField(max_length=250, blank=True,
                             verbose_name='Информация')
+    visited_date = models.DateField(default=None, verbose_name='Последняя дата посещения', null=True)
 
     class Meta:
         verbose_name = 'Студент'
@@ -106,6 +109,11 @@ class Student(DeletedMixin):
 
     def get_absolute_url(self):
         return reverse('mainapp:student-list', kwargs={'group_id': self.group.pk})
+
+    @property
+    def visited_at_current_date(self) -> bool:
+        """ посетил в текущую дату """
+        return date.today() == self.visited_date
 
 
 class Kiberon(models.Model):
@@ -181,6 +189,11 @@ class KiberonStudentReg(models.Model):
         if self.kiberon.achievement == Kiberon.CUSTOM:
             self.student.add_kiberons(self.custom_kiberons)
         else:
+            # ставим последнюю дату посещения для студента
+            if self.kiberon.achievement == Kiberon.VISIT:
+                self.student.visited_date = date.today()
+                self.student.save()
+
             reg = KiberonStudentReg.objects.filter(student=self.student,
                                                    kiberon=self.kiberon,
                                                    date=self.date)

@@ -1,11 +1,20 @@
 {% extends "mainapp/base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
-{% block page_title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }} {{ group.get_time_display }}{% endblock %}
+{% block title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }}
+    {{ group.get_time_display }}{% endblock %}
+{% block page_title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }}
+    {{ group.get_time_display }}{% endblock %}
 {% block inside_content %}
     <div class="group-form">
         <div class="btn btn_modal btn_blue" data-modal-id="create-student-modal">Добавить ученика</div>
+        <form action="">
+            <div class="checkbox">
+                {{ filter_students_form.visited_today }}
+                <label for="id_visited_today" class="checkbox__label">Посетили сегодня</label>
+            </div>
+            <button class="btn btn_yellow" type="submit" id="bulk_submit">Фильтр</button>
+        </form>
         <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post" class="bulk-students-form">
             {% csrf_token %}
             {% for field in bulk_action_form %}
@@ -24,14 +33,16 @@
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == 'success' %}
-                <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                <li{% if message.tags %}
+                    class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endif %}
         {% endfor %}
         <ul class="messages messages_success">
             <div class="messages__close" title="Закрыть">&times;</div>
             {% for message in messages %}
                 {% if message.tags == 'success' %}
-                    <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <li{% if message.tags %}
+                        class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -39,13 +50,15 @@
             <div class="messages__close" title="Закрыть">&times;</div>
             {% for message in messages %}
                 {% if message.tags == 'error' %}
-                    <li{% if message.tags %} class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <li{% if message.tags %}
+                        class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
     <table class="group-table">
         <tr class="group-table__row">
+            <th style="width: 25px;">#</th>
             <th>Фамилия Имя</th>
             <th>Кол-во киберонов</th>
             <th>Действия</th>
@@ -59,6 +72,7 @@
         </tr>
         {% for student in students %}
             <tr class="group-table__row" id="student-row-{{ student.pk }}">
+                <td>{{ forloop.counter }}</td>
                 <td>{{ student.name }}</td>
                 <td>{{ student.kiberon_amount }}</td>
                 <td>
@@ -72,7 +86,8 @@
                         <button class="btn btn_blue btn_modal btn_student_kiberon"
                                 title="Добавить кибероны"
                                 data-modal-id="custom-kiberon"
-                                data-student-id="{{ student.pk }}">+</button>
+                                data-student-id="{{ student.pk }}">+
+                        </button>
                     </div>
                 </td>
                 <td>
