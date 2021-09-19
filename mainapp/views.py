@@ -5,7 +5,7 @@ from datetime import date
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.views.decorators.http import require_http_methods
@@ -198,7 +198,7 @@ class KiberonLogList(ListView, LoginRequiredMixin):
 
 def search_reg(request):
     """ фильтрация печатей """
-    result = KiberonStudentReg.objects.filter(student__name__icontains=request.GET.get('name'))[:50]
+    result = KiberonStudentReg.objects.filter(student__name__icontains=request.GET.get('name'), tutor=request.user)[:50]
     return JsonResponse({'markup': render_to_string('mainapp/includes/kiberon_regs.html', {'kiberon_regs': result})})
 
 

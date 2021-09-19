@@ -322,3 +322,15 @@ if (createCustomRegForm) {
             });
     })
 }
+
+// удаляем лишние пустые списки с сообщениями
+const messagesLists = document.querySelectorAll('ul.messages')
+
+if (messagesLists.length) {
+    messagesLists.forEach(function (element) {
+        const messagesItems = element.querySelectorAll('li.messages__message')
+        if (messagesItems.length === 0) {
+            element.remove()
+        }
+    })
+}
