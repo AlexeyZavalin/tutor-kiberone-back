@@ -31,12 +31,6 @@
         </form>
     </div>
     {% if messages %}
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                <li{% if message.tags %}
-                    class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endif %}
-        {% endfor %}
         <ul class="messages messages_success">
             <div class="messages__close" title="Закрыть">&times;</div>
             {% for message in messages %}

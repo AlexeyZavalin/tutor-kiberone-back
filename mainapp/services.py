@@ -149,5 +149,5 @@ def get_response_for_custom_adding_kiberons(kiberon_amount: int, student_id: int
         return JsonResponse({'success': True, 'redirect': redirect})
     except ObjectDoesNotExist:
         return JsonResponse({'success': False, 'message': 'Такого ученика нет'})
-    except Exception:
+    except IntegrityError:
         return JsonResponse({'success': False, 'message': 'Что-то пошло не так'})
