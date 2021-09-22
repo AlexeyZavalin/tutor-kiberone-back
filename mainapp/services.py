@@ -5,6 +5,7 @@ from django.db.utils import IntegrityError
 from authapp.models import Tutor
 
 from django.contrib.auth import authenticate
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, Resolver404
@@ -121,14 +122,15 @@ def get_response_for_remove_kiberon_reg(reg_id: int) -> JsonResponse:
 
 def get_days_of_week(tutor: Tutor) -> tuple:
     """Получаем доступные дни недели"""
-    days_of_week = Group.active.filter(tutor=tutor).distinct().values_list('day_of_week', flat=True)
+    days_of_week = Group.active.filter(Q(tutor=tutor) | Q(temporary_tutor=tutor)).distinct()\
+        .values_list('day_of_week', flat=True)
     return tuple(day_of_week[0] for day_of_week in Group.DAYS_OF_WEEK_CHOICES if day_of_week[0] in days_of_week)
 
 
 def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
     """получем словарь ловарь с днем недели и группами для этого дня"""
 
-    groups = Group.active.filter(day_of_week=day_of_week, tutor=tutor).order_by('time')
+    groups = Group.active.filter(Q(tutor=tutor) | Q(temporary_tutor=tutor), day_of_week=day_of_week).order_by('time')
     _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
                               if day[0] == day_of_week][0]
     return {

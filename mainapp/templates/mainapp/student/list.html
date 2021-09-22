@@ -74,9 +74,11 @@
                         <button class="btn btn_yellow btn_modal" data-student-id="{{ student.pk }}"
                                 data-modal-id="update-student-modal-{{ student.pk }}">Редактировать
                         </button>
-                        <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
-                                data-modal-id="remove-student-modal">Удалить
-                        </button>
+                        {% if request.user == student.group.tutor %}
+                            <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
+                                    data-modal-id="remove-student-modal">Удалить
+                            </button>
+                        {% endif %}
                         <button class="btn btn_blue btn_modal btn_student_kiberon"
                                 title="Добавить кибероны"
                                 data-modal-id="custom-kiberon"

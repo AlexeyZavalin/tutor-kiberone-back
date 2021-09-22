@@ -311,6 +311,10 @@ select {
     background-color: rgba(41, 89, 117, 0.3);
 }
 
+.group-table__row_temporary td {
+    background-color: rgba(213, 176, 34, 0.3);
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -423,6 +427,7 @@ select {
 
 .form-flex {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 }
