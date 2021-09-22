@@ -185,7 +185,6 @@ class KiberonStudentReg(models.Model):
                f'{self.kiberon.get_achievement_display()} - {self.date}'
 
     def save(self, **kwargs):
-        super().save(**kwargs)
         if self.kiberon.achievement == Kiberon.CUSTOM:
             self.student.add_kiberons(self.custom_kiberons)
         else:
@@ -201,6 +200,7 @@ class KiberonStudentReg(models.Model):
                 self.student.add_kiberons(self.kiberon.value)
             else:
                 raise IntegrityError
+        super().save(**kwargs)
 
     def delete(self, using=None, keep_parents=False):
         if self.kiberon.achievement == 'custom':
