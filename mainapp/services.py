@@ -128,7 +128,7 @@ def get_days_of_week(tutor: Tutor) -> tuple:
 def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
     """получем словарь ловарь с днем недели и группами для этого дня"""
 
-    groups = Group.active.filter(day_of_week=day_of_week, tutor=tutor)
+    groups = Group.active.filter(day_of_week=day_of_week, tutor=tutor).order_by('time')
     _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
                               if day[0] == day_of_week][0]
     return {
