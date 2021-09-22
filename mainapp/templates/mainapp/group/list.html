@@ -38,20 +38,32 @@
                             <th>Действия</th>
                         </tr>
                         {% for group in day_of_week_section.groups %}
-                            <tr class="group-table__row" id="group-row-{{ group.pk }}">
-                                <td>{{ group.get_time_display }}</td>
-                                <td>{{ group.get_location_display }}</td>
-                                <td>{{ group.students_amount }}</td>
-                                <td>
-                                    <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
-                                    <button class="btn btn_yellow btn_modal" data-group-id="{{ group.pk }}"
-                                            data-modal-id="update-group-modal-{{ group.pk }}">Редактировать
-                                    </button>
-                                    <button class="btn btn_red btn_modal btn_group_remove" data-group-id="{{ group.pk }}"
-                                            data-modal-id="remove-modal">Удалить
-                                    </button>
-                                </td>
-                            </tr>
+                            {% if group.tutor == request.user %}
+                                <tr class="group-table__row" id="group-row-{{ group.pk }}">
+                                    <td>{{ group.get_time_display }}</td>
+                                    <td>{{ group.get_location_display }}</td>
+                                    <td>{{ group.students_amount }}</td>
+                                    <td>
+                                        <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
+                                        <button class="btn btn_yellow btn_modal" data-group-id="{{ group.pk }}"
+                                                data-modal-id="update-group-modal-{{ group.pk }}">Редактировать
+                                        </button>
+                                        <button class="btn btn_red btn_modal btn_group_remove" data-group-id="{{ group.pk }}"
+                                                data-modal-id="remove-modal">Удалить
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr class="group-table__row group-table__row_temporary" id="group-row-{{ group.pk }}"
+                                    title="Временная группа тьютора: {{ group.tutor.first_name }} {{ group.tutor.last_name }}">
+                                    <td>{{ group.get_time_display }}</td>
+                                    <td>{{ group.get_location_display }}</td>
+                                    <td>{{ group.students_amount }}</td>
+                                    <td>
+                                        <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </table>
                 </div>
