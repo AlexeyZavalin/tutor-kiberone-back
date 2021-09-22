@@ -58,7 +58,7 @@ class Group(DeletedMixin):
                                    verbose_name='День недели')
     tutor = models.ForeignKey('authapp.Tutor', on_delete=models.SET_DEFAULT,
                               default=None, null=True, verbose_name='Тьютор', related_name='tutor')
-    temporary_tutor = models.OneToOneField('authapp.Tutor', on_delete=models.SET_NULL, default=None, null=True,
+    temporary_tutor = models.ForeignKey('authapp.Tutor', on_delete=models.SET_NULL, default=None, null=True,
                                            verbose_name='Временный тьютор', related_name='temp_tutor', blank=True)
 
     class Meta:
