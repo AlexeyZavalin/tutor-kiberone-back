@@ -15,4 +15,4 @@ class Tutor(AbstractUser):
         verbose_name_plural = 'Тьюторы'
 
     def __str__(self):
-        return self.email
+        return f'{self.last_name} {self.first_name}'
