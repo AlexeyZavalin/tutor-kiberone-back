@@ -92,6 +92,8 @@ class Student(DeletedMixin):
     info = models.TextField(max_length=250, blank=True,
                             verbose_name='Информация')
     visited_date = models.DateField(default=None, verbose_name='Последняя дата посещения', null=True)
+    gmail_name = models.EmailField(default=None, verbose_name='Gmail',
+                                   null=True, blank=True, max_length=70)
 
     class Meta:
         verbose_name = 'Студент'
@@ -169,7 +171,7 @@ class KiberonStudentReg(models.Model):
                                 verbose_name='Студент')
     kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE,
                                 verbose_name='Достижение')
-    date = models.DateField(verbose_name='Дата', default=timezone.now)
+    date = models.DateTimeField(verbose_name='Дата', default=timezone.now)
     tutor = models.ForeignKey('authapp.Tutor', on_delete=models.CASCADE,
                               verbose_name='Тьютор')
     custom_kiberons = models.PositiveSmallIntegerField(

@@ -286,7 +286,7 @@ if (createCustomRegForm) {
     if (studnetKiberonBtns) {
         studnetKiberonBtns.forEach(function (element) {
             element.addEventListener('click', function (event) {
-                document.getElementById('id_student_id').value = element.dataset['studentId']
+                document.getElementById('id_add-student_id').value = element.dataset['studentId']
             })
         })
     }
@@ -297,9 +297,9 @@ if (createCustomRegForm) {
             createCustomRegForm.querySelector('.form_errors').remove()
         }
         const url = createCustomRegForm.dataset['action']
-        const achievement = createCustomRegForm.querySelector('#id_achievement').value
-        const kiberonAmount = createCustomRegForm.querySelector('#id_kiberons_amount').value
-        const studentId = createCustomRegForm.querySelector('#id_student_id').value
+        const achievement = createCustomRegForm.querySelector('#id_add-achievement').value
+        const kiberonAmount = createCustomRegForm.querySelector('#id_add-kiberons_amount').value
+        const studentId = createCustomRegForm.querySelector('#id_add-student_id').value
         const formData = {
             'kiberon_amount': kiberonAmount,
             'student_id': studentId,
@@ -316,6 +316,50 @@ if (createCustomRegForm) {
                     errorSpan.textContent = data['message']
                     errorSpan.classList.add('form_errors')
                     const btn = createCustomRegForm.querySelector('.btn')
+                    const parent = btn.parentNode
+                    parent.insertBefore(errorSpan, btn)
+                }
+            });
+    })
+}
+
+// кастомное удаление киберонов
+let studnetKiberonRemoveBtns = document.querySelectorAll('.btn_student_kiberon_remove')
+
+let removeCustomKiberonForm = document.getElementById('customKiberonRemove');
+
+if (removeCustomKiberonForm) {
+    if (studnetKiberonRemoveBtns) {
+        studnetKiberonRemoveBtns.forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                document.getElementById('id_remove-student_id').value = element.dataset['studentId']
+            })
+        })
+    }
+
+    removeCustomKiberonForm.addEventListener('submit', function (e) {
+        e.preventDefault()
+        if (removeCustomKiberonForm.querySelector('.form_errors')) {
+            removeCustomKiberonForm.querySelector('.form_errors').remove()
+        }
+        const url = removeCustomKiberonForm.dataset['action']
+        const kiberonAmount = removeCustomKiberonForm.querySelector('#id_remove-kiberons_amount').value
+        const studentId = removeCustomKiberonForm.querySelector('#id_remove-student_id').value
+        const formData = {
+            'kiberon_amount': kiberonAmount,
+            'student_id': studentId
+        }
+        postData(url, formData)
+            .then((data) => {
+                if (data['success']) {
+                    if (data['redirect']) {
+                        window.location = data['redirect']
+                    }
+                } else {
+                    let errorSpan = document.createElement('div')
+                    errorSpan.textContent = data['message']
+                    errorSpan.classList.add('form_errors')
+                    const btn = removeCustomKiberonForm.querySelector('.btn')
                     const parent = btn.parentNode
                     parent.insertBefore(errorSpan, btn)
                 }

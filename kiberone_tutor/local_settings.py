@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'kiberone_tutor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('db_name'),
-        'USER': os.environ.get('db_user'),
-        'PASSWORD': os.environ.get('db_password'),
-        'HOST': os.environ.get('db_host'),
-        'PORT': os.environ.get('db_port'),
+        'NAME': 'tutor_kiberone',
+        'USER': 'postgres',
+        'PASSWORD': 'HorizonEvent',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 

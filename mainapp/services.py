@@ -153,3 +153,20 @@ def get_response_for_custom_adding_kiberons(kiberon_amount: int, student_id: int
         return JsonResponse({'success': False, 'message': 'Такого ученика нет'})
     except IntegrityError:
         return JsonResponse({'success': False, 'message': 'Что-то пошло не так'})
+
+
+def get_response_for_custom_remove_kiberons(kiberon_amount: int, student_id: int,
+                                            group_id: int) -> JsonResponse:
+    """Получаем ответ для удаления киберонов"""
+    try:
+        student = Student.objects.get(pk=student_id)
+        redirect = reverse_lazy('mainapp:student-list',
+                                kwargs={'group_id': group_id})
+        student.delete_kiberons(kiberon_amount)
+        return JsonResponse({'success': True, 'redirect': redirect})
+    except ObjectDoesNotExist:
+        return JsonResponse(
+            {'success': False, 'message': 'Такого ученика нет'})
+    except IntegrityError:
+        return JsonResponse(
+            {'success': False, 'message': 'Что-то пошло не так'})
