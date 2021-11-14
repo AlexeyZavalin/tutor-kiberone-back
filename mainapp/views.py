@@ -122,8 +122,9 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['group'] = Group.objects.get(pk=self.kwargs.get('group_id'))
         context['create_student_form'] = CreateStudentForm()
         context['remove_student_form'] = RemoveStudentForm()
+        # TODO: добавить prefix
         context['update_students_forms'] = tuple(UpdateStudentForm(
-            instance=student, prefix=student.pk) for student in context[
+            instance=student) for student in context[
             'students'])
         context['bulk_action_form'] = BulkStudentActionsForm()
         initial_filters = {'visited_today': '0'}
