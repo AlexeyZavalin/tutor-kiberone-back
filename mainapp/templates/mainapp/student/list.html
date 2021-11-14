@@ -11,9 +11,8 @@
         <form action="">
             <div class="checkbox">
                 {{ filter_students_form.visited_today }}
-                <label for="id_visited_today" class="checkbox__label">Посетили сегодня</label>
             </div>
-            <button class="btn btn_yellow" type="submit" id="bulk_submit">Фильтр</button>
+            <button class="btn btn_yellow" type="submit" id="filter">Фильтр</button>
         </form>
         <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post" class="bulk-students-form">
             {% csrf_token %}
@@ -84,6 +83,11 @@
                                 data-modal-id="custom-kiberon"
                                 data-student-id="{{ student.pk }}">+
                         </button>
+                        <button class="btn btn_red btn_modal btn_student_kiberon_remove"
+                                title="Удалить кибероны"
+                                data-modal-id="custom-kiberon-remove"
+                                data-student-id="{{ student.pk }}">-
+                        </button>
                     </div>
                 </td>
                 <td>
@@ -136,6 +140,26 @@
                     {% endif %}
                 {% endfor %}
                 <button class="btn btn_blue btn_center" type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+    <div id="custom-kiberon-remove" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="custom-kiberon">&times;</span>
+            <form id="customKiberonRemove"
+                  data-action="{% url "mainapp:remove-custom-kiberons" request.resolver_match.kwargs.group_id %}">
+                {% csrf_token %}
+                {% for field in custom_kiberon_remove_form %}
+                    {% if field not in custom_kiberon_remove_form.hidden_fields %}
+                        <div class="form-input form-input_login">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn_red btn_center" type="submit">Убавить</button>
             </form>
         </div>
     </div>
