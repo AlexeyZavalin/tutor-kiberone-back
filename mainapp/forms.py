@@ -31,7 +31,7 @@ class UpdateStudentForm(CreateStudentForm):
 
     class Meta:
         model = Student
-        fields = ['name', 'kiberon_amount', 'info']
+        fields = ['name', 'info', 'gmail_name']
 
 
 class RemoveStudentForm(forms.Form):
@@ -51,12 +51,26 @@ class BulkStudentActionsForm(forms.Form):
 class CustomKiberonAddForm(forms.Form):
     """Форма для добавления костомного количества киберонов"""
     achievement = forms.CharField(max_length=100, label='Достижение', required=True)
-    kiberons_amount = forms.IntegerField(max_value=50, label='Количество киберонов', min_value=5, initial=5)
+    kiberons_amount = forms.IntegerField(max_value=20, label='Количество '
+                                                             'киберонов', min_value=5, initial=5)
+    student_id = forms.CharField(widget=forms.HiddenInput)
+
+
+class CustomKiberonRemoveForm(forms.Form):
+    """Форма для удалени киберонов"""
+    kiberons_amount = forms.IntegerField(max_value=20,
+                                         label='Количество киберонов',
+                                         min_value=5, initial=5)
     student_id = forms.CharField(widget=forms.HiddenInput)
 
 
 class FilterStudentsForm(forms.Form):
     """Форма для фильтрации студентов"""
-    visited_today = forms.BooleanField(label='Присутствуют сегодня',
-                                       widget=forms.CheckboxInput(attrs={'class': 'checkbox__native'}),
-                                       required=False)
+    VISITED = 1
+    ALL = 0
+    CHOICES = (
+        (VISITED, 'Посетили сегодня'),
+        (ALL, 'Все')
+    )
+    visited_today = forms.ChoiceField(label='Присутствуют сегодня',
+                                      required=False, choices=CHOICES)

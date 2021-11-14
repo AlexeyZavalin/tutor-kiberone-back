@@ -11,7 +11,7 @@
     <div class="kiberon-reg">
         <div class="kiberon-reg__student-name"><b>Имя</b></div>
         <div class="kiberon-reg__student-name"><b>Группа</b></div>
-        <div class="kiberon-reg__achievement"><b>Достижение</b></div>
+        <div class="kiberon-reg__achievement"><b>Достижение - К</b></div>
         <div class="kiberon-reg__date"><b>Дата</b></div>
         <div class="kiberon-reg__remove"><b>Действие</b></div>
     </div>
@@ -21,9 +21,13 @@
                 <div class="kiberon-reg__student-name">{{ kiberon_reg.student.name }}</div>
                 <div class="kiberon-reg__student-name">{{ kiberon_reg.student.group }}</div>
                 {% if kiberon_reg.kiberon.achievement == 'custom' %}
-                    <div class="kiberon-reg__achievement">{{ kiberon_reg.custom_achievement }}</div>
+                    <div class="kiberon-reg__achievement">
+                        {{ kiberon_reg.custom_achievement }} - {{ kiberon_reg.custom_kiberons }}К
+                    </div>
                 {% else %}
-                    <div class="kiberon-reg__achievement">{{ kiberon_reg.kiberon.get_achievement_display }}</div>
+                    <div class="kiberon-reg__achievement">
+                        {{ kiberon_reg.kiberon.get_achievement_display }} - {{ kiberon_reg.kiberon.value }}К
+                    </div>
                 {% endif %}
                 <div class="kiberon-reg__date">{{ kiberon_reg.date }}</div>
                 <div class="kiberon-reg__remove">

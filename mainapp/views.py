@@ -14,13 +14,16 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from .forms import BulkStudentActionsForm, CreateStudentForm, \
-    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm, CreateUpdateGroupForm, CustomKiberonAddForm, \
-    FilterStudentsForm
+    RemoveGroupForm, RemoveStudentForm, UpdateStudentForm, \
+    CreateUpdateGroupForm, CustomKiberonAddForm, \
+    FilterStudentsForm, CustomKiberonRemoveForm
 from .models import Group, Student, KiberonStudentReg
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
-    get_response_for_remove_student, get_response_for_remove_kiberon_reg, get_days_of_week, get_groups_by_day_of_week, \
-    get_response_for_custom_adding_kiberons
+    get_response_for_remove_student, get_response_for_remove_kiberon_reg, \
+    get_days_of_week, get_groups_by_day_of_week, \
+    get_response_for_custom_adding_kiberons, \
+    get_response_for_custom_remove_kiberons
 
 
 class MainRedirectView(RedirectView):
@@ -100,12 +103,17 @@ class StudentListView(LoginRequiredMixin, ListView):
     context_object_name = 'students'
 
     def get_queryset(self):
-        queryset = Student.active.filter(group_id=self.kwargs.get('group_id')).order_by('name')
-        if any(('visited_today' in self.request.GET, 'visited_today' in self.request.session)):
-            if 'visited_today' not in self.request.session:
+        queryset = Student.active.filter(group_id=self.kwargs.get(
+            'group_id')).order_by('-kiberon_amount')
+        if self.request.GET.get('visited_today'):
+            visited_today = self.request.GET.get('visited_today')
+            if visited_today == '1':
                 self.request.session['visited_today'] = True
-            else:
-                del self.request.session['visited_today']
+                queryset = queryset.filter(visited_date=date.today())
+            elif visited_today == '0':
+                if 'visited_today' in self.request.session:
+                    del self.request.session['visited_today']
+        if self.request.session.get('visited_today'):
             queryset = queryset.filter(visited_date=date.today())
         return queryset
 
@@ -114,12 +122,17 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['group'] = Group.objects.get(pk=self.kwargs.get('group_id'))
         context['create_student_form'] = CreateStudentForm()
         context['remove_student_form'] = RemoveStudentForm()
-        context['update_students_forms'] = tuple(UpdateStudentForm(instance=student) for student in context['students'])
+        context['update_students_forms'] = tuple(UpdateStudentForm(
+            instance=student, prefix=student.pk) for student in context[
+            'students'])
         context['bulk_action_form'] = BulkStudentActionsForm()
-        initial_filters = {}
-        if any(('visited_today' in self.request.GET, 'visited_today' in self.request.session)):
-            initial_filters['visited_today'] = True
-        context['custom_kiberon_form'] = CustomKiberonAddForm()
+        initial_filters = {'visited_today': '0'}
+        if 'visited_today' in self.request.session and \
+                self.request.session.get('visited_today'):
+            initial_filters['visited_today'] = '1'
+        context['custom_kiberon_form'] = CustomKiberonAddForm(prefix='add')
+        context['custom_kiberon_remove_form'] = CustomKiberonRemoveForm(
+            prefix='remove')
         context['filter_students_form'] = FilterStudentsForm(initial=initial_filters)
         return context
 
@@ -151,10 +164,23 @@ class CreateCustomKiberonRegView(CreateView):
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
         return get_response_for_custom_adding_kiberons(kiberon_amount=body.get('kiberon_amount'),
-                                                       student_id=body.get('student_id'),
+                                                       student_id=int(body.get(
+                                                           'student_id')),
                                                        achievement=body.get('achievement'),
                                                        group_id=kwargs.get('group_id'),
                                                        tutor=self.request.user)
+
+
+class RemoveCustomKiberonRegView(View):
+    """Представление для удаления киберонов"""
+
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        return get_response_for_custom_remove_kiberons(
+            kiberon_amount=body.get('kiberon_amount'),
+            student_id=int(body.get(
+                'student_id')),
+            group_id=kwargs.get('group_id'))
 
 
 class RemoveStudentView(DeleteView, LoginRequiredMixin):
