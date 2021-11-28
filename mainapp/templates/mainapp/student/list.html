@@ -88,6 +88,9 @@
                                 data-modal-id="custom-kiberon-remove"
                                 data-student-id="{{ student.pk }}">-
                         </button>
+                        <button data-student-id="{{ student.pk }}"  data-modal-id="fair" title="Ярмарка" class="btn btn_fair btn_modal">
+                            <img src="{% static "img/present-svgrepo-com.svg" %}" alt="" class="fair-icon">
+                        </button>
                     </div>
                 </td>
                 <td>
@@ -206,4 +209,17 @@
             </div>
         {% endfor %}
     {% endif %}
+    <div id="fair" class="modal modal_wide">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="fair">&times;</span>
+            <div class="container">
+                <div class="fair__container"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{% static "js/fair.js" %}"></script>
 {% endblock %}

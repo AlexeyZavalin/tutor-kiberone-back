@@ -176,6 +176,14 @@ select {
     line-height: 1;
 }
 
+.btn_fair {
+    background-color: transparent;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    box-shadow: none;
+}
+
 .form-input {
     margin-bottom: 20px;
     margin-right: 20px;
@@ -337,6 +345,10 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.modal_wide  .modal__content {
+    width: 100%;
 }
 
 .close {
