@@ -131,8 +131,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/home/alexe/sites/tutor-kiberone-back/static/'
+STATIC_URL = '/assets/'
+STATIC_ROOT = '/home/alexey/sites/tutor-kiberone-back/assets/'
 
 STATICFILES_DIRS = [BASE_DIR, 'fair', 'static']
 
@@ -234,4 +234,6 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-COMPRESS_OFFLINE = True
+# COMPRESS_OFFLINE = True
+COMPRESS_ENABLED = True
+COMPRESS_OUTPUT_DIR = 'compressed'
