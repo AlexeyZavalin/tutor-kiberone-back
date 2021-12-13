@@ -1,0 +1,40 @@
+.messages {
+  padding: 15px;
+  position: relative;
+  list-style: none;
+  margin-bottom: 15px;
+
+  &_error {
+    border: 2px solid $red;
+    background-color: rgba(105, 37, 40, 0.2);
+    color: #1c0405;
+  }
+
+  &_success {
+    border: 2px solid #36c555;
+    background-color: rgba(126, 241, 144, 0.2);
+    color: #051e05;
+  }
+
+  &__close {
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+  }
+
+  &__message {
+    margin-bottom: 5px;
+    padding: 5px;
+
+    &_error {
+      background-color: rgba(105, 37, 40, 0.1);
+    }
+
+    &_success {
+      background-color: rgba(126, 241, 144, 0.1);
+    }
+  }
+}

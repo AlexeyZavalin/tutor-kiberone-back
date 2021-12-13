@@ -1,4 +1,5 @@
 {% load static %}
+{% load compress %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,7 +10,12 @@
     <meta name="yandex-verification" content="6cc74f120a1c2d00" />    
     <title>{% block title %}{% endblock %}</title>
     {% block css %}
-        <link rel="stylesheet" href="{% static "css/style.css" %}">
+        {% compress css %}
+            <link rel="stylesheet" href="{% static "css/style.scss" %}" type="text/x-scss">
+            {% if fair_is_active %}
+                <link rel="stylesheet" href="{% static "css/fair.scss" %}" type="text/x-scss">
+            {% endif %}
+        {% endcompress %}
     {% endblock %}
 </head>
 <body>
@@ -19,6 +25,9 @@
         <script src="{% static "js/cookie.js" %}"></script>
         <script src="{% static "js/async_requests.js" %}"></script>
         <script src="{% static "js/main.js" %}"></script>
+        {% if fair_is_active %}
+            <script src="{% static "js/fair.js" %}"></script>
+        {% endif %}
     {% endblock %}
 </body>
 </html>

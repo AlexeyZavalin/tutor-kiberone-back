@@ -1,6 +1,8 @@
 from django.contrib import admin
+from solo.admin import SingletonModelAdmin
 
-from mainapp.models import Group, Student, Kiberon, KiberonStudentReg
+from mainapp.models import Group, Student, Kiberon, KiberonStudentReg,\
+    SiteConfiguration
 
 
 @admin.register(Group)
@@ -28,3 +30,6 @@ class KiberonStudentRegAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
     search_fields = ['student__name']
     list_filter = ['tutor', 'kiberon']
+
+
+admin.site.register(SiteConfiguration, SingletonModelAdmin)

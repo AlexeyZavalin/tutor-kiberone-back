@@ -1,0 +1,47 @@
+.header {
+  background-color: $blue;
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__nav {
+    flex-grow: 1;
+  }
+
+  &__logo {
+    width: 115px;
+    margin-right: 25px;
+  }
+}
+
+.nav__link {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 35px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+
+  &__icon {
+    margin-right: 15px;
+  }
+
+  &__name {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 15px;
+  }
+
+  &__logout {
+    color: #fff;
+    text-decoration: none;
+  }
+}
