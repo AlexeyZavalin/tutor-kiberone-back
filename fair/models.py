@@ -1,6 +1,7 @@
+from decimal import Decimal
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.utils import timezone
 
 from mainapp.mixins import DeletedMixin
 
@@ -19,7 +20,7 @@ class Souvenir(DeletedMixin):
         upload_to='fair_souvenirs'
     )
     price = models.DecimalField(
-        validators=[MinValueValidator(0), MaxValueValidator(3000)],
+        validators=[MinValueValidator(0), MaxValueValidator(3500)],
         verbose_name='Стоимость в киберонах',
         null=False,
         blank=False,
@@ -67,6 +68,14 @@ class FairRegistrationSouvenir(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL
+    )
+    price = models.DecimalField(
+        verbose_name='Стоимость в киберонах в день ярмарки',
+        null=False,
+        blank=False,
+        max_digits=4,
+        decimal_places=0,
+        default=Decimal(0)
     )
     fair_registration = models.ForeignKey(
         FairRegistration,
