@@ -234,6 +234,8 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
+
 # COMPRESS_OFFLINE = True
+
 COMPRESS_ENABLED = True
 COMPRESS_OUTPUT_DIR = 'compressed'
