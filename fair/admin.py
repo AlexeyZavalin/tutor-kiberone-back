@@ -34,3 +34,5 @@ class FairRegistration(admin.ModelAdmin):
     def total(self, object):
         """ получаем сумму в киберонах """
         return object.souvenirs.all().aggregate(Sum('price')).get('price__sum')
+
+    total.short_description = 'Всего потрачено'
