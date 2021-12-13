@@ -1,0 +1,54 @@
+.group-table {
+  width: 100%;
+
+  th {
+    text-align: center;
+    padding: 15px 45px;
+    border-bottom: 2px solid $darkblue;
+  }
+
+  td {
+    text-align: center;
+    padding: 5px 25px;
+    border-bottom: 1px solid $darkblue;
+  }
+
+  th:last-child, td:last-child {
+    padding: 15px;
+  }
+
+  tr {
+    td {
+      transition: .3s;
+    }
+
+    &:hover {
+      td {
+        background-color: rgba(41, 89, 117, 0.3);
+      }
+    }
+  }
+
+  &__row_temporary {
+    td {
+      background-color: rgba(213, 176, 34, 0.3);
+    }
+  }
+}
+
+.days-of-week__section {
+  margin-bottom: 50px;
+}
+
+
+.kiberon-reg {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 120px;
+  border-bottom: 2px solid $blue;
+  padding: 10px 15px;
+  transition: .3s;
+}
+
+.kiberon-reg:hover {
+  background-color: rgba(97, 185, 217, 0.51);
+}
