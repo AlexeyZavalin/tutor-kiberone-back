@@ -88,9 +88,16 @@
                                 data-modal-id="custom-kiberon-remove"
                                 data-student-id="{{ student.pk }}">-
                         </button>
-                        <button data-student-id="{{ student.pk }}"  data-modal-id="fair" title="Ярмарка" class="btn btn_fair btn_modal">
-                            <img src="{% static "img/present-svgrepo-com.svg" %}" alt="" class="fair-icon">
-                        </button>
+                        {% if fair_is_active %}
+                            <button data-student-id="{{ student.pk }}"
+                                    data-modal-id="fair" title="Ярмарка"
+                                    data-url="{% url 'fair:souvenirs' %}"
+                                    data-student-name="{{ student.name }}"
+                                    data-kiberons="{{ student.kiberon_amount }}"
+                                    class="btn btn_fair btn_modal">
+                                <img src="{% static "img/present-svgrepo-com.svg" %}" alt="" class="fair-icon">
+                            </button>
+                        {% endif %}
                     </div>
                 </td>
                 <td>
@@ -209,14 +216,26 @@
             </div>
         {% endfor %}
     {% endif %}
-    <div id="fair" class="modal modal_wide">
-        <div class="modal__content">
-            <span class="close" data-close-modal-id="fair">&times;</span>
-            <div class="container">
-                <div class="fair__container"></div>
+    {% if fair_is_active %}
+        <div id="fair" class="modal modal_wide">
+            <div class="modal__content">
+                <script>
+                    window.fairCreateUrl = '{% url 'fair:create_fair_register' %}';
+                </script>
+                <span class="close" data-close-modal-id="fair">&times;</span>
+                <div class="container">
+                    <div class="fair__container">
+                        <div class="fair__title"></div>
+                        <div class="fair__subtitle"></div>
+                        <div class="fair__souvenirs"></div>
+                        <div class="fair__cart">
+                            <div class="souvenirs"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}
 
 {% block js %}
