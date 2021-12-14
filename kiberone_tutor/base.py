@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ap7-v#3+f=!txrn8q@*v09#mp7#k&+5wern1&80s(i2j!4ys_w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -35,16 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'corsheaders',
-    # 'rest_framework',
-    # 'rest_framework.authtoken',
-    # 'django_filters',
-
-    'authapp.apps.AuthappConfig',
-    'mainapp.apps.MainappConfig',
     'fair.apps.FairConfig',
     'solo.apps.SoloAppConfig',
     'compressor',
+
+    'authapp.apps.AuthappConfig',
+    'mainapp.apps.MainappConfig',
 ]
 
 MIDDLEWARE = [
@@ -85,13 +84,9 @@ WSGI_APPLICATION = 'kiberone_tutor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tutor_kiberone',
-        'USER': 'postgres',
-        'PASSWORD': 'HorizonEvent',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'database',
+    },
 }
 
 # Password validation
@@ -177,6 +172,12 @@ CORS_ALLOW_HEADERS = [
 # endregion
 
 LOGIN_REDIRECT_URL = 'mainapp:groups'
+
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SECURE = True
+
+ADMINS = [('Alexey', 'lehazavalin95@gmail.com')]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
