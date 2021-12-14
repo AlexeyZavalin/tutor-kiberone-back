@@ -1,0 +1,22 @@
+{% if souvenirs %}
+<div class="souvenirs">
+    {% for souvenir in souvenirs %}
+        <div class="souvenir" id="souvenir-{{ souvenir.pk }}">
+            {% if souvenir.image %}
+                <div class="souvenir__img-wrapper">
+                    <img src="{{ souvenir.image.url }}" alt="{{ souvenir.name }}" class="souvenir__img">
+                </div>
+            {% endif %}
+            <div class="souvenir__name">{{ souvenir.name }}</div>
+            <div class="souvenir__price">{{ souvenir.price }}к</div>
+            <button class="btn btn_blue add_to_cart"
+                    data-id="{{ souvenir.pk }}"
+                    data-kiberons="{{ souvenir.price }}">
+                Добавить
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+    У тебя не хватает киберонов
+{% endif %}

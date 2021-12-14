@@ -4,7 +4,7 @@ from django.db import models, IntegrityError
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import F
-from django.core.exceptions import ValidationError
+from solo.models import SingletonModel
 
 from mainapp.mixins import DeletedMixin
 
@@ -91,7 +91,11 @@ class Student(DeletedMixin):
     kiberon_amount = models.PositiveIntegerField(default=0, verbose_name='Количество киберонов')
     info = models.TextField(max_length=250, blank=True,
                             verbose_name='Информация')
-    visited_date = models.DateField(default=None, verbose_name='Последняя дата посещения', null=True)
+    visited_date = models.DateField(
+        default=None,
+        verbose_name='Последняя дата посещения',
+        null=True,
+        blank=True)
     gmail_name = models.EmailField(default=None, verbose_name='Gmail',
                                    null=True, blank=True, max_length=70)
 
@@ -212,3 +216,17 @@ class KiberonStudentReg(models.Model):
         else:
             self.student.delete_kiberons(self.kiberon.value)
         super().delete()
+
+
+class SiteConfiguration(SingletonModel):
+    """настройки сайта"""
+    fair_is_active = models.BooleanField(
+        default=False,
+        verbose_name='Ярмарка запущена'
+    )
+
+    def __str__(self):
+        return 'Настройки сайта'
+
+    class Meta:
+        verbose_name = 'Настройки сайта'

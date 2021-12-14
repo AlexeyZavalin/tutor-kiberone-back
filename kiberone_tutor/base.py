@@ -38,10 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'corsheaders',
-    # 'rest_framework',
-    # 'rest_framework.authtoken',
-    # 'django_filters',
+    'fair.apps.FairConfig',
+    'solo.apps.SoloAppConfig',
+    'compressor',
 
     'authapp.apps.AuthappConfig',
     'mainapp.apps.MainappConfig',
@@ -72,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'mainapp.context_processors.site_settings'
             ],
         },
     },
@@ -84,13 +84,9 @@ WSGI_APPLICATION = 'kiberone_tutor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('db_name'),
-        'USER': os.environ.get('db_user'),
-        'PASSWORD': os.environ.get('db_password'),
-        'HOST': os.environ.get('db_host'),
-        'PORT': os.environ.get('db_port'),
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'database',
+    },
 }
 
 # Password validation
@@ -129,7 +125,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/alexey/tutor-kiberone/static'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR, 'fair', 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -185,18 +181,21 @@ ADMINS = [('Alexey', 'lehazavalin95@gmail.com')]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
-#sentry
+# Base url to serve media files
+MEDIA_URL = '/media/'
 
-sentry_sdk.init(
-    dsn="https://b02b7a5a128c44e6bc286b02ebc5c8ad@o350688.ingest.sentry.io/5966475",
-    integrations=[DjangoIntegration()],
+# Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
-
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
 )
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_ENABLED = True
+COMPRESS_OUTPUT_DIR = 'compressed'
