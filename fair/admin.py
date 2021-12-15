@@ -26,7 +26,7 @@ class FairRegistration(admin.ModelAdmin):
     """ Админка записи о ярмарке """
     date_hierarchy = 'date'
     list_filter = ['student__group__tutor', 'student__group', 'date']
-    search_fields = ['student__name', 'name']
+    search_fields = ['student__name']
     list_display = ['student', 'date']
     readonly_fields = ['student', 'date', 'total']
     inlines = [SouvenirInline]
