@@ -1,6 +1,7 @@
 from kiberone_tutor.base import *
 
 DEBUG = False
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 STATIC_URL = '/assets/'
 STATIC_ROOT = '/home/alexey/sites/tutor-kiberone-back/assets'
@@ -8,11 +9,11 @@ STATIC_ROOT = '/home/alexey/sites/tutor-kiberone-back/assets'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('db_name'),
-        'USER': os.environ.get('db_user'),
-        'PASSWORD': os.environ.get('db_password'),
-        'HOST': os.environ.get('db_host'),
-        'PORT': os.environ.get('db_port'),
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': '5432'
     }
 }
 
