@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import F
 
 from mainapp.mixins import DeletedMixin
 
@@ -41,6 +42,14 @@ class Souvenir(DeletedMixin):
 
     def __str__(self):
         return f'{self.name} - {self.price}K'
+
+    def subtract_amount(self, amount: int) -> None:
+        """
+        Отнимаем количество
+        amount: количество, которое нужно отнять
+        """
+        self.amount = F('amount') - amount
+        self.save()
 
 
 class FairRegistration(models.Model):
@@ -96,3 +105,7 @@ class FairRegistrationSouvenir(models.Model):
 
     def __str__(self):
         return self.souvenir.__str__()
+
+    def save(self, **kwargs: dict) -> None:
+        self.souvenir.subtract_amount(1)
+        super().save(**kwargs)
