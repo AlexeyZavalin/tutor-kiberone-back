@@ -27,11 +27,17 @@ class Souvenir(DeletedMixin):
         max_digits=4,
         decimal_places=0
     )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество',
+        default=0,
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name = 'Сувенир'
         verbose_name_plural = 'Сувениры'
-        ordering = ('price',)
+        ordering = ('price', 'amount')
 
     def __str__(self):
         return f'{self.name} - {self.price}K'
