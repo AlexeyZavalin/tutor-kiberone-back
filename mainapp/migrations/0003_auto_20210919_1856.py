@@ -59,5 +59,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_kiberons)
+        # migrations.RunPython(create_kiberons)
     ]

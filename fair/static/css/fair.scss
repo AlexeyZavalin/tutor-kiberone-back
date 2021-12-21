@@ -39,6 +39,9 @@ $bgc: #3681A0;
   -moz-border-radius: 10px;
   border-radius: 10px;
   transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   &:hover {
     box-shadow: 0 4px 20px $blue;
