@@ -95,7 +95,7 @@ class FairRegistrationSouvenir(models.Model):
     fair_registration = models.ForeignKey(
         FairRegistration,
         on_delete=models.CASCADE,
-        verbose_name='Запесь о ярмарке',
+        verbose_name='Запись о ярмарке',
         related_name='souvenirs'
     )
 
