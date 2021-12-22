@@ -17,7 +17,7 @@ class SouvenirInline(admin.StackedInline):
 @admin.register(Souvenir)
 class SouvenirAdmin(admin.ModelAdmin):
     """ Админка сувенира """
-    list_display = ['name', 'price', 'is_deleted']
+    list_display = ['name', 'price', 'amount', 'is_deleted']
     extra = 0
 
 
