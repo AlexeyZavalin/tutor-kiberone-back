@@ -110,7 +110,7 @@ class Order {
         this.cart.removeProduct(id, price);
     }
     canAdd(price) {
-        return this.balance - price > 0;
+        return this.balance - price >= 0;
     }
 }
 
