@@ -4,7 +4,7 @@ DEBUG = False
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 STATIC_URL = '/assets/'
-STATIC_ROOT = '/home/alexey/sites/tutor-kiberone-back/assets'
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 DATABASES = {
     'default': {
