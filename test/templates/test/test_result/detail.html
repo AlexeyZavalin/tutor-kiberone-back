@@ -1,0 +1,16 @@
+{% extends "mainapp/base.html" %}
+{% block title %}Результат теста: {{ test_result.test.name }} {{ test_result.testees_name }} {{ test_result.date }}{% endblock %}
+{% block page_title %}Результат теста: {{ test_result.test.name }} {{ test_result.testees_name }} {{ test_result.date }}{% endblock %}
+{% block inside_content %}
+    {% if test_result.passed %}
+        <p class="test-result test-result_success">
+            Поздравляю, {{ test_result.testees_name }}, вы прошли тест!<br>
+            Верных ответов: {{ test_result.correct_count }}/{{ test_result.test.questions.count }}
+        </p>
+    {% else %}
+        <p class="test-result test-result_fail">
+            {{ test_result.testees_name }}, вы не прошли тест<br>
+            Верных ответов: {{ test_result.correct_count }}/{{ test_result.test.questions.count }}
+        </p>
+    {% endif %}
+{% endblock %}
