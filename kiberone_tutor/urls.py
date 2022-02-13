@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('mainapp.urls')),
     path('', include('authapp.urls')),
     path('', include('fair.urls')),
+    path('tests/', include('test.urls')),
     path('api-token-auth/', CustomAuthToken.as_view())
 ]
 

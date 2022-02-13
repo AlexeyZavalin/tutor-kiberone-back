@@ -52,3 +52,34 @@
 .kiberon-reg:hover {
   background-color: rgba(97, 185, 217, 0.51);
 }
+
+.question {
+  padding: 15px;
+  background-color: #fdfdfd;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.test-result {
+  max-width: 600px;
+  padding: 25px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #e7e7e7;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .3s);
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+  &_success {
+    color: #075b07;
+    font-size: 24px;
+  }
+  &_fail {
+    color: #320909;
+    font-size: 22px;
+  }
+}

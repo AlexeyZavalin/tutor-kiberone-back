@@ -1,0 +1,42 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Тест{% endblock %}
+{% block inside_content %}
+    {% if messages %}
+        <ul class="messages messages_success">
+            <div class="messages__close" title="Закрыть">&times;</div>
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <li{% if message.tags %}
+                        class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <ul class="messages messages_error">
+            <div class="messages__close" title="Закрыть">&times;</div>
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <li{% if message.tags %}
+                        class="messages__message messages__message_{{ message.tags }} {{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post">{% csrf_token %}
+        {% for field in form %}
+            <div class="question">
+                <h3>{{ forloop.counter }} вопрос.</h3>
+                {% if field not in form.hidden_fields %}
+                    <div class="form-input">
+                        {{ field.errors }}
+                        {{ field.label|safe }} <div class="answers">{{ field }}</div>
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn_blue btn_big">Отправить</button>
+    </form>
+{% endblock %}
