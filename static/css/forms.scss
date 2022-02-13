@@ -198,3 +198,17 @@ select {
   align-items: center;
   justify-content: space-between;
 }
+
+.question {
+  border: none;
+}
+
+.answers {
+  label, input[type="radio"] {
+    cursor: pointer;
+  }
+}
+
+.answer {
+  cursor: pointer;
+}
