@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'authapp.apps.AuthappConfig',
     'mainapp.apps.MainappConfig',
+    'test.apps.TestConfig',
 ]
 
 MIDDLEWARE = [
