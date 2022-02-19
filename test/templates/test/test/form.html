@@ -3,33 +3,19 @@
 {% block page_title %}{{ test.name }}{% endblock %}
 {% block inside_content %}
     <h2>Необходимое количество правильных ответов: {{ test.corrects_to_pass }}</h2>
-    <form method="post">
+    <form method="post" action="{% url 'test:test' test_id=test.pk %}">
         {% csrf_token %}
         <div class="form-input">
             <label for="name">Фамилия Имя</label>
             <input type="text" name="name" required="required">
         </div>
-        {% for question in questions %}
-            <fieldset class="question" id="question{{ question.id }}">
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="question">
                 <h3>Вопрос {{ forloop.counter }}</h3>
-                <p class="question__text">{{ question.question_text|safe }}</p>
-                <div class="answers">
-                    {% for answer in question.answers.all %}
-                        <div class="answer">
-                            {% if question.type == 1 %}
-                                <input type="radio" name="question{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}" required="required">
-                                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                            {% elif question.type == 2 %}
-                                <input type="checkbox" name="question{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}">
-                                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                            {% else %}
-                                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                                <textarea name="answer" id="" cols="30" rows="10"></textarea>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
+                {{ form.desc|safe }}
+                {{ form }}
+            </div>
         {% endfor %}
         <button class="btn btn_big btn_blue" type="submit">Отправить</button>
     </form>

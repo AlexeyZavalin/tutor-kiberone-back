@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('authapp.urls')),
     path('', include('fair.urls')),
     path('tests/', include('test.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('api-token-auth/', CustomAuthToken.as_view())
 ]
 

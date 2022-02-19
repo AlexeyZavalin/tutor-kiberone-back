@@ -29,7 +29,7 @@ class TestResultAdmin(admin.ModelAdmin):
         can_add = False
         verbose_name = 'Ответ'
         verbose_name_plural = 'Ответы'
-        readonly_fields = ['answer']
+        readonly_fields = ['answer', 'answer_text']
 
     list_display = ['testees_name', 'test', 'date', 'passed']
     date_hierarchy = 'date'

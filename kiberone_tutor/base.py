@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'fair.apps.FairConfig',
     'solo.apps.SoloAppConfig',
     'compressor',
-
+    'ckeditor',
     'authapp.apps.AuthappConfig',
     'mainapp.apps.MainappConfig',
     'test.apps.TestConfig',
@@ -200,3 +200,6 @@ STATICFILES_FINDERS = (
 
 COMPRESS_ENABLED = True
 COMPRESS_OUTPUT_DIR = 'compressed'
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "/media/uploads/"

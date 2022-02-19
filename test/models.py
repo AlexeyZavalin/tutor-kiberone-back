@@ -1,18 +1,24 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+
+from ckeditor.fields import RichTextField
 
 
 class Question(models.Model):
     """Вопрос"""
+    ONE_CORRECT = 1
+    COUPLE_CORRECTS = 2
+    TEXT = 3
     QUESTION_TYPES = (
-        (1, 'Один правильный ответ'),
-        (2, 'Несколько правильных ответов'),
-        (3, 'Развернутый ответ')
+        (ONE_CORRECT, 'Один правильный ответ'),
+        (COUPLE_CORRECTS, 'Несколько правильных ответов'),
+        (TEXT, 'Развернутый ответ')
     )
-    question_text = models.TextField(
+    question_text = RichTextField(
         max_length=500,
         null=False,
         blank=False,
-        verbose_name='Текст вопроса'
+        verbose_name='Текст вопроса',
     )
     type = models.PositiveSmallIntegerField(
         choices=QUESTION_TYPES,
@@ -58,11 +64,24 @@ class Answer(models.Model):
 
 class Test(models.Model):
     """Тест"""
+    REQUIRED = 'required'
+    OPTIONAL = 'optional'
+    TEST_TYPES_CHOICES = [
+        (REQUIRED, 'Обязательный'),
+        (OPTIONAL, 'Не обязательный')
+    ]
     name = models.CharField(
         max_length=50,
         null=True,
         blank=True,
         verbose_name='Название теста'
+    )
+    test_type = models.CharField(
+        choices=TEST_TYPES_CHOICES,
+        max_length=8,
+        null=True,
+        default=REQUIRED,
+        verbose_name='Тип теста'
     )
     questions = models.ManyToManyField(
         to=Question,
@@ -74,6 +93,17 @@ class Test(models.Model):
         verbose_name='Количество правильных ответов для прохождения',
         null=True,
         blank=True
+    )
+    available_for_retest = models.BooleanField(
+        default=True,
+        verbose_name='Возможность перепрохождения теста'
+    )
+    days_for_retest = models.PositiveSmallIntegerField(
+        verbose_name='Количество дней для возможности перепрохождения (1-7)',
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(7)],
+        null=False,
+        blank=False
     )
 
     def __str__(self):
@@ -128,6 +158,11 @@ class UserAnswer(models.Model):
         null=True,
         verbose_name='Ответ пользователя'
     )
+    answer_text = models.TextField(
+        null=True,
+        blank=False,
+        verbose_name='Развернутый ответ'
+    )
     test_result = models.ForeignKey(
         to=TestResult,
         on_delete=models.CASCADE,
@@ -141,4 +176,5 @@ class UserAnswer(models.Model):
 
     def __str__(self):
         return f'{self.answer.answer_text} - ' \
-               f'{"верно" if self.answer.is_correct else "не верно"}'
+               f'{"верно" if self.answer.is_correct else "не верно"}' if \
+            self.answer else str(self.answer_text)
