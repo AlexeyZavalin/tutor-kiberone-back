@@ -78,9 +78,9 @@ if (createGroupForm) {
             createGroupForm.querySelector('.form_errors').remove()
         }
         const url = createGroupForm.dataset['action']
-        const time = createGroupForm.querySelector('#id_time').value
+        const time = createGroupForm.querySelector('#id_available_time').value
         const dayOfWeek = createGroupForm.querySelector('#id_day_of_week').value
-        const location = createGroupForm.querySelector('#id_location').value
+        const location = createGroupForm.querySelector('#id_available_location').value
         const formData = {
             'location': location,
             'time': time,
