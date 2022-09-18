@@ -38,8 +38,11 @@ def get_response_for_create_group(time: str, location: str,
                                   day_of_week: str, user: Tutor) -> \
         JsonResponse:
     """Получаем ответ для запроса создания группы"""
-    group = Group.objects.filter(time=time, location=location,
-                                 day_of_week=day_of_week)
+    group = Group.objects.filter(
+        available_time_id=time,
+        available_location_id=location,
+        day_of_week=day_of_week
+    )
     if group.exists():
         if group.first().is_deleted:
             group.update(is_deleted=False)
@@ -49,8 +52,14 @@ def get_response_for_create_group(time: str, location: str,
         return JsonResponse({'success': False,
                              'message': 'Такая группа уже есть, '
                                         'измените параметры'})
-    Group.objects.create(location=location, time=time,
-                         day_of_week=day_of_week, tutor=user)
+    Group.objects.create(
+        available_location_id=location,
+        available_time_id=time,
+        day_of_week=day_of_week,
+        tutor=user,
+        time=None,  # выпилить
+        location=None,  # выпилить
+    )
     return JsonResponse({'success': True,
                          'redirect': reverse_lazy('mainapp:groups')})
 
@@ -60,7 +69,8 @@ def get_response_for_create_student(name: str, kiberon_amount: int,
     """Получаем ответ при отправке формы добавления студента"""
     Student.objects.create(name=name, kiberon_amount=kiberon_amount,
                            info=info, group_id=group_id)
-    redirect = reverse_lazy('mainapp:student-list', kwargs={'group_id': group_id})
+    redirect = reverse_lazy('mainapp:student-list',
+                            kwargs={'group_id': group_id})
     return JsonResponse({'success': True, 'redirect': redirect})
 
 
@@ -75,7 +85,8 @@ def get_response_for_remove_student(student_id: int, password: str,
         user = authenticate(username=username, password=password)
         if user is not None:
             student.delete()
-            return JsonResponse({'success': True, 'message': 'Студент успешно удален'})
+            return JsonResponse(
+                {'success': True, 'message': 'Студент успешно удален'})
         return JsonResponse({'success': False,
                              'message': 'Неверный пароль'})
     return JsonResponse({'success': False,
@@ -98,13 +109,16 @@ def form_data_processing(data: dict, tutor: Tutor) -> dict:
         kiberon = Kiberon.objects.get(achievement=data.get('action'))
         for student in students:
             try:
-                KiberonStudentReg.objects.create(student=student, kiberon=kiberon, tutor=tutor)
-                messages['success'].append(f'{student.name} - {kiberon.value}к - '
-                                           f'достижение "{kiberon.get_achievement_display()}"')
+                KiberonStudentReg.objects.create(student=student,
+                                                 kiberon=kiberon, tutor=tutor)
+                messages['success'].append(
+                    f'{student.name} - {kiberon.value}к - '
+                    f'достижение "{kiberon.get_achievement_display()}"')
             except IntegrityError:
                 # запись уже есть
-                messages['error'].append(f'для {student.name} запись с достижением на текущую дату '
-                                           f'"{kiberon.get_achievement_display()}" уже есть')
+                messages['error'].append(
+                    f'для {student.name} запись с достижением на текущую дату '
+                    f'"{kiberon.get_achievement_display()}" уже есть')
     except ObjectDoesNotExist:
         # такого не должно случиться, но на всякий случай, вдруг как-то исчезнет киберон
         messages['error'].append('Такого достижения нет')
@@ -122,15 +136,19 @@ def get_response_for_remove_kiberon_reg(reg_id: int) -> JsonResponse:
 
 def get_days_of_week(tutor: Tutor) -> tuple:
     """Получаем доступные дни недели"""
-    days_of_week = Group.active.filter(Q(tutor=tutor) | Q(temporary_tutor=tutor)).distinct()\
+    days_of_week = Group.active.filter(
+        Q(tutor=tutor) | Q(temporary_tutor=tutor)).distinct() \
         .values_list('day_of_week', flat=True)
-    return tuple(day_of_week[0] for day_of_week in Group.DAYS_OF_WEEK_CHOICES if day_of_week[0] in days_of_week)
+    return tuple(
+        day_of_week[0] for day_of_week in Group.DAYS_OF_WEEK_CHOICES if
+        day_of_week[0] in days_of_week)
 
 
 def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
     """получем словарь ловарь с днем недели и группами для этого дня"""
 
-    groups = Group.active.filter(Q(tutor=tutor) | Q(temporary_tutor=tutor), day_of_week=day_of_week).order_by('time')
+    groups = Group.active.filter(Q(tutor=tutor) | Q(temporary_tutor=tutor),
+                                 day_of_week=day_of_week).order_by('time')
     _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
                               if day[0] == day_of_week][0]
     return {
@@ -139,23 +157,31 @@ def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
     }
 
 
-def get_response_for_custom_adding_kiberons(kiberon_amount: int, student_id: int,
-                                            group_id: int, achievement: str, tutor: Tutor) -> JsonResponse:
+def get_response_for_custom_adding_kiberons(kiberon_amount: int,
+                                            student_id: int,
+                                            group_id: int, achievement: str,
+                                            tutor: Tutor) -> JsonResponse:
     """Получаем ответ для кастомного добавления киберонов"""
     try:
         student = Student.objects.get(pk=student_id)
-        redirect = reverse_lazy('mainapp:student-list', kwargs={'group_id': group_id})
+        redirect = reverse_lazy('mainapp:student-list',
+                                kwargs={'group_id': group_id})
         kiberon = Kiberon.objects.get(achievement=Kiberon.CUSTOM)
-        KiberonStudentReg.objects.create(student=student, kiberon=kiberon, custom_kiberons=kiberon_amount,
-                                         custom_achievement=achievement, tutor=tutor)
+        KiberonStudentReg.objects.create(student=student, kiberon=kiberon,
+                                         custom_kiberons=kiberon_amount,
+                                         custom_achievement=achievement,
+                                         tutor=tutor)
         return JsonResponse({'success': True, 'redirect': redirect})
     except ObjectDoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Такого ученика нет'})
+        return JsonResponse(
+            {'success': False, 'message': 'Такого ученика нет'})
     except IntegrityError:
-        return JsonResponse({'success': False, 'message': 'Что-то пошло не так'})
+        return JsonResponse(
+            {'success': False, 'message': 'Что-то пошло не так'})
 
 
-def get_response_for_custom_remove_kiberons(kiberon_amount: int, student_id: int,
+def get_response_for_custom_remove_kiberons(kiberon_amount: int,
+                                            student_id: int,
                                             group_id: int) -> JsonResponse:
     """Получаем ответ для удаления киберонов"""
     try:
