@@ -2,13 +2,15 @@ from django.contrib import admin
 from solo.admin import SingletonModelAdmin
 
 from mainapp.models import Group, Student, Kiberon, KiberonStudentReg,\
-    SiteConfiguration
+    SiteConfiguration, AvailableTime, Location
 
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ['day_of_week', 'time', 'location', 'tutor']
-    list_filter = ['tutor', 'day_of_week']
+    list_display = ['day_of_week', 'available_time', 'available_location',
+                    'tutor']
+    list_filter = ['tutor', 'day_of_week', 'available_time',
+                   'available_location']
 
 
 @admin.register(Student)
@@ -30,6 +32,16 @@ class KiberonStudentRegAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
     search_fields = ['student__name']
     list_filter = ['tutor', 'kiberon']
+
+
+@admin.register(AvailableTime)
+class AvailableTimeAdmin(admin.ModelAdmin):
+    list_display = ['__str__']
+
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ['__str__']
 
 
 admin.site.register(SiteConfiguration, SingletonModelAdmin)

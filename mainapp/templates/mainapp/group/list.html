@@ -40,8 +40,8 @@
                         {% for group in day_of_week_section.groups %}
                             {% if group.tutor == request.user %}
                                 <tr class="group-table__row" id="group-row-{{ group.pk }}">
-                                    <td>{{ group.get_time_display }}</td>
-                                    <td>{{ group.get_location_display }}</td>
+                                    <td>{{ group.available_time }}</td>
+                                    <td>{{ group.available_location }}</td>
                                     <td>{{ group.students_amount }}</td>
                                     <td>
                                         <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
