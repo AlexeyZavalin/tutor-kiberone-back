@@ -115,11 +115,9 @@ if (createStudentForm) {
         }
         const url = createStudentForm.dataset['action']
         const name = createStudentForm.querySelector('#id_name').value
-        const kiberonAmount = createStudentForm.querySelector('#id_kiberon_amount').value
         const info = createStudentForm.querySelector('#id_info').value
         const formData = {
             'name': name,
-            'kiberon_amount': kiberonAmount,
             'info': info
         }
         postData(url, formData)

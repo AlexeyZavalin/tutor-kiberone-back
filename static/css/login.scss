@@ -1,5 +1,4 @@
 .login-page {
-  background-color: $bgc;
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -8,32 +7,44 @@
   justify-content: center;
 }
 
-.logo-wrapper {
-  margin-bottom: 60px;
-  margin-top: -170px;
-}
-
-.login__form-wrapper {
-  background-color: #fff;
-  width: 625px;
-  padding: 25px;
-  filter: drop-shadow(0px 0px 30px rgba(0, 0, 0, 0.25));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.login__form {
-  display: flex;
-  flex-direction: column;
-}
-
-
-.login__title {
-  font-size: 4.5rem;
-  font-weight: bold;
-  letter-spacing: -8px;
-  line-height: 90px;
-  margin-bottom: 20px;
+.login {
+  &__form-wrapper {
+    background-color: $blue;
+    position: relative;
+  }
+  &__form-container {
+    position: relative;
+    z-index: 1;
+    background-color: $blue;
+    width: 625px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+  }
+  &__logo {
+    position: absolute;
+    z-index: -1;
+    &_top {
+      top: -230px;
+      left: -200px;
+    }
+    &_bottom {
+      bottom: -190px;
+      left: -200px;
+    }
+  }
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+  &__title {
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1.75rem;
+  }
 }

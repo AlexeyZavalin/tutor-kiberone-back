@@ -26,42 +26,58 @@ html {
 }
 
 .page-title {
-    color: #202020;
-    font-size: 3rem;
-    overflow: hidden;
+  color: #202020;
+  font-size: 3rem;
+  overflow: hidden;
+  text-align: center;
 }
 
 .page-title__text {
-    padding-right: 40px;
-    position: relative;
+  padding: 0 40px;
+  position: relative;
 }
 
 .page-title__text:after {
-    content: "";
-    display: block;
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    margin-top: -1px;
-    height: 3px;
-    width: 1200px;
-    background-color: $yellow;
+  content: "";
+  display: block;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-top: -1px;
+  height: 1px;
+  width: 1200px;
+  background-color: $yellow;
+}
+
+.page-title__text:before {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  margin-top: -1px;
+  height: 1px;
+  width: 1200px;
+  background-color: $yellow;
 }
 
 .subtitle {
-    position: relative;
-    font-size: 1.5rem;
-    padding-bottom: 10px;
-    margin-bottom: 25px;
-    margin-top: 15px;
+  position: relative;
+  font-size: 1.5rem;
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+  margin-top: 15px;
 }
 
 .subtitle:after {
-    content: '';
-    height: 3px;
-    width: 40px;
-    background-color: $red;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+  content: '';
+  height: 20px;
+  width: 20px;
+  background-color: rgba($blue, .5);
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
 }

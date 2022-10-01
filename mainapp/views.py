@@ -145,7 +145,7 @@ class CreateStudentView(CreateView):
         body = json.loads(request.body)
         return get_response_for_create_student(name=body.get('name'),
                                                kiberon_amount=body.get(
-                                                   'kiberon_amount'),
+                                                   'kiberon_amount', 0),
                                                info=body.get('info'),
                                                group_id=kwargs.get('group_id'))
 

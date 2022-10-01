@@ -67,19 +67,7 @@ class Group(DeletedMixin):
     """
     objects = models.Manager()
     active = ActiveGroupsManager()
-    # сделать миграцию данных и выпилить, как будут внесены все изменения
-    TIMES_CHOICES = (
-        ('1', '11:00'),
-        ('2', '13:30'),
-        ('3', '16:00'),
-        ('4', '18:30'),
-    )
-    LOCATION_CHOICES = (
-        ('1', 'КЮЧ1'),
-        ('2', 'КЮЧ2'),
-        ('3', 'Дзержинского'),
-        ('4', 'Шеронова'),
-    )
+
     DAYS_OF_WEEK_CHOICES = (
         ('mn', 'Понедельник'),
         ('tu', 'Вторник'),
@@ -89,12 +77,6 @@ class Group(DeletedMixin):
         ('st', 'Суббота'),
         ('sn', 'Воскресенье'),
     )
-    time = models.CharField(max_length=1, choices=TIMES_CHOICES, null=True,
-                            default=TIMES_CHOICES[0], verbose_name='Время')
-    location = models.CharField(max_length=1, choices=LOCATION_CHOICES,
-                                default=LOCATION_CHOICES[0], null=True,
-                                verbose_name='Локация')
-    # новые поля
     available_time = models.ForeignKey(
         AvailableTime,
         verbose_name='Время',
@@ -122,12 +104,13 @@ class Group(DeletedMixin):
     class Meta:
         verbose_name = 'Группа'
         verbose_name_plural = 'Группы'
-        unique_together = ('time', 'location', 'day_of_week')
+        unique_together = ('available_time', 'available_location',
+                           'day_of_week')
         db_table = 'group'
 
     def __str__(self):
         return f'{self.get_day_of_week_display()} ' \
-               f'{self.get_location_display()} {self.get_time_display()}'
+               f'{self.available_location} {self.available_time}'
 
     @property
     def students_amount(self):
