@@ -1,16 +1,17 @@
 .group-table {
   width: 100%;
-
+  border: none;
   th {
     text-align: center;
     padding: 15px 45px;
-    border-bottom: 2px solid $darkblue;
+    color: #fff;
+    background-color: $yellow;
+    font-weight: normal;
   }
 
   td {
     text-align: center;
     padding: 5px 25px;
-    border-bottom: 1px solid $darkblue;
   }
 
   th:last-child, td:last-child {
@@ -22,6 +23,11 @@
       transition: .3s;
     }
 
+    &:nth-child(odd) {
+      td {
+        background-color: #9C9C9C1A;
+      }
+    }
     &:hover {
       td {
         background-color: rgba(41, 89, 117, 0.3);

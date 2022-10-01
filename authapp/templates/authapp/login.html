@@ -4,32 +4,34 @@
 {% block title %}{% trans "Вход" %}{% endblock %}
 {% block content %}
     <div class="login-page">
-        <div class="logo-wrapper">
-            <img src="{% static "img/logo.png" %}" alt="KiberOne">
-        </div>
         <div class="login__form-wrapper">
-            <div class="login__title">
-                <span class="text-uppercase login-char text-blue">в</span>
-                <span class="text-uppercase login-char text-yellow">х</span>
-                <span class="text-uppercase login-char text-red">о</span>
-                <span class="text-uppercase login-char text-darkblue">д</span>
+            <div class="login__form-container">
+                <div class="login__title">
+                    Войдите в свой аккаунт
+                </div>
+                <form action="{% url 'authapp:login' %}" method="post" class="login__form">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form_errors">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% for field in form %}
+                        <div class="form-input form-input_login">
+                            {{ field.label_tag }} {{ field }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn_yellow btn_big">{% trans "Войти" %}</button>
+                </form>
             </div>
-            <form action="{% url 'authapp:login' %}" method="post" class="login__form">
-                {% csrf_token %}
-                {% if form.non_field_errors %}
-                    <div class="form_errors">
-                        {% for error in form.non_field_errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% for field in form %}
-                    <div class="form-input form-input_login">
-                        {{ field.label_tag }} {{ field }}
-                    </div>
-                {% endfor %}
-                <button type="submit" class="btn btn_primary btn_big">{% trans "Войти" %}</button>
-            </form>
+            <div class="login__logo login__logo_top">
+                <img src="{% static "img/logo_top.png" %}" alt="">
+            </div>
+            <div class="login__logo login__logo_bottom">
+                <img src="{% static "img/logo_bottom.png" %}" alt="">
+            </div>
         </div>
     </div>
 {% endblock %}
