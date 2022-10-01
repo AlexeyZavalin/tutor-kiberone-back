@@ -56,16 +56,14 @@ def get_response_for_create_group(time: str, location: str,
         available_location_id=location,
         available_time_id=time,
         day_of_week=day_of_week,
-        tutor=user,
-        time=None,  # выпилить
-        location=None,  # выпилить
+        tutor=user
     )
     return JsonResponse({'success': True,
                          'redirect': reverse_lazy('mainapp:groups')})
 
 
-def get_response_for_create_student(name: str, kiberon_amount: int,
-                                    info: str, group_id: int) -> JsonResponse:
+def get_response_for_create_student(name: str, info: str, group_id: int,
+                                    kiberon_amount: int = 0) -> JsonResponse:
     """Получаем ответ при отправке формы добавления студента"""
     Student.objects.create(name=name, kiberon_amount=kiberon_amount,
                            info=info, group_id=group_id)
@@ -148,7 +146,8 @@ def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
     """получем словарь ловарь с днем недели и группами для этого дня"""
 
     groups = Group.active.filter(Q(tutor=tutor) | Q(temporary_tutor=tutor),
-                                 day_of_week=day_of_week).order_by('time')
+                                 day_of_week=day_of_week)\
+        .order_by('available_time')
     _, day_of_week_display = [day for day in Group.DAYS_OF_WEEK_CHOICES
                               if day[0] == day_of_week][0]
     return {
