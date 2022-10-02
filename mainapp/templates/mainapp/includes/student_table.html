@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="table-wrapper">
+    {% include 'mainapp/includes/loader.html' %}
+    <table class="group-table" cellspacing="0" cellpadding="0">
+        <thead>
+            <tr class="group-table__row">
+                <th style="width: 25px;">#</th>
+                <th class="sortable_col">Фамилия Имя
+                    <span
+                        title="Сортировать по возрастанию"
+                        class="sort_by sort_by_asc"
+                        data-sort-field="name"
+                        data-sort-order="ASC"
+                        data-sort-url="{% url 'mainapp:student-list' group.pk %}"
+                        data-sort-container="student-list"
+                        data-loading-container=".table-wrapper"
+                    >
+                    </span>
+                </th>
+                <th class="sortable_col">Кол-во киберонов
+                    <span
+                        title="Сортировать по возрастанию"
+                        class="sort_by sort_by_asc"
+                        data-sort-field="kiberon_amount"
+                        data-sort-order="ASC"
+                        data-sort-url="{% url 'mainapp:student-list' group.pk %}"
+                        data-sort-container="student-list"
+                        data-loading-container=".table-wrapper"
+                    >
+                    </span>
+                </th>
+                <th>Действия</th>
+                <th>
+                    <div class="checkbox" title="Выделить всех">
+                        <input type="checkbox"
+                               id="student-check-all" class="checkbox__native"/>
+                        <label for="student-check-all" class="checkbox__label"></label>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody id="student_list">
+            {% include 'mainapp/includes/student_list.html' %}
+        </tbody>
+    </table>
+</div>

@@ -1,13 +1,17 @@
 "use strict";
 
-let btnsModal = document.querySelectorAll('.btn_modal');
+function initModalBtns() {
+    let btnsModal = document.querySelectorAll('.btn_modal');
 
-btnsModal.forEach(function (element) {
-    element.addEventListener('click', function (event) {
-        let modal = document.getElementById(element.dataset['modalId']);
-        modal.style.display = "block";
+    btnsModal.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            let modal = document.getElementById(element.dataset['modalId']);
+            modal.style.display = "block";
+        })
     })
-})
+}
+
+initModalBtns();
 
 let closeBtns = document.querySelectorAll('.close');
 
@@ -189,8 +193,29 @@ if (removeStudentForm) {
 // массовое выделение
 let studentIds = new Set()
 
-let studentCheckBoxes = document.querySelectorAll('.student-checkbox')
-let studentCheckAll = document.getElementById('student-check-all')
+function initCheckboxes() {
+    let studentCheckBoxes = document.querySelectorAll('.student-checkbox')
+    let studentCheckAll = document.getElementById('student-check-all')
+    if (studentCheckBoxes.length > 0) {
+        let studentIdsInput = document.getElementById('id_student_ids')
+        studentCheckAll.addEventListener('click', function (event) {
+            studentCheckBoxes.forEach(function (element) {
+                element.checked = studentCheckAll.checked
+                handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
+            })
+        })
+        studentCheckBoxes.forEach(function (element) {
+            element.addEventListener('change', function (event) {
+                handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
+                if (!element.checked) {
+                    studentCheckAll.checked = false
+                }
+            })
+        })
+    }
+}
+
+initCheckboxes()
 
 function handleCheckBox(checked, value, input) {
     if (checked) {
@@ -199,24 +224,6 @@ function handleCheckBox(checked, value, input) {
         studentIds.delete(value)
     }
     input.value = Array.from(studentIds).join(',')
-}
-
-if (studentCheckBoxes.length > 0) {
-    let studentIdsInput = document.getElementById('id_student_ids')
-    studentCheckAll.addEventListener('click', function (event) {
-        studentCheckBoxes.forEach(function (element) {
-            element.checked = studentCheckAll.checked
-            handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
-        })
-    })
-    studentCheckBoxes.forEach(function (element) {
-        element.addEventListener('change', function (event) {
-            handleCheckBox(element.checked, element.dataset['studentId'], studentIdsInput)
-            if (!element.checked) {
-                studentCheckAll.checked = false
-            }
-        })
-    })
 }
 
 
@@ -373,6 +380,61 @@ if (messagesLists.length) {
         const messagesItems = element.querySelectorAll('li.messages__message')
         if (messagesItems.length === 0) {
             element.remove()
+        }
+    })
+}
+
+function initSorts() {
+    const sorts = document.querySelectorAll('.sort_by');
+    if (sorts) {
+       sorts.forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                const sortField = e.target.dataset.sortField;
+                const sortOrder = e.target.dataset.sortOrder;
+                const url = `${e.target.dataset['sortUrl']}?sort_by=${sortField}&sort_order=${sortOrder}`;
+                const container = document.getElementById(e.target.dataset.sortContainer)
+                const loadingContainer = document.querySelector(e.target.dataset.loadingContainer);
+                const loader = loadingContainer.querySelector('.loading');
+                loader.classList.add('loading_active');
+                getData(url, {})
+                .then(data => {
+                    document.getElementById('student_list').innerHTML = data.markup
+                    if (sortOrder === 'DESC') {
+                        element.dataset.sortOrder = 'ASC';
+                        element.classList.add('sort_by_asc');
+                        element.classList.remove('sort_by_desc');
+                        element.title = 'Сортировать по возрастанию';
+                    } else {
+                        element.dataset.sortOrder = 'DESC';
+                        element.classList.remove('sort_by_asc');
+                        element.classList.add('sort_by_desc');
+                        element.title = 'Сортировать по убыванию';
+                    }
+                    initModalBtns();
+                    initCheckboxes();
+                    loader.classList.remove('loading_active');
+                })
+            })
+        })
+    }
+}
+
+initSorts()
+
+// show password
+const showPasswordBtn = document.querySelector('.show_password');
+if (showPasswordBtn) {
+    showPasswordBtn.addEventListener('click', function (e) {
+        const passwordInput = showPasswordBtn.parentNode.querySelector('[name="password"]');
+        const img = showPasswordBtn.querySelector('img')
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            showPasswordBtn.title = showPasswordBtn.dataset.hideText;
+            img.src = showPasswordBtn.dataset.hidePath;
+        } else {
+            passwordInput.type = 'password';
+            showPasswordBtn.title = showPasswordBtn.dataset.showText;
+            img.src = showPasswordBtn.dataset.showPath;
         }
     })
 }

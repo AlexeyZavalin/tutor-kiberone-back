@@ -19,8 +19,21 @@
                         </div>
                     {% endif %}
                     {% for field in form %}
-                        <div class="form-input form-input_login">
-                            {{ field.label_tag }} {{ field }}
+                        <div class="form-input form-input_login {% if field.name == 'password' %}form-input_password{% endif %}">
+                            {{ field.label_tag }}
+                            {% if field.name == 'password' %}
+                                <div
+                                    class="show_password"
+                                    title="Показать пароль"
+                                    data-show-path="{% static 'img/eye_show.svg' %}"
+                                    data-hide-path="{% static 'img/eye_hide.svg' %}"
+                                    data-show-text="Показать пароль"
+                                    data-hide-text="Скрыть пароль"
+                                >
+                                    <img src="{% static 'img/eye_show.svg' %}" alt="">
+                                </div>
+                            {% endif %}
+                            {{ field }}
                         </div>
                     {% endfor %}
                     <button type="submit" class="btn btn_yellow btn_big">{% trans "Войти" %}</button>
