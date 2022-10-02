@@ -135,6 +135,9 @@ select {
       border: none;
     }
   }
+  &_password {
+    position: relative;
+  }
 }
 
 .form_errors {
@@ -235,4 +238,13 @@ select {
     display: flex;
     align-items: center;
   }
+}
+
+.show_password {
+  position: absolute;
+  right: 10px;
+  z-index: 99;
+  bottom: 5px;
+  width: 25px;
+  cursor: pointer;
 }
