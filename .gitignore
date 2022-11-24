@@ -11,3 +11,7 @@ assets
 static
 venv
 .env
+docker-compose.prod.yml
+Dockerfile.prod
+.env.prod
+.env
