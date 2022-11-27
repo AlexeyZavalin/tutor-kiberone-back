@@ -26,4 +26,6 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
+EMAIL_USE_SSL = bool(os.environ.get('EMAIL_USE_SSL'))
+CSRF_COOKIE_SECURE = bool(os.environ.get('CSRF_COOKIE_SECURE', 1))
+SESSION_COOKIE_SECURE = bool(os.environ.get('SESSION_COOKIE_SECURE'))
