@@ -14,5 +14,5 @@ DATABASES = {
 }
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/alexey/tutor-kiberone/static'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR, 'fair', 'static']

@@ -1,21 +1,7 @@
 from kiberone_tutor.base import *
 
-DEBUG = False
-SECRET_KEY = os.environ.get("SECRET_KEY")
-
-STATIC_URL = '/assets/'
-STATIC_ROOT = os.environ.get('STATIC_ROOT')
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': '5432'
-    }
-}
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 #sentry
 sentry_sdk.init(
@@ -36,8 +22,10 @@ sentry_sdk.init(
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = os.environ.get('email_host')
-EMAIL_PORT = os.environ.get('email_port')
-EMAIL_HOST_USER = os.environ.get('email_host_user')
-EMAIL_HOST_PASSWORD = os.environ.get('email_host_password')
-EMAIL_USE_TLS = os.environ.get('email_user_tls') == 'True'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = bool(os.environ.get('EMAIL_USE_SSL', 0))
+CSRF_COOKIE_SECURE = bool(os.environ.get('CSRF_COOKIE_SECURE', 1))
+SESSION_COOKIE_SECURE = bool(os.environ.get('SESSION_COOKIE_SECURE', 1))
