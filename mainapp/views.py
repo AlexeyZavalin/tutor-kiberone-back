@@ -100,11 +100,10 @@ class StudentListView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('authapp:login')
     model = Student
     template_name = 'mainapp/student/list.html'
+    student_list_template = 'mainapp/includes/student_list.html'
     context_object_name = 'students'
 
-    def get_queryset(self):
-        queryset = Student.active.filter(group_id=self.kwargs.get(
-            'group_id')).order_by('-kiberon_amount')
+    def filter(self, queryset):
         if self.request.GET.get('visited_today'):
             visited_today = self.request.GET.get('visited_today')
             if visited_today == '1':
@@ -115,6 +114,32 @@ class StudentListView(LoginRequiredMixin, ListView):
                     del self.request.session['visited_today']
         if self.request.session.get('visited_today'):
             queryset = queryset.filter(visited_date=date.today())
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('sort_by'):
+            sort_order = request.GET.get('sort_order')
+            sort_by = request.GET.get('sort_by')
+            if sort_order == 'DESC':
+                sort_by = f'-{sort_by}'
+            queryset = Student.active.filter(group_id=self.kwargs.get(
+                'group_id')).order_by(sort_by)
+            queryset = self.filter(queryset)
+            context = {
+                'students': queryset,
+                'request': request
+            }
+            template = render_to_string(
+                self.student_list_template, context
+            )
+            return JsonResponse({'markup': template})
+        result = super(StudentListView, self).get(request, *args, **kwargs)
+        return result
+
+    def get_queryset(self):
+        queryset = Student.active.filter(group_id=self.kwargs.get(
+            'group_id')).order_by('-kiberon_amount')
+        queryset = self.filter(queryset)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -145,7 +170,7 @@ class CreateStudentView(CreateView):
         body = json.loads(request.body)
         return get_response_for_create_student(name=body.get('name'),
                                                kiberon_amount=body.get(
-                                                   'kiberon_amount'),
+                                                   'kiberon_amount', 0),
                                                info=body.get('info'),
                                                group_id=kwargs.get('group_id'))
 

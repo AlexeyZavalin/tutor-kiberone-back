@@ -1,18 +1,18 @@
 {% extends "mainapp/base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }}
+{% block title %}{{ group.get_day_of_week_display }} {{ group.avaialble_location }}
     {{ group.get_time_display }}{% endblock %}
-{% block page_title %}{{ group.get_day_of_week_display }} {{ group.get_location_display }}
-    {{ group.get_time_display }}{% endblock %}
+{% block page_title %}{{ group.get_day_of_week_display }} {{ group.available_location }}
+    {{ group.available_time }}{% endblock %}
 {% block inside_content %}
     <div class="group-form">
         <div class="btn btn_modal btn_blue" data-modal-id="create-student-modal">Добавить ученика</div>
-        <form action="">
+        <form action="" class="form_filter">
             <div class="checkbox">
                 {{ filter_students_form.visited_today }}
             </div>
-            <button class="btn btn_yellow" type="submit" id="filter">Фильтр</button>
+            <button class="btn btn_blue" type="submit" id="filter">OK</button>
         </form>
         <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post" class="bulk-students-form">
             {% csrf_token %}
@@ -26,7 +26,7 @@
                     {{ field }}
                 {% endif %}
             {% endfor %}
-            <button class="btn btn_yellow" type="submit" id="bulk_submit">Выполнить</button>
+            <button class="btn btn_blue" type="submit" id="bulk_submit">OK</button>
         </form>
     </div>
     {% if messages %}
@@ -49,67 +49,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-    <table class="group-table">
-        <tr class="group-table__row">
-            <th style="width: 25px;">#</th>
-            <th>Фамилия Имя</th>
-            <th>Кол-во киберонов</th>
-            <th>Действия</th>
-            <th>
-                <div class="checkbox" title="Выделить всех">
-                    <input type="checkbox"
-                           id="student-check-all" class="checkbox__native"/>
-                    <label for="student-check-all" class="checkbox__label"></label>
-                </div>
-            </th>
-        </tr>
-        {% for student in students %}
-            <tr class="group-table__row" id="student-row-{{ student.pk }}">
-                <td>{{ forloop.counter }}</td>
-                <td>{{ student.name }}</td>
-                <td>{{ student.kiberon_amount }}</td>
-                <td>
-                    <div class="actions">
-                        <button class="btn btn_yellow btn_modal" data-student-id="{{ student.pk }}"
-                                data-modal-id="update-student-modal-{{ student.pk }}">Редактировать
-                        </button>
-                        {% if request.user == student.group.tutor %}
-                            <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
-                                    data-modal-id="remove-student-modal">Удалить
-                            </button>
-                        {% endif %}
-                        <button class="btn btn_blue btn_modal btn_student_kiberon"
-                                title="Добавить кибероны"
-                                data-modal-id="custom-kiberon"
-                                data-student-id="{{ student.pk }}">+
-                        </button>
-                        <button class="btn btn_red btn_modal btn_student_kiberon_remove"
-                                title="Удалить кибероны"
-                                data-modal-id="custom-kiberon-remove"
-                                data-student-id="{{ student.pk }}">-
-                        </button>
-                        {% if fair_is_active %}
-                            <button data-student-id="{{ student.pk }}"
-                                    data-modal-id="fair" title="Ярмарка"
-                                    data-url="{% url 'fair:souvenirs' %}"
-                                    data-student-name="{{ student.name }}"
-                                    data-kiberons="{{ student.kiberon_amount }}"
-                                    class="btn btn_fair btn_modal">
-                                <img src="{% static "img/present-svgrepo-com.svg" %}" alt="" class="fair-icon">
-                            </button>
-                        {% endif %}
-                    </div>
-                </td>
-                <td>
-                    <div class="checkbox">
-                        <input type="checkbox" data-student-id="{{ student.pk }}"
-                               id="student-check-{{ student.pk }}" class="checkbox__native student-checkbox"/>
-                        <label for="student-check-{{ student.pk }}" class="checkbox__label"></label>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% include 'mainapp/includes/student_table.html' %}
 {% endblock %}
 {% block modals %}
     {{ block.super }}
@@ -121,7 +61,7 @@
                 {% csrf_token %}
                 {% for field in create_student_form %}
                     {% if field not in create_student_form.hidden_fields %}
-                        <div class="form-input form-input_login">
+                        <div class="form-input">
                             {{ field.errors }}
                             {{ field.label_tag }} {{ field }}
                         </div>
@@ -141,7 +81,7 @@
                 {% csrf_token %}
                 {% for field in custom_kiberon_form %}
                     {% if field not in custom_kiberon_form.hidden_fields %}
-                        <div class="form-input form-input_login">
+                        <div class="form-input">
                             {{ field.errors }}
                             {{ field.label_tag }} {{ field }}
                         </div>
@@ -161,7 +101,7 @@
                 {% csrf_token %}
                 {% for field in custom_kiberon_remove_form %}
                     {% if field not in custom_kiberon_remove_form.hidden_fields %}
-                        <div class="form-input form-input_login">
+                        <div class="form-input">
                             {{ field.errors }}
                             {{ field.label_tag }} {{ field }}
                         </div>
@@ -202,7 +142,7 @@
                         {% csrf_token %}
                         {% for field in update_student_form %}
                             {% if field not in update_student_form.hidden_fields %}
-                                <div class="form-input form-input_login">
+                                <div class="form-input">
                                     {{ field.errors }}
                                     {{ field.label_tag }} {{ field }}
                                 </div>

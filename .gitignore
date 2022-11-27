@@ -2,7 +2,7 @@
 *.pot
 *.pyc
 __pycache__/
-local.py
+kiberone_tutor/local.py
 db.sqlite3
 media
 .idea
@@ -11,3 +11,8 @@ assets
 static
 venv
 .env
+docker-compose.prod.yml
+Dockerfile.prod
+.env.prod
+.env
+.entrypoint.prod.sh

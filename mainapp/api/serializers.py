@@ -17,7 +17,7 @@ class GroupSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['day_of_week'] = instance.get_day_of_week_display()
         rep['time'] = instance.get_time_display()
-        rep['location'] = instance.get_location_display()
+        rep['location'] = instance.available_location
         return rep
 
 

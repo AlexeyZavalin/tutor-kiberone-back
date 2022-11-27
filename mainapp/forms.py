@@ -15,7 +15,8 @@ class CreateUpdateGroupForm(forms.ModelForm):
 
     class Meta:
         model = Group
-        fields = ['time', 'location', 'day_of_week', 'temporary_tutor']
+        fields = ['available_time', 'available_location', 'day_of_week',
+                  'temporary_tutor']
 
 
 class CreateStudentForm(forms.ModelForm):
@@ -23,7 +24,7 @@ class CreateStudentForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ['name', 'kiberon_amount', 'info']
+        fields = ['name', 'info']
 
 
 class UpdateStudentForm(CreateStudentForm):

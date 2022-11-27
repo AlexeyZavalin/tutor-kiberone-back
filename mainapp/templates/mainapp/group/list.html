@@ -4,7 +4,6 @@
 {% block title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block page_title %}{% blocktrans %}Мои группы{% endblocktrans %}{% endblock %}
 {% block inside_content %}
-    <div class="btn btn_modal btn_blue" data-modal-id="create-group-modal">Добавить группу</div>
     {% if messages %}
         <ul class="messages messages_success">
             <div class="messages__close" title="Закрыть">&times;</div>
@@ -30,7 +29,7 @@
                     {{ day_of_week_section.day_of_week }}
                 </div>
                 <div class="groups-sublist">
-                    <table class="group-table">
+                    <table class="group-table" cellspacing="0" cellpadding="0">
                         <tr class="group-table__row">
                             <th>Время</th>
                             <th>Локация</th>
@@ -40,8 +39,8 @@
                         {% for group in day_of_week_section.groups %}
                             {% if group.tutor == request.user %}
                                 <tr class="group-table__row" id="group-row-{{ group.pk }}">
-                                    <td>{{ group.get_time_display }}</td>
-                                    <td>{{ group.get_location_display }}</td>
+                                    <td>{{ group.available_time }}</td>
+                                    <td>{{ group.available_location }}</td>
                                     <td>{{ group.students_amount }}</td>
                                     <td>
                                         <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
@@ -56,8 +55,8 @@
                             {% else %}
                                 <tr class="group-table__row group-table__row_temporary" id="group-row-{{ group.pk }}"
                                     title="Временная группа тьютора: {{ group.tutor.first_name }} {{ group.tutor.last_name }}">
-                                    <td>{{ group.get_time_display }}</td>
-                                    <td>{{ group.get_location_display }}</td>
+                                    <td>{{ group.available_time }}</td>
+                                    <td>{{ group.available_location }}</td>
                                     <td>{{ group.students_amount }}</td>
                                     <td>
                                         <a href="{% url "mainapp:student-list" group.pk %}" class="btn btn_blue">Войти</a>
@@ -70,6 +69,7 @@
             </div>
         {% endfor %}
     </div>
+    <div class="btn btn_modal btn_blue" data-modal-id="create-group-modal" title="Создать группу">+</div>
 {% endblock %}
 {% block modals %}
     <div id="remove-modal" class="modal">

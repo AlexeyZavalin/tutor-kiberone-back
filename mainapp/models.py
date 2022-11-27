@@ -19,6 +19,48 @@ class ActiveStudentsManager(models.Manager):
         return Student.objects.filter(is_deleted=False)
 
 
+class Location(DeletedMixin):
+    """
+    Локация
+    """
+    address = models.CharField(
+        max_length=128,
+        null=True,
+        blank=True,
+        verbose_name='Адрес локации'
+    )
+    short_name = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name='Краткое наименование'
+    )
+
+    class Meta:
+        verbose_name_plural = 'Локации'
+        verbose_name = 'Локация'
+
+    def __str__(self):
+        return self.short_name
+
+
+class AvailableTime(DeletedMixin):
+    """
+    Доступное время для урока
+    """
+    time_start = models.TimeField(verbose_name='Время начала урока')
+    time_end = models.TimeField(verbose_name='Время завершения урока')
+
+    class Meta:
+        verbose_name = 'Доступное время'
+        verbose_name_plural = 'Доступное время'
+        unique_together = ('time_start', 'time_end')
+
+    def __str__(self):
+        return f'{self.time_start.strftime("%H:%M")}-' \
+               f'{self.time_end.strftime("%H:%M")}'
+
+
 class Group(DeletedMixin):
     """
     Модель для хранения информации о группе
@@ -26,18 +68,6 @@ class Group(DeletedMixin):
     objects = models.Manager()
     active = ActiveGroupsManager()
 
-    TIMES_CHOICES = (
-        ('1', '11:00'),
-        ('2', '13:30'),
-        ('3', '16:00'),
-        ('4', '18:30'),
-    )
-    LOCATION_CHOICES = (
-        ('1', 'КЮЧ1'),
-        ('2', 'КЮЧ2'),
-        ('3', 'Дзержинского'),
-        ('4', 'Шеронова'),
-    )
     DAYS_OF_WEEK_CHOICES = (
         ('mn', 'Понедельник'),
         ('tu', 'Вторник'),
@@ -47,29 +77,40 @@ class Group(DeletedMixin):
         ('st', 'Суббота'),
         ('sn', 'Воскресенье'),
     )
-
-    time = models.CharField(max_length=1, choices=TIMES_CHOICES,
-                            default=TIMES_CHOICES[0], verbose_name='Время')
-    location = models.CharField(max_length=1, choices=LOCATION_CHOICES,
-                                default=LOCATION_CHOICES[0],
-                                verbose_name='Локация')
+    available_time = models.ForeignKey(
+        AvailableTime,
+        verbose_name='Время',
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    available_location = models.ForeignKey(
+        Location,
+        verbose_name='Локация',
+        on_delete=models.SET_NULL,
+        null=True
+    )
     day_of_week = models.CharField(max_length=2, choices=DAYS_OF_WEEK_CHOICES,
                                    default=DAYS_OF_WEEK_CHOICES[0],
                                    verbose_name='День недели')
     tutor = models.ForeignKey('authapp.Tutor', on_delete=models.SET_DEFAULT,
-                              default=None, null=True, verbose_name='Тьютор', related_name='tutor')
-    temporary_tutor = models.ForeignKey('authapp.Tutor', on_delete=models.SET_NULL, default=None, null=True,
-                                           verbose_name='Временный тьютор', related_name='temp_tutor', blank=True)
+                              default=None, null=True, verbose_name='Тьютор',
+                              related_name='tutor')
+    temporary_tutor = models.ForeignKey('authapp.Tutor',
+                                        on_delete=models.SET_NULL,
+                                        default=None, null=True,
+                                        verbose_name='Временный тьютор',
+                                        related_name='temp_tutor', blank=True)
 
     class Meta:
         verbose_name = 'Группа'
         verbose_name_plural = 'Группы'
-        unique_together = ('time', 'location', 'day_of_week')
+        unique_together = ('available_time', 'available_location',
+                           'day_of_week')
         db_table = 'group'
 
     def __str__(self):
         return f'{self.get_day_of_week_display()} ' \
-               f'{self.get_location_display()} {self.get_time_display()}'
+               f'{self.available_location} {self.available_time}'
 
     @property
     def students_amount(self):
@@ -84,11 +125,13 @@ class Student(DeletedMixin):
     active = ActiveStudentsManager()
 
     name = models.CharField(max_length=50, blank=False,
-                            verbose_name='Фамилия Имя')
+                            verbose_name='Фамилия Имя', unique=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE,
                               verbose_name='Группа',
                               related_name='students')
-    kiberon_amount = models.PositiveIntegerField(default=0, verbose_name='Количество киберонов')
+    kiberon_amount = models.PositiveIntegerField(default=0,
+                                                 verbose_name='Количество '
+                                                              'киберонов')
     info = models.TextField(max_length=250, blank=True,
                             verbose_name='Информация')
     visited_date = models.DateField(
@@ -98,6 +141,14 @@ class Student(DeletedMixin):
         blank=True)
     gmail_name = models.EmailField(default=None, verbose_name='Gmail',
                                    null=True, blank=True, max_length=70)
+    # выводить только в админке
+    gmail_password = models.CharField(
+        default=None,
+        null=True,
+        blank=True,
+        max_length=30,
+        verbose_name='Gmail password (выводить только в админке)'
+    )
 
     class Meta:
         verbose_name = 'Студент'
@@ -116,7 +167,8 @@ class Student(DeletedMixin):
         self.save()
 
     def get_absolute_url(self):
-        return reverse('mainapp:student-list', kwargs={'group_id': self.group.pk})
+        return reverse('mainapp:student-list',
+                       kwargs={'group_id': self.group.pk})
 
     @property
     def visited_at_current_date(self) -> bool:
@@ -149,7 +201,8 @@ class Kiberon(models.Model):
         (SOCIAL, 'За посты в соц. сети'),
         (ANSWER, 'За ответ в конце урока'),
         (CUSTOM, 'Свое достижение'),
-        (PERFECT_BEHAVIOUR_IN_MODULE, 'Прошел модуль без замечаний по поведению'),
+        (PERFECT_BEHAVIOUR_IN_MODULE,
+         'Прошел модуль без замечаний по поведению'),
         (HELP_TO_FRIEND, 'Помог другу'),
         (HELP_TO_ASSISTENT, 'Помог ассистенту с уборкой'),
         (USEFUL_RULE, 'Придумал полезное правило для школы')
@@ -180,7 +233,9 @@ class KiberonStudentReg(models.Model):
                               verbose_name='Тьютор')
     custom_kiberons = models.PositiveSmallIntegerField(
         verbose_name='Свое количество киберонов', default=0)
-    custom_achievement = models.CharField(max_length=100, default='', blank=True, verbose_name='Кастомное достижение')
+    custom_achievement = models.CharField(max_length=100, default='',
+                                          blank=True,
+                                          verbose_name='Кастомное достижение')
 
     class Meta:
         verbose_name = 'Запись о печати'

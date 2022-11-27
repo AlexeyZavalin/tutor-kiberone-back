@@ -1,25 +1,28 @@
 input[type="text"], input[type="password"], textarea, input[type="number"], input[type="email"] {
   display: block;
-  border: 3px solid $yellow;
+  border: 2px solid $yellow;
   padding: 15px 20px;
   outline: none;
   width: 100%;
   max-width: 360px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 
 select {
-  border: 3px solid $yellow;
+  border: 2px solid $yellow;
   padding: 7px 12px;
   cursor: pointer;
   outline: none;
   background-color: transparent;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 }
 
 .btn {
   display: inline-block;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
   border: none;
   outline: none;
   color: #fff;
@@ -32,6 +35,9 @@ select {
   margin-bottom: 5px;
   margin-top: 5px;
   transition: .3s;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
 
   &_primary {
     background-color: $red;
@@ -47,6 +53,10 @@ select {
     &:hover {
       background-color: darken($blue, 10%);
     }
+  }
+
+  &_darkblue {
+    background-color: $darkblue;
   }
 
   &_yellow {
@@ -78,7 +88,7 @@ select {
     margin-left: auto;
   }
 
-  &_student_kiberon, &_studen_kiberon_remove {
+  &_student_kiberon, &_student_kiberon_remove {
     font-size: 18px;
     font-weight: bold;
     -webkit-border-radius: 50%;
@@ -113,12 +123,20 @@ select {
   margin-right: 20px;
 
   label {
+    font-size: 0.875rem;
     display: block;
     margin-bottom: 5px;
   }
 
   &_login {
-    width: 340px;
+    width: 360px;
+    margin-right: 0;
+    input {
+      border: none;
+    }
+  }
+  &_password {
+    position: relative;
   }
 }
 
@@ -151,10 +169,11 @@ select {
       top: 0;
       bottom: 0;
       margin: auto;
-      width: 25px;
-      height: 25px;
+      width: 30px;
+      height: 30px;
       display: block;
-      border: 2px solid $blue;
+      border: 1px solid $blue;
+      background-color: #fff;
       cursor: pointer;
       transition: .2s;
     }
@@ -171,6 +190,7 @@ select {
       border-left-color: transparent;
       width: 15px;
       margin-left: 10px;
+      background-color: transparent;
     }
   }
 }
@@ -210,5 +230,21 @@ select {
 }
 
 .answer {
+  cursor: pointer;
+}
+
+.form {
+  &_filter {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.show_password {
+  position: absolute;
+  right: 10px;
+  z-index: 99;
+  bottom: 5px;
+  width: 25px;
   cursor: pointer;
 }
