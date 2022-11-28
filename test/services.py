@@ -17,7 +17,8 @@ def create_test_result(test_id: int, data: QueryDict) -> TestResult:
     UserAnswer.objects.bulk_create(answers)
     correct_counter = len(list(filter(lambda x: x.answer.is_correct,
                                       answers)))
-    if correct_counter >= test_result.test.corrects_to_pass:
+    if test_result.test.corrects_to_pass and correct_counter >= \
+            test_result.test.corrects_to_pass:
         test_result.passed = True
         test_result.correct_count = correct_counter
         test_result.save()

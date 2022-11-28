@@ -32,7 +32,11 @@ class TestView(TemplateView):
         data = request.POST
         test_result = services.create_test_result(test_id, data)
         return HttpResponseRedirect(
-            reverse_lazy('test:test-result', kwargs={'pk': test_result.pk})
+            reverse_lazy('test:test-result',
+                         kwargs={
+                             'pk': test_result.pk,
+                             'test_id': test_id
+                         })
         )
 
 
