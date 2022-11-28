@@ -1,10 +1,24 @@
 from django.contrib import admin
+from django import forms
+
+from ckeditor.widgets import CKEditorWidget
 
 from test.models import Answer, Question, Test, TestResult, UserAnswer
 
 
+class QuestionAdminForm(forms.ModelForm):
+    question_text = forms.CharField(widget=CKEditorWidget(), label='Текст '
+                                                                   'вопроса')
+
+    class Meta:
+        model = Question
+        fields = '__all__'
+
+
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    form = QuestionAdminForm
+    list_filter = ('tests',)
 
     class AnswerInline(admin.TabularInline):
         model = Answer
