@@ -143,3 +143,34 @@
     z-index: 1;
   }
 }
+
+// tests
+
+.tests {
+  display: grid;
+  grid-gap: 25px;
+  grid-template-columns: repeat(auto-fill, 265px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.test__link {
+  display: block;
+  text-decoration: none;
+  padding: 45px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  color: $text-color-dark;
+  font-size: 1.25rem;
+  cursor: pointer;
+  background-color: #fafafa;
+  text-align: center;
+  box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+  &:hover {
+    transition: .3s;
+    transform: scale(1.04);
+    box-shadow: 2px 2px 35px rgba(0,0,0,0.1);
+  }
+}

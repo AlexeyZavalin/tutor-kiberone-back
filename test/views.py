@@ -1,8 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView
 
 from test.models import Test, TestResult, UserAnswer, Answer
+from test import services
 
 
 class TestListView(ListView):
@@ -28,20 +30,7 @@ class TestView(TemplateView):
     def post(self, request, **kwargs):
         test_id = kwargs.get('test_id')
         data = request.POST
-        test_result = TestResult()
-        test_result.testees_name = data.get('name')
-        test_result.test = Test.objects.get(id=test_id)
-        test_result.save()
-        answers = [UserAnswer(answer_id=value, test_result_id=test_result.pk)
-                   for key, value in data.items()
-                   if key.startswith('question')]
-        UserAnswer.objects.bulk_create(answers)
-        correct_counter = len(list(filter(lambda x: x.answer.is_correct,
-                                          answers)))
-        if correct_counter >= test_result.test.corrects_to_pass:
-            test_result.passed = True
-            test_result.correct_count = correct_counter
-            test_result.save()
+        test_result = services.create_test_result(test_id, data)
         return HttpResponseRedirect(
             reverse_lazy('test:test-result', kwargs={'pk': test_result.pk})
         )
@@ -54,10 +43,21 @@ class TestResultDetailView(DetailView):
     context_object_name = 'test_result'
 
 
-class TestResultListView(ListView):
+class TestResultListView(LoginRequiredMixin, ListView):
     """Список резултатов теста"""
+    login_url = reverse_lazy('authapp:login')
     template_name = 'test/test_result/list.html'
     model = TestResult
     context_object_name = 'test_results'
     paginate_by = 15
-    queryset = TestResult.objects.all()
+
+    def get_queryset(self, *args, **kwargs):
+        return TestResult.objects.filter(test__pk=self.kwargs.get('test_id'))
+
+
+class TestResultsListView(LoginRequiredMixin, ListView):
+    template_name = 'test/test_result/test_list.html'
+    model = Test
+    context_object_name = 'tests'
+    paginate_by = 15
+    queryset = Test.objects.all()

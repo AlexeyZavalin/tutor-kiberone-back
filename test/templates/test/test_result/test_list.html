@@ -2,10 +2,10 @@
 {% block title %}Результат тестов{% endblock %}
 {% block page_title %}Результат тестов{% endblock %}
 {% block inside_content %}
-    <ul class="test_results">
-        {% for test_result in test_results %}
+    <ul class="tests_results">
+        {% for test in tests %}
             <li>
-                <a href="{% url "test:test-result" test_result.test.pk test_result.pk %}">{{ test_result.testees_name }} {{ test_result.date }} {% if test_result.passed %}Пройден{% else %}Не пройден{% endif %}</a>
+                <a href="{% url "test:test-result-list" test.pk %}">{{ test.name }}</a>
             </li>
         {% endfor %}
     </ul>
