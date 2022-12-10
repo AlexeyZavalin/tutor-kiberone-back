@@ -18,7 +18,8 @@ def get_response_for_create_fair(student_id: int, items: list, balance: int,
     """
     try:
         student = Student.objects.get(pk=student_id)
-        souvenirs = Souvenir.objects.filter(pk__in=items)
+        souvenirs = Souvenir.objects.filter(pk__in=[item.get('id') for
+                                                    item in items])
         assert Decimal(total) == souvenirs.aggregate(Sum('price')).get(
             'price__sum')
         order = FairRegistration.objects.create(student=student)
