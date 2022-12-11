@@ -125,7 +125,7 @@ class Student(DeletedMixin):
     active = ActiveStudentsManager()
 
     name = models.CharField(max_length=50, blank=False,
-                            verbose_name='Фамилия Имя', unique=True)
+                            verbose_name='Фамилия Имя')
     group = models.ForeignKey(Group, on_delete=models.CASCADE,
                               verbose_name='Группа',
                               related_name='students')
