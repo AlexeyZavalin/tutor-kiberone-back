@@ -4,15 +4,24 @@
         <div class="header__content">
             <img src="{% static "img/logo.png" %}" alt="KiberOne" class="header__logo">
             <nav class="header__nav nav">
-                <a href="{% url "mainapp:groups" %}" class="nav__link">Мои группы</a>
-                <a href="{% url "mainapp:kiberon-log" %}" class="nav__link btn_modal">Журнал</a>
+                {% if not request.user.is_anonymous %}
+                    <a href="{% url "mainapp:groups" %}" class="nav__link">Мои группы</a>
+                    <a href="{% url "mainapp:kiberon-log" %}" class="nav__link btn_modal">Журнал</a>
+                {% elif request.student %}
+                    <a href="{% url "mainapp:student_group" %}" class="nav__link">Моя группа</a>
+                {% endif %}
                 <a href="{% url "test:test-list" %}" class="nav__link btn_modal">Тесты</a>
                 <a href="{% url "test:tests-result-list" %}" class="nav__link btn_modal">Результаты тестов</a>
             </nav>
             <div class="header__user user">
                 <img src="{% static "img/user.svg" %}" alt="" class="user__icon">
-                <a href="{% url "authapp:password-change" %}" class="user__name">Привет, {{ request.user.first_name }}</a>
-                <a href="{% url "authapp:logout" %}" class="user__logout">Выход</a>
+                {% if not request.user.is_anonymous %}
+                    <a href="{% url "authapp:password-change" %}" class="user__name">Привет, {{ request.user.first_name }}</a>
+                    <a href="{% url "authapp:logout" %}" class="user__logout">Выход</a>
+                {% elif request.student %}
+                    <a href="{% url "mainapp:student_personal_area" %}" class="user__name" title="Моя страница">Привет, {{ request.student.name }}</a>
+                    <a href="{% url "authapp:student_logout" %}" class="user__logout">Выход</a>
+                {% endif %}
             </div>
         </div>
     </div>

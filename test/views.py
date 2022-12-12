@@ -1,13 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView
 
-from test.models import Test, TestResult, UserAnswer, Answer
+from mainapp.mixins import StudentOrTutorRequiredMixin
+from test.models import Test, TestResult
 from test import services
 
 
-class TestListView(ListView):
+class TestListView(StudentOrTutorRequiredMixin, ListView):
     """Список тестов"""
     template_name = 'test/test/list.html'
     model = Test
@@ -16,7 +16,7 @@ class TestListView(ListView):
     queryset = Test.objects.all()
 
 
-class TestView(TemplateView):
+class TestView(StudentOrTutorRequiredMixin, TemplateView):
     """Страница с тестом"""
     template_name = 'test/test/form.html'
 
@@ -40,14 +40,14 @@ class TestView(TemplateView):
         )
 
 
-class TestResultDetailView(DetailView):
+class TestResultDetailView(StudentOrTutorRequiredMixin, DetailView):
     """Страница с результатом теста"""
     template_name = 'test/test_result/detail.html'
     model = TestResult
     context_object_name = 'test_result'
 
 
-class TestResultListView(LoginRequiredMixin, ListView):
+class TestResultListView(StudentOrTutorRequiredMixin, ListView):
     """Список резултатов теста"""
     login_url = reverse_lazy('authapp:login')
     template_name = 'test/test_result/list.html'
@@ -59,7 +59,7 @@ class TestResultListView(LoginRequiredMixin, ListView):
         return TestResult.objects.filter(test__pk=self.kwargs.get('test_id'))
 
 
-class TestResultsListView(LoginRequiredMixin, ListView):
+class TestResultsListView(ListView, StudentOrTutorRequiredMixin):
     template_name = 'test/test_result/test_list.html'
     model = Test
     context_object_name = 'tests'

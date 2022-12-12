@@ -18,26 +18,30 @@
     padding: 15px;
   }
 
-  tr {
+  &__row {
     td {
       transition: .3s;
     }
 
-    &:nth-child(odd) {
+    &:nth-child(odd):not(.group-table__row_its_me) {
       td {
         background-color: #9C9C9C1A;
       }
     }
-    &:hover {
+    &:hover:not(.group-table__row_its_me) {
       td {
         background-color: rgba(41, 89, 117, 0.3);
       }
     }
-  }
-
-  &__row_temporary {
-    td {
-      background-color: rgba(213, 176, 34, 0.3);
+    &_temporary {
+      td {
+        background-color: rgba(213, 176, 34, 0.3);
+      }
+    }
+    &_its_me {
+      td {
+        background-color: rgba(11, 120, 215, 0.3);
+      }
     }
   }
 }
