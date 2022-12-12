@@ -1,3 +1,5 @@
+import hashlib
+
 from datetime import date
 
 from django.db import models, IntegrityError
@@ -7,6 +9,44 @@ from django.db.models import F
 from solo.models import SingletonModel
 
 from mainapp.mixins import DeletedMixin
+
+
+SYMBOLS_FOR_SLUG = {
+    'а': 'a',
+    'б': 'b',
+    'в': 'v',
+    'г': 'g',
+    'д': 'd',
+    'е': 'e',
+    'ё': 'e',
+    'ж': 'zh',
+    'з': 'z',
+    'и': 'i',
+    'й': 'y',
+    'к': 'k',
+    'л': 'l',
+    'м': 'm',
+    'н': 'n',
+    'о': 'o',
+    'п': 'p',
+    'р': 'r',
+    'с': 's',
+    'т': 't',
+    'у': 'u',
+    'ф': 'f',
+    'х': 'h',
+    'ц': 'c',
+    'ч': 'ch',
+    'ш': 'sh',
+    'щ': 'sh',
+    'ъ': '',
+    'ы': 'y',
+    'ь': '',
+    'э': 'e',
+    'ю': 'yu',
+    'я': 'ya',
+    ' ': '_',
+}
 
 
 class ActiveGroupsManager(models.Manager):
@@ -100,6 +140,7 @@ class Group(DeletedMixin):
                                         default=None, null=True,
                                         verbose_name='Временный тьютор',
                                         related_name='temp_tutor', blank=True)
+    slug = models.SlugField(max_length=10, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Группа'
@@ -107,10 +148,19 @@ class Group(DeletedMixin):
         unique_together = ('available_time', 'available_location',
                            'day_of_week')
         db_table = 'group'
+        
+    def save(self, *args, **kwargs):
+        self.slug = self.slugify()
+        super(Group, self).save(*args, *kwargs)
+        
 
     def __str__(self):
         return f'{self.get_day_of_week_display()} ' \
                f'{self.available_location} {self.available_time}'
+
+    def slugify(self):
+        return ''.join([SYMBOLS_FOR_SLUG.get(symbol, symbol) for symbol in
+                        list(f'{self.pk}{self.available_location.address.lower()}'[:8])])
 
     @property
     def students_amount(self):
@@ -149,6 +199,8 @@ class Student(DeletedMixin):
         max_length=30,
         verbose_name='Gmail password (выводить только в админке)'
     )
+    token = models.CharField(max_length=64, null=True, unique=True)
+    code = models.CharField(max_length=8, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Студент'
@@ -157,6 +209,13 @@ class Student(DeletedMixin):
 
     def __str__(self):
         return self.name
+
+    def create_token(self):
+        """создаем токен из фамилии и имени по sha256"""
+        self.token = hashlib.sha256(f'{self.name}{self.pk}'.encode(
+            'utf8')).hexdigest()
+        self.code = self.token[:8]
+        self.save()
 
     def add_kiberons(self, amount):
         self.kiberon_amount = F('kiberon_amount') + amount
