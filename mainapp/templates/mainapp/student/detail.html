@@ -1,0 +1,25 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{{ student.name }}{% endblock %}
+{% block page_title %}{{ student.name }}{% endblock %}
+{% block inside_content %}
+    <h2>Количество моих киберонов: {{ student.kiberon_amount }}</h2>
+    <h2>Последние 5 печатей</h2>
+    <div class="kiberon-log">
+    {% for kiberon_reg in last_achievements %}
+        <div class="kiberon-reg" id="kiberon-reg-{{ kiberon_reg.pk }}">
+            {% if kiberon_reg.kiberon.achievement == 'custom' %}
+                <div class="kiberon-reg__achievement">
+                    {{ kiberon_reg.custom_achievement }} - {{ kiberon_reg.custom_kiberons }}К
+                </div>
+            {% else %}
+                <div class="kiberon-reg__achievement">
+                    {{ kiberon_reg.kiberon.get_achievement_display }} - {{ kiberon_reg.kiberon.value }}К
+                </div>
+            {% endif %}
+            <div class="kiberon-reg__date">{{ kiberon_reg.date }}</div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
