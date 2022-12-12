@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'authapp.middleware.StudentMiddleware'
 ]
 
 ROOT_URLCONF = 'kiberone_tutor.urls'
