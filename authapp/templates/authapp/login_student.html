@@ -6,12 +6,12 @@
     <div class="login-page">
         <div class="login__form-wrapper">
             <div class="login__form-container">
-                <div class="login__form-switcher login__form-switcher_active">Я тьютор</div>
-                <a class="login__form-switcher" href="{% url 'authapp:student_login' %}">Я ученик</a>
+                <a class="login__form-switcher" href="{% url 'authapp:login' %}">Я тьютор</a>
+                <div class="login__form-switcher login__form-switcher_active">Я ученик</div>
                 <div class="login__title">
                     Войдите в свой аккаунт
                 </div>
-                <form action="{% url 'authapp:login' %}" method="post" class="login__form">
+                <form action="{% url 'authapp:student_login' %}" method="post" class="login__form">
                     {% csrf_token %}
                     {% if form.non_field_errors %}
                         <div class="form_errors">
@@ -29,8 +29,8 @@
                                     title="Показать пароль"
                                     data-show-path="{% static 'img/eye_show.svg' %}"
                                     data-hide-path="{% static 'img/eye_hide.svg' %}"
-                                    data-show-text="Показать пароль"
-                                    data-hide-text="Скрыть пароль"
+                                    data-show-text="Показать код"
+                                    data-hide-text="Скрыть код"
                                 >
                                     <img src="{% static 'img/eye_show.svg' %}" alt="">
                                 </div>
