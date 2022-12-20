@@ -16,6 +16,11 @@
   &__logo {
     width: 115px;
     margin-right: 25px;
+    display: block;
+  }
+  &__logo-link {
+    display: block;
+    text-decoration: none;
   }
 }
 

@@ -2,7 +2,15 @@
 <header class="header">
     <div class="container">
         <div class="header__content">
-            <img src="{% static "img/logo.png" %}" alt="KiberOne" class="header__logo">
+            {% if not request.user.is_anonymous %}
+                <a href="{% url "mainapp:groups" %}" class="header__logo-link" title="Мои группы">
+                    <img src="{% static "img/logo.png" %}" alt="KiberOne" class="header__logo">
+                </a>
+            {% elif request.student %}
+                <a href="{% url "mainapp:student_personal_area" %}" class="header__logo-link" title="Моя страница">
+                    <img src="{% static "img/logo.png" %}" alt="KiberOne" class="header__logo">
+                </a>
+            {% endif %}
             <nav class="header__nav nav">
                 {% if not request.user.is_anonymous %}
                     <a href="{% url "mainapp:groups" %}" class="nav__link">Мои группы</a>

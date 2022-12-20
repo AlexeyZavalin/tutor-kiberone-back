@@ -287,7 +287,7 @@ class KiberonStudentReg(models.Model):
                                 verbose_name='Студент')
     kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE,
                                 verbose_name='Достижение')
-    date = models.DateTimeField(verbose_name='Дата', default=timezone.now)
+    date = models.DateField(verbose_name='Дата', default=timezone.now)
     tutor = models.ForeignKey('authapp.Tutor', on_delete=models.CASCADE,
                               verbose_name='Тьютор')
     custom_kiberons = models.PositiveSmallIntegerField(

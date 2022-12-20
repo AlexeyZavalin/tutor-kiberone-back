@@ -121,6 +121,7 @@ class StudentListView(LoginRequiredMixin, ListView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        # TODO: снизу код отвратительный нужно будет его править в любом случае
         if request.GET.get('sort_by'):
             sort_order = request.GET.get('sort_order')
             sort_by = request.GET.get('sort_by')
@@ -131,7 +132,21 @@ class StudentListView(LoginRequiredMixin, ListView):
             queryset = self.filter(queryset)
             context = {
                 'students': queryset,
-                'request': request
+                'request': request,
+                'fair_is_active': True
+            }
+            template = render_to_string(
+                self.student_list_template, context
+            )
+            return JsonResponse({'markup': template})
+        if request.GET.get('visited_today'):
+            queryset = Student.active.filter(group_id=self.kwargs.get(
+                'group_id'))
+            queryset = self.filter(queryset)
+            context = {
+                'students': queryset,
+                'request': request,
+                'fair_is_active': True
             }
             template = render_to_string(
                 self.student_list_template, context
@@ -151,7 +166,7 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['group'] = Group.objects.get(pk=self.kwargs.get('group_id'))
         context['create_student_form'] = CreateStudentForm()
         context['remove_student_form'] = RemoveStudentForm()
-        # TODO: добавить prefix
+        # TODO: добавить prefix и сделать через form_set
         context['update_students_forms'] = tuple(UpdateStudentForm(
             instance=student) for student in context[
                                                      'students'])

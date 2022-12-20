@@ -73,32 +73,14 @@
 {% endblock %}
 {% block modals %}
     <div id="remove-modal" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_red">
             <span class="close" data-close-modal-id="remove-modal">&times;</span>
-            <form id="removeGroupForm" data-action="{% url "mainapp:remove-group" %}">
-                {% csrf_token %}
-                {% for field in remove_form %}
-                    {% if field not in remove_form.hidden_fields %}
-                        <div class="form-input">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_red btn_center" type="submit">Удалить</button>
-            </form>
-        </div>
-    </div>
-    <div id="create-group-modal" class="modal">
-        <div class="modal__content">
-            <span class="close" data-close-modal-id="create-group-modal">&times;</span>
-            <form id="createGroupForm" data-action="{% url "mainapp:create-group" %}" class="create-group-form">
-                {% csrf_token %}
-                <div class="form-flex">
-                    {% for field in create_group_form %}
-                        {% if field not in create_group_form.hidden_fields %}
+            <div class="modal__content-inside">
+                <div class="modal__title modal__title_red">Удаление группы</div>
+                <form id="removeGroupForm" data-action="{% url "mainapp:remove-group" %}">
+                    {% csrf_token %}
+                    {% for field in remove_form %}
+                        {% if field not in remove_form.hidden_fields %}
                             <div class="form-input">
                                 {{ field.errors }}
                                 {{ field.label_tag }} {{ field }}
@@ -107,33 +89,59 @@
                             {{ field }}
                         {% endif %}
                     {% endfor %}
-                </div>
-                <button class="btn btn_blue btn_center" type="submit">Создать</button>
-            </form>
+                    <button class="btn btn_red btn_center" type="submit">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="create-group-modal" class="modal">
+        <div class="modal__content">
+            <span class="close" data-close-modal-id="create-group-modal">&times;</span>
+            <div class="modal__content-inside">
+                <form id="createGroupForm" data-action="{% url "mainapp:create-group" %}" class="create-group-form">
+                    {% csrf_token %}
+                    <div class="form-flex">
+                        {% for field in create_group_form %}
+                            {% if field not in create_group_form.hidden_fields %}
+                                <div class="form-input">
+                                    {{ field.errors }}
+                                    {{ field.label_tag }} {{ field }}
+                                </div>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button class="btn btn_blue btn_center" type="submit">Создать</button>
+                </form>
+            </div>
         </div>
     </div>
     {% if update_group_forms %}
         {% for update_group_form in update_group_forms %}
             <div id="update-group-modal-{{ update_group_form.instance.pk }}" class="modal">
-                <div class="modal__content">
+                <div class="modal__content modal__content_yellow">
                     <span class="close"
                           data-close-modal-id="update-group-modal-{{ update_group_form.instance.pk }}">&times;</span>
-                    <form action="{% url "mainapp:update-group" update_group_form.instance.pk %}" method="post">
-                        {% csrf_token %}
-                        <div class="form-flex">
-                            {% for field in update_group_form %}
-                                {% if field not in update_group_form.hidden_fields %}
-                                    <div class="form-input">
-                                        {{ field.errors }}
-                                        {{ field.label_tag }} {{ field }}
-                                    </div>
-                                {% else %}
-                                    {{ field }}
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <button class="btn btn_yellow btn_center" type="submit">Обновить</button>
-                    </form>
+                    <div class="modal__content-inside">
+                        <div class="modal__title modal__title_yellow">Редактирование группы</div>
+                        <form action="{% url "mainapp:update-group" update_group_form.instance.pk %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-flex">
+                                {% for field in update_group_form %}
+                                    {% if field not in update_group_form.hidden_fields %}
+                                        <div class="form-input">
+                                            {{ field.errors }}
+                                            {{ field.label_tag }} {{ field }}
+                                        </div>
+                                    {% else %}
+                                        {{ field }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <button class="btn btn_yellow btn_center" type="submit">Обновить</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         {% endfor %}

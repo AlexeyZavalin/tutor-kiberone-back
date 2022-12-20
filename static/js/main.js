@@ -392,7 +392,7 @@ function initSorts() {
                 const sortField = e.target.dataset.sortField;
                 const sortOrder = e.target.dataset.sortOrder;
                 const url = `${e.target.dataset['sortUrl']}?sort_by=${sortField}&sort_order=${sortOrder}`;
-                const container = document.getElementById(e.target.dataset.sortContainer)
+                let container = document.querySelector(e.target.dataset.sortContainer)
                 const loadingContainer = document.querySelector(e.target.dataset.loadingContainer);
                 const loader = loadingContainer.querySelector('.loading');
                 loader.classList.add('loading_active');
@@ -412,6 +412,7 @@ function initSorts() {
                     }
                     initModalBtns();
                     initCheckboxes();
+                    initFairBtns();
                     loader.classList.remove('loading_active');
                 })
             })
@@ -420,6 +421,37 @@ function initSorts() {
 }
 
 initSorts()
+
+function initFilterGroup() {
+    const filters = document.querySelectorAll('.visited-filter__item');
+    if (filters) {
+       filters.forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                const filterValue = e.target.dataset.visited;
+                const url = `${e.target.dataset['sortUrl']}?visited_today=${filterValue}`;
+                const loadingContainer = document.querySelector(e.target.dataset.loadingContainer);
+                const loader = loadingContainer.querySelector('.loading');
+                loader.classList.add('loading_active');
+                getData(url, {})
+                .then(data => {
+                    document.getElementById('student_list').innerHTML = data.markup;
+                    element.classList.add('visited-filter__item_active');
+                    if (filterValue === '1') {
+                        element.previousElementSibling.classList.remove('visited-filter__item_active');
+                    } else {
+                        element.nextElementSibling.classList.remove('visited-filter__item_active');
+                    }
+                    initModalBtns();
+                    initCheckboxes();
+                    initFairBtns();
+                    loader.classList.remove('loading_active');
+                })
+            })
+        })
+    }
+}
+
+initFilterGroup()
 
 // show password
 const showPasswordBtn = document.querySelector('.show_password');

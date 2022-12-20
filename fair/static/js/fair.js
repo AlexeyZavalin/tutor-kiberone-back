@@ -1,5 +1,4 @@
-let products = new Set();
-const container = document.querySelector('.fair__souvenirs');
+let container = document.querySelector('.fair__souvenirs');
 
 class Order {
     constructor(studentId, balance) {
@@ -110,7 +109,7 @@ class Cart {
     }
 
     renderCart(selector) {
-        const container = document.querySelector(selector);
+        let container = document.querySelector(selector);
         container.innerHTML = '';
         const list = document.createElement('div');
         list.classList.add('souvenirs');
@@ -147,6 +146,39 @@ class Cart {
     }
 }
 
+let order = new Order();
+let products = new Set();
+let cart = new Cart();
+
+function initFairBtns() {
+    products = new Set();
+    let fairBtns = document.querySelectorAll('.btn_fair')
+    order = new Order();
+    if (fairBtns.length) {
+        const cartContainer = document.querySelector('.fair__cart');
+        fairBtns.forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                products = new Set();
+                document.querySelector('.fair__title').textContent = element.dataset['studentName'];
+                document.querySelector('.fair__subtitle').textContent = element.dataset['kiberons'] + 'к';
+                cartContainer.innerHTML = '';
+                const url = element.dataset['url'] + '?id=' + element.dataset['studentId'];
+                getData(url).then(data => {
+                    let items = JSON.parse(data);
+                    for (const item of items) {
+                        products.add(new Item(Number(item.pk), Number(item.fields.price), item.fields.name, item.fields.image))
+                    }
+                    renderProducts(products, container);
+                    cart = new Cart();
+                    order = new Order(Number(element.dataset['studentId']), Number(element.dataset['kiberons']));
+                });
+            })
+        })
+    }
+}
+
+initFairBtns()
+
 function renderProducts(list, container) {
     container.innerHTML = '';
     let listItems = document.createElement('div');
@@ -158,29 +190,4 @@ function renderProducts(list, container) {
         listItems.innerText = 'Не хватает киберонов или товары закончились';
     }
     container.appendChild(listItems);
-}
-
-let fairBtns = document.querySelectorAll('.btn_fair')
-let cart = new Cart();
-let order = new Order();
-if (fairBtns.length) {
-    const cartContainer = document.querySelector('.fair__cart');
-    fairBtns.forEach(function (element) {
-        element.addEventListener('click', function (event) {
-            products = new Set();
-            document.querySelector('.fair__title').textContent = element.dataset['studentName'];
-            document.querySelector('.fair__subtitle').textContent = element.dataset['kiberons'] + 'к';
-            cartContainer.innerHTML = '';
-            const url = element.dataset['url'] + '?id=' + element.dataset['studentId'];
-            getData(url).then(data => {
-                let items = JSON.parse(data);
-                for (const item of items) {
-                    products.add(new Item(Number(item.pk), Number(item.fields.price), item.fields.name, item.fields.image))
-                }
-                renderProducts(products, container);
-                cart = new Cart();
-                order = new Order(Number(element.dataset['studentId']), Number(element.dataset['kiberons']));
-            });
-        })
-    })
 }
