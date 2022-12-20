@@ -1,36 +1,36 @@
 {% load static %}
 {% for student_of_group in students %}
-    <tr class="group-table__row {% if student == student_of_group %}group-table__row_its_me{% endif %}" id="student-row-{{ student.pk }}">
+    <tr class="group-table__row {% if student == student_of_group %}group-table__row_its_me{% endif %}" id="student-row-{{ student_of_group.pk }}">
         <td>{{ forloop.counter }}</td>
         <td>{{ student_of_group.name }}</td>
         <td>{{ student_of_group.kiberon_amount }}</td>
         {% if not request.user.is_anonymous %}
             <td>
                 <div class="actions">
-                    <button class="btn btn_darkblue btn_modal" data-student-id="{{ student.pk }}"
-                            data-modal-id="update-student-modal-{{ student.pk }}">Редактировать
+                    <button class="btn btn_darkblue btn_modal" data-student-id="{{ student_of_group.pk }}"
+                            data-modal-id="update-student-modal-{{ student_of_group.pk }}">Редактировать
                     </button>
                     {% if request.user == student.group.tutor %}
-                        <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student.pk }}"
+                        <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student_of_group.pk }}"
                                 data-modal-id="remove-student-modal">Удалить
                         </button>
                     {% endif %}
                     <button class="btn btn_yellow btn_modal btn_student_kiberon"
                             title="Добавить кибероны"
                             data-modal-id="custom-kiberon"
-                            data-student-id="{{ student.pk }}">+
+                            data-student-id="{{ student_of_group.pk }}">+
                     </button>
                     <button class="btn btn_blue btn_modal btn_student_kiberon_remove"
                             title="Удалить кибероны"
                             data-modal-id="custom-kiberon-remove"
-                            data-student-id="{{ student.pk }}">-
+                            data-student-id="{{ student_of_group.pk }}">-
                     </button>
                     {% if fair_is_active %}
-                        <button data-student-id="{{ student.pk }}"
+                        <button data-student-id="{{ student_of_group.pk }}"
                                 data-modal-id="fair" title="Ярмарка"
                                 data-url="{% url 'fair:souvenirs' %}"
-                                data-student-name="{{ student.name }}"
-                                data-kiberons="{{ student.kiberon_amount }}"
+                                data-student-name="{{ student_of_group.name }}"
+                                data-kiberons="{{ student_of_group.kiberon_amount }}"
                                 class="btn btn_fair btn_modal">
                             <img src="{% static "img/present-svgrepo-com.svg" %}" alt="" class="fair-icon">
                         </button>
@@ -39,9 +39,9 @@
             </td>
             <td>
                 <div class="checkbox">
-                    <input type="checkbox" data-student-id="{{ student.pk }}"
-                           id="student-check-{{ student.pk }}" class="checkbox__native student-checkbox"/>
-                    <label for="student-check-{{ student.pk }}" class="checkbox__label"></label>
+                    <input type="checkbox" data-student-id="{{ student_of_group.pk }}"
+                           id="student-check-{{ student_of_group.pk }}" class="checkbox__native student-checkbox"/>
+                    <label for="student-check-{{ student_of_group.pk }}" class="checkbox__label"></label>
                 </div>
             </td>
         {% endif %}
