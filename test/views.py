@@ -29,15 +29,27 @@ class TestView(StudentOrTutorRequiredMixin, TemplateView):
 
     def post(self, request, **kwargs):
         test_id = kwargs.get('test_id')
+        test_user = request.user if request.user.is_authenticated else \
+            request.student if request.student else None
         data = request.POST
-        test_result = services.create_test_result(test_id, data)
+        test_result = services.create_test_result(test_user, test_id, data)
+        if test_result:
+            return HttpResponseRedirect(
+                reverse_lazy('test:test-result',
+                             kwargs={
+                                 'pk': test_result.pk,
+                                 'test_id': test_id
+                             })
+            )
         return HttpResponseRedirect(
-            reverse_lazy('test:test-result',
-                         kwargs={
-                             'pk': test_result.pk,
-                             'test_id': test_id
-                         })
+            reverse_lazy(
+                'test:test',
+                 kwargs={
+                     'test_id': test_id
+                 }
+            )
         )
+
 
 
 class TestResultDetailView(StudentOrTutorRequiredMixin, DetailView):

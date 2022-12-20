@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.http import JsonResponse
 from django.core import serializers
 
@@ -36,6 +37,15 @@ class FairRegistrationCreateView(View):
         student_id = body['studentId']
         balance = body['balance']
         total = body['cart']['total']
-        return get_response_for_create_fair(student_id=student_id,
-                                            items=items, balance=balance,
-                                            total=total)
+        result = get_response_for_create_fair(
+            student_id=student_id,
+            items=items,
+            balance=balance,
+            total=total
+        )
+        if result.get('success'):
+            messages.success(self.request, 'Заказ успешен')
+        else:
+            messages.error(self.request, 'При создании заказа произошла '
+                                         'ошибка, попробуйте еще раз')
+        return result
