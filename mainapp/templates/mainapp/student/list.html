@@ -68,9 +68,10 @@
 {% block modals %}
     {{ block.super }}
     <div id="create-student-modal" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_yellow">
             <span class="close" data-close-modal-id="create-student-modal">&times;</span>
             <div class="modal__content-inside">
+                <div class="modal__title modal__title_yellow">Добавить<br>студента</div>
                 <form id="createStudentForm"
                       data-action="{% url "mainapp:create-student" request.resolver_match.kwargs.group_id %}">
                     {% csrf_token %}
@@ -90,9 +91,10 @@
         </div>
     </div>
     <div id="custom-kiberon" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_yellow">
             <span class="close" data-close-modal-id="custom-kiberon">&times;</span>
             <div class="modal__content-inside">
+                <div class="modal__title modal__title_нуддщцd">Добавить<br>кибероны</div>
                 <form id="customKiberonAdd"
                       data-action="{% url "mainapp:add-custom-kiberons" request.resolver_match.kwargs.group_id %}">
                     {% csrf_token %}
@@ -112,9 +114,10 @@
         </div>
     </div>
     <div id="custom-kiberon-remove" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_red">
             <span class="close" data-close-modal-id="custom-kiberon-remove">&times;</span>
             <div class="modal__content-inside">
+                <div class="modal__title modal__title_red">Удалить<br>кибероны</div>
                 <form id="customKiberonRemove"
                       data-action="{% url "mainapp:remove-custom-kiberons" request.resolver_match.kwargs.group_id %}">
                     {% csrf_token %}
@@ -134,9 +137,10 @@
         </div>
     </div>
     <div id="remove-student-modal" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_red">
             <span class="close" data-close-modal-id="remove-student-modal">&times;</span>
             <div class="modal__content-inside">
+                <div class="modal__title modal__title_red">Удаление<br>студента</div>
                 <form id="removeStudentForm" data-action="{% url "mainapp:remove-student" %}">
                     {% csrf_token %}
                     {% for field in remove_student_form %}
@@ -157,10 +161,11 @@
     {% if update_students_forms %}
         {% for update_student_form in update_students_forms %}
             <div id="update-student-modal-{{ update_student_form.instance.pk }}" class="modal">
-                <div class="modal__content">
+                <div class="modal__content modal__content_blue">
                     <span class="close"
                           data-close-modal-id="update-student-modal-{{ update_student_form.instance.pk }}">&times;</span>
                     <div class="modal__content-inside">
+                        <div class="modal__title modal__title_blue">Редактирование<br>студента</div>
                         <form action="{% url "mainapp:update-student" update_student_form.instance.pk %}" method="post">
                             {% csrf_token %}
                             {% for field in update_student_form %}
