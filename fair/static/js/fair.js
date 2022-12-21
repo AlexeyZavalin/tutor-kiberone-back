@@ -1,3 +1,5 @@
+let products = new Set();
+
 let container = document.querySelector('.fair__souvenirs');
 
 class Order {
@@ -146,9 +148,8 @@ class Cart {
     }
 }
 
-let order = new Order();
-let products = new Set();
 let cart = new Cart();
+let order = new Order();
 
 function initFairBtns() {
     products = new Set();

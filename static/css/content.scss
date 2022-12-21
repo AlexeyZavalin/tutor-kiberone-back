@@ -3,7 +3,10 @@
   border: none;
   th {
     text-align: center;
-    padding: 15px 45px;
+    padding: 10px 20px;
+    @media (min-width: 992px) {
+      padding: 15px 45px;
+    }
     color: #fff;
     background-color: $yellow;
     font-weight: normal;
@@ -11,7 +14,10 @@
 
   td {
     text-align: center;
-    padding: 5px 25px;
+    padding: 5px 10px;
+    @media (min-width: 992px) {
+      padding: 5px 25px;
+    }
   }
 
   th:last-child, td:last-child {
@@ -126,8 +132,9 @@
   }
 }
 
-.table-wrapper {
+.table-wrapper, .groups-sublist {
   position: relative;
+  overflow-x: auto;
 }
 
 .loading {
@@ -218,4 +225,16 @@
       }
     }
   }
+}
+
+.create-group-btn {
+  background-color: $blue;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
 }

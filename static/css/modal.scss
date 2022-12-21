@@ -41,6 +41,11 @@
          background-color: $yellow;
        }
     }
+    &_blue {
+       &:before, &:after {
+         background-color: $blue;
+       }
+    }
   }
 
   &__content {
@@ -48,6 +53,7 @@
     margin: 15% auto;
     padding: 35px;
     width: 460px;
+    max-width: 100%;
     position: relative;
     justify-content: center;
     overflow: clip;
@@ -83,7 +89,7 @@
         background: rgba(247, 201, 14, 0.4);
       }
     }
-    &__blue {
+    &_blue {
       &:after {
         background: rgba(0, 186, 192, 0.4);
       }

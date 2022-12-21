@@ -7,12 +7,14 @@
         {% if not request.user.is_anonymous %}
             <td>
                 <div class="actions">
-                    <button class="btn btn_darkblue btn_modal" data-student-id="{{ student_of_group.pk }}"
-                            data-modal-id="update-student-modal-{{ student_of_group.pk }}">Редактировать
+                    <button class="btn btn_darkblue btn_modal btn_round-icon" data-student-id="{{ student_of_group.pk }}"
+                            data-modal-id="update-student-modal-{{ student_of_group.pk }}" title="Редактировать">
+                        <img src="{% static 'img/pencil.svg' %}" alt="Редактировать">
                     </button>
-                    {% if request.user == student.group.tutor %}
-                        <button class="btn btn_red btn_modal btn_student_remove" data-student-id="{{ student_of_group.pk }}"
-                                data-modal-id="remove-student-modal">Удалить
+                    {% if request.user == student_of_group.group.tutor %}
+                        <button class="btn btn_red btn_modal btn_round-icon" data-student-id="{{ student_of_group.pk }}"
+                                data-modal-id="remove-student-modal" title="Удалить">
+                            <img src="{% static 'img/delete.svg' %}" alt="Удалить">
                         </button>
                     {% endif %}
                     <button class="btn btn_yellow btn_modal btn_student_kiberon"
