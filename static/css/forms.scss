@@ -140,7 +140,7 @@ select {
   }
 
   &_login {
-    width: 360px;
+    max-width: 360px;
     margin-right: 0;
     input {
       border: none;
