@@ -238,3 +238,13 @@
   border: none;
   cursor: pointer;
 }
+
+.student-kiberons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5rem;
+  background-color: $yellow;
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}

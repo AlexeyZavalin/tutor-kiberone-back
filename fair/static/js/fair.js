@@ -16,6 +16,7 @@ class Order {
             products.delete(item);
             this.cart.addProduct(item);
             this.cart.renderCart('.fair__cart');
+            document.querySelector('.fair__subtitle').textContent = `${this.balance.toLocaleString()}К`
         }
     }
 
@@ -25,6 +26,7 @@ class Order {
         products.add(item);
         this.cart.removeProduct(item);
         this.cart.renderCart('.fair__cart');
+        document.querySelector('.fair__subtitle').textContent = `${this.balance.toLocaleString()}К`
     }
 
     canAdd(price) {
@@ -62,8 +64,9 @@ class Item {
         const price = document.createElement('div');
         price.classList.add('souvenir__price');
         price.innerText = `${this.price}к`;
+        imgWrapper.appendChild(price);
         let btn = this.createBtn(this.in_cart);
-        itemMarkup.append(imgWrapper, name, price, btn);
+        itemMarkup.append(imgWrapper, name, btn);
         btn.addEventListener('click', () => {
             this.clickHandler(this);
             renderProducts(products, container);
@@ -119,6 +122,11 @@ class Cart {
             list.appendChild(item.createItemMarkup());
         }
         container.appendChild(list);
+        if (this.total > 0) {
+            let summury = document.createElement('div');
+            summury.innerHTML = `Итого: <span class="summary__total">${this.total}К</span>`
+            container.appendChild(summury);
+        }
         if (this.items.size > 0) {
             const confirmBtn = this.confirmBtn();
             container.appendChild(confirmBtn);
@@ -128,7 +136,7 @@ class Cart {
 
     confirmBtn() {
         const btn = document.createElement('button');
-        btn.classList.add('btn', 'btn_yellow', 'btn_big', 'btn_confirm_order');
+        btn.classList.add('btn', 'btn_yellow', 'btn_big', 'btn_confirm_order', 'btn_center');
         btn.innerText = 'Оформить';
         return btn;
     }
@@ -161,7 +169,7 @@ function initFairBtns() {
             element.addEventListener('click', function (event) {
                 products = new Set();
                 document.querySelector('.fair__title').textContent = element.dataset['studentName'];
-                document.querySelector('.fair__subtitle').textContent = element.dataset['kiberons'] + 'к';
+                document.querySelector('.fair__subtitle').textContent = Number(element.dataset['kiberons']).toLocaleString() + 'к';
                 cartContainer.innerHTML = '';
                 const url = element.dataset['url'] + '?id=' + element.dataset['studentId'];
                 getData(url).then(data => {
