@@ -43,7 +43,7 @@ class FairRegistrationCreateView(View):
             balance=balance,
             total=total
         )
-        if result.get('success'):
+        if result.status_code == 200:
             messages.success(self.request, 'Заказ успешен')
         else:
             messages.error(self.request, 'При создании заказа произошла '
