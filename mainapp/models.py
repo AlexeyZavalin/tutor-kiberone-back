@@ -2,6 +2,7 @@ import hashlib
 
 from datetime import date
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, IntegrityError
 from django.urls import reverse
 from django.utils import timezone
@@ -324,12 +325,12 @@ class KiberonStudentReg(models.Model):
                 raise IntegrityError
         super().save(**kwargs)
 
-    def delete(self, using=None, keep_parents=False):
+    def delete(self, *args, **kwargs):
         if self.kiberon.achievement == 'custom':
             self.student.delete_kiberons(self.custom_kiberons)
         else:
             self.student.delete_kiberons(self.kiberon.value)
-        super().delete()
+        super().delete(*args, **kwargs)
 
 
 class SiteConfiguration(SingletonModel):
@@ -337,6 +338,11 @@ class SiteConfiguration(SingletonModel):
     fair_is_active = models.BooleanField(
         default=False,
         verbose_name='Ярмарка запущена'
+    )
+    max_custom_kiberons = models.PositiveSmallIntegerField(
+        verbose_name='Максимальное количество добавляемых/удаляемых киберонов',
+        default=20,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
 
     def __str__(self):
