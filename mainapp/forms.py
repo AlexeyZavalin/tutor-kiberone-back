@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Group, Student, Kiberon
+from .models import Group, Student, Kiberon, SiteConfiguration
 
 
 class RemoveGroupForm(forms.Form):
@@ -60,24 +60,32 @@ class CustomKiberonAddForm(forms.Form):
         label='Достижение',
         required=True
     )
-    kiberons_amount = forms.IntegerField(
-        max_value=50,
-        label='Количество киберонов',
-        min_value=1,
-        initial=5
-    )
+    kiberons_amount = forms.IntegerField()
     student_id = forms.CharField(widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['kiberons_amount'] = forms.IntegerField(
+            max_value=SiteConfiguration.get_solo().max_custom_kiberons,
+            min_value=1,
+            label='Количество киберонов',
+            initial=5
+        )
 
 
 class CustomKiberonRemoveForm(forms.Form):
     """Форма для удалени киберонов"""
-    kiberons_amount = forms.IntegerField(
-        max_value=20,
-        label='Количество киберонов',
-        min_value=5,
-        initial=5
-    )
+    kiberons_amount = forms.IntegerField()
     student_id = forms.CharField(widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['kiberons_amount'] = forms.IntegerField(
+            max_value=SiteConfiguration.get_solo().max_custom_kiberons,
+            label='Количество киберонов',
+            min_value=5,
+            initial=5
+        )
 
 
 class FilterStudentsForm(forms.Form):

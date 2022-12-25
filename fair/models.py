@@ -1,8 +1,8 @@
 from decimal import Decimal
 
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
-from django.db.models import F
+from django.db import models, transaction
+from django.db.models import F, Sum
 
 from mainapp.mixins import DeletedMixin
 
@@ -74,6 +74,11 @@ class FairRegistration(models.Model):
     def __str__(self):
         return f'{self.student.name} - {self.date}'
 
+    @property
+    def total(self):
+        """ получаем сумму в киберонах """
+        return self.souvenirs.aggregate(Sum('price')).get('price__sum')
+
 
 class FairRegistrationSouvenir(models.Model):
     """ Сувенир в записи ярмарки для ученика """
@@ -109,3 +114,45 @@ class FairRegistrationSouvenir(models.Model):
     def save(self, **kwargs: dict) -> None:
         self.souvenir.subtract_amount(1)
         super().save(**kwargs)
+        
+        
+class Refund(models.Model):
+    reason = models.TextField(
+        verbose_name='Причина возврата',
+        blank=True
+    )
+    fair_registration = models.OneToOneField(
+        to=FairRegistration,
+        verbose_name='Запись о ярмарке',
+        on_delete=models.CASCADE
+    )
+    complete = models.BooleanField(
+        verbose_name='Возврат завершен',
+        default=False,
+        editable=False
+    )
+    date = models.DateField(
+        auto_now_add=True,
+        verbose_name='Дата возврата'
+    )
+
+    class Meta:
+        verbose_name = 'Возврат'
+        verbose_name_plural = 'Возвраты'
+
+    def __str__(self):
+        return self.fair_registration.__str__()
+
+    def save(self, *args, **kwargs):
+        if not self.complete:
+            with transaction.atomic():
+                self.fair_registration.student.add_kiberons(
+                    self.fair_registration.total
+                )
+                self.complete = True
+                # возвращаем количество
+                for souvenir in self.fair_registration.souvenirs.all():
+                    souvenir.souvenir.amount = F('amount') + 1
+                    souvenir.souvenir.save()
+
+        super().save(*args, **kwargs)

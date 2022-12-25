@@ -177,7 +177,8 @@ class StudentListView(LoginRequiredMixin, ListView):
             initial_filters['visited_today'] = '1'
         context['custom_kiberon_form'] = CustomKiberonAddForm(prefix='add')
         context['custom_kiberon_remove_form'] = CustomKiberonRemoveForm(
-            prefix='remove')
+            prefix='remove',
+        )
         context['filter_students_form'] = FilterStudentsForm(
             initial=initial_filters)
         return context
