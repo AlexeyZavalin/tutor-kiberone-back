@@ -92,6 +92,18 @@ class TestResult(models.Model):
         blank=False,
         verbose_name='Имя тестируемого'
     )
+    student = models.ForeignKey(
+        to='mainapp.Student',
+        null=True,
+        verbose_name='Ученик',
+        on_delete=models.CASCADE
+    )
+    tutor = models.ForeignKey(
+        to='authapp.Tutor',
+        null=True,
+        verbose_name='Тьютор',
+        on_delete=models.CASCADE
+    )
     test = models.ForeignKey(
         to=Test,
         on_delete=models.CASCADE,
