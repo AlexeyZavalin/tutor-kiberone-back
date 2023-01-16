@@ -130,18 +130,34 @@ class Group(DeletedMixin):
         on_delete=models.SET_NULL,
         null=True
     )
-    day_of_week = models.CharField(max_length=2, choices=DAYS_OF_WEEK_CHOICES,
-                                   default=DAYS_OF_WEEK_CHOICES[0],
-                                   verbose_name='День недели')
-    tutor = models.ForeignKey('authapp.Tutor', on_delete=models.SET_DEFAULT,
-                              default=None, null=True, verbose_name='Тьютор',
-                              related_name='tutor')
-    temporary_tutor = models.ForeignKey('authapp.Tutor',
-                                        on_delete=models.SET_NULL,
-                                        default=None, null=True,
-                                        verbose_name='Временный тьютор',
-                                        related_name='temp_tutor', blank=True)
-    slug = models.SlugField(max_length=10, null=True, blank=True)
+    day_of_week = models.CharField(
+        max_length=2,
+        choices=DAYS_OF_WEEK_CHOICES,
+        default=DAYS_OF_WEEK_CHOICES[0],
+        verbose_name='День недели'
+    )
+    tutor = models.ForeignKey(
+        'authapp.Tutor',
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        verbose_name='Тьютор',
+        related_name='tutor'
+    )
+    temporary_tutor = models.ForeignKey(
+        'authapp.Tutor',
+        on_delete=models.SET_NULL,
+        default=None,
+        null=True,
+        verbose_name='Временный тьютор',
+        related_name='temp_tutor',
+        blank=True
+    )
+    slug = models.SlugField(
+        max_length=10,
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = 'Группа'
@@ -149,11 +165,6 @@ class Group(DeletedMixin):
         unique_together = ('available_time', 'available_location',
                            'day_of_week')
         db_table = 'group'
-        
-    def save(self, *args, **kwargs):
-        self.slug = self.slugify()
-        super(Group, self).save(*args, *kwargs)
-        
 
     def __str__(self):
         return f'{self.get_day_of_week_display()} ' \
@@ -175,23 +186,39 @@ class Student(DeletedMixin):
     objects = models.Manager()
     active = ActiveStudentsManager()
 
-    name = models.CharField(max_length=50, blank=False,
-                            verbose_name='Фамилия Имя')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE,
-                              verbose_name='Группа',
-                              related_name='students')
-    kiberon_amount = models.PositiveIntegerField(default=0,
-                                                 verbose_name='Количество '
-                                                              'киберонов')
-    info = models.TextField(max_length=250, blank=True,
-                            verbose_name='Информация')
+    name = models.CharField(
+        max_length=50,
+        blank=False,
+        verbose_name='Фамилия Имя'
+    )
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.SET_NULL,
+        verbose_name='Группа',
+        related_name='students',
+        null=True
+    )
+    kiberon_amount = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Количество киберонов'
+    )
+    info = models.TextField(
+        max_length=250,
+        blank=True,
+        verbose_name='Информация'
+    )
     visited_date = models.DateField(
         default=None,
         verbose_name='Последняя дата посещения',
         null=True,
         blank=True)
-    gmail_name = models.EmailField(default=None, verbose_name='Gmail',
-                                   null=True, blank=True, max_length=70)
+    gmail_name = models.EmailField(
+        default=None,
+        verbose_name='Gmail',
+        null=True,
+        blank=True,
+        max_length=70
+    )
     # выводить только в админке
     gmail_password = models.CharField(
         default=None,
@@ -214,7 +241,8 @@ class Student(DeletedMixin):
     def create_token(self):
         """создаем токен из фамилии и имени по sha256"""
         self.token = hashlib.sha256(f'{self.name}{self.pk}'.encode(
-            'utf8')).hexdigest()
+            'utf8')
+        ).hexdigest()
         self.code = self.token[:8]
         self.save()
 
@@ -267,12 +295,18 @@ class Kiberon(models.Model):
         (HELP_TO_ASSISTENT, 'Помог ассистенту с уборкой'),
         (USEFUL_RULE, 'Придумал полезное правило для школы')
     )
-    achievement = models.CharField(max_length=10, choices=ACHIEVEMENT_CHOICES,
-                                   default=ACHIEVEMENT_CHOICES[0],
-                                   unique=True, verbose_name='Достижение')
-    value = models.PositiveSmallIntegerField(default=5, blank=False,
-                                             verbose_name='Количество '
-                                                          'киберонов')
+    achievement = models.CharField(
+        max_length=10,
+        choices=ACHIEVEMENT_CHOICES,
+        default=ACHIEVEMENT_CHOICES[0],
+        unique=True,
+        verbose_name='Достижение'
+    )
+    value = models.PositiveSmallIntegerField(
+        default=5,
+        blank=False,
+        verbose_name='Количество киберонов'
+    )
 
     class Meta:
         verbose_name = 'Печать'
@@ -284,18 +318,32 @@ class Kiberon(models.Model):
 
 
 class KiberonStudentReg(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE,
-                                verbose_name='Студент')
-    kiberon = models.ForeignKey(Kiberon, on_delete=models.CASCADE,
-                                verbose_name='Достижение')
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        verbose_name='Студент'
+    )
+    kiberon = models.ForeignKey(
+        Kiberon,
+        on_delete=models.CASCADE,
+        verbose_name='Достижение'
+    )
     date = models.DateField(verbose_name='Дата', default=timezone.now)
-    tutor = models.ForeignKey('authapp.Tutor', on_delete=models.CASCADE,
-                              verbose_name='Тьютор')
+    tutor = models.ForeignKey(
+        'authapp.Tutor',
+        on_delete=models.CASCADE,
+        verbose_name='Тьютор'
+    )
     custom_kiberons = models.PositiveSmallIntegerField(
-        verbose_name='Свое количество киберонов', default=0)
-    custom_achievement = models.CharField(max_length=100, default='',
-                                          blank=True,
-                                          verbose_name='Кастомное достижение')
+        verbose_name='Свое количество киберонов',
+        default=0
+    )
+    custom_achievement = models.CharField(
+        max_length=100,
+        default='',
+        blank=True,
+        verbose_name='Кастомное достижение'
+    )
 
     class Meta:
         verbose_name = 'Запись о печати'
@@ -316,9 +364,11 @@ class KiberonStudentReg(models.Model):
                 self.student.visited_date = date.today()
                 self.student.save()
 
-            reg = KiberonStudentReg.objects.filter(student=self.student,
-                                                   kiberon=self.kiberon,
-                                                   date=self.date)
+            reg = KiberonStudentReg.objects.filter(
+                student=self.student,
+                kiberon=self.kiberon,
+                date=self.date
+            )
             if reg.count() == 0:
                 self.student.add_kiberons(self.kiberon.value)
             else:
