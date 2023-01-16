@@ -95,7 +95,10 @@ select {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
-    padding: 20px;
+    padding: 15px;
+    @media (min-width: 720px) {
+      padding: 20px;
+    }
     width: 30px;
     height: 30px;
     display: flex;
@@ -113,9 +116,14 @@ select {
   }
 
   &_round-icon {
-    padding: 10px;
-    width: 40px;
-    height: 40px;
+    padding: 7px;
+    width: 30px;
+    height: 30px;
+    @media (min-width: 720px) {
+      padding: 10px;
+      width: 40px;
+      height: 40px;
+    }
     border-radius: 50%;
     img {
       max-width: 100%;

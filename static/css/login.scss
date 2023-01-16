@@ -38,6 +38,7 @@
   &__form {
     display: flex;
     flex-direction: column;
+    max-width: 460px;
   }
   &__title {
     margin-bottom: 20px;
