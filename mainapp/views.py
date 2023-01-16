@@ -18,7 +18,7 @@ from .forms import BulkStudentActionsForm, CreateStudentForm, \
     CreateUpdateGroupForm, CustomKiberonAddForm, \
     FilterStudentsForm, CustomKiberonRemoveForm
 from .mixins import StudentOrTutorRequiredMixin, StudentRequiredMixin
-from .models import Group, Student, KiberonStudentReg
+from .models import Group, Student, KiberonStudentReg, SiteConfiguration
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
     get_response_for_remove_student, get_response_for_remove_kiberon_reg, \
@@ -122,6 +122,7 @@ class StudentListView(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         # TODO: снизу код отвратительный нужно будет его править в любом случае
+        config = SiteConfiguration.get_solo()
         if request.GET.get('sort_by'):
             sort_order = request.GET.get('sort_order')
             sort_by = request.GET.get('sort_by')
@@ -133,7 +134,7 @@ class StudentListView(LoginRequiredMixin, ListView):
             context = {
                 'students': queryset,
                 'request': request,
-                'fair_is_active': True
+                'fair_is_active': config.fair_is_active
             }
             template = render_to_string(
                 self.student_list_template, context
@@ -141,12 +142,12 @@ class StudentListView(LoginRequiredMixin, ListView):
             return JsonResponse({'markup': template})
         if request.GET.get('visited_today'):
             queryset = Student.active.filter(group_id=self.kwargs.get(
-                'group_id'))
+                'group_id')).order_by('kiberon_amount')
             queryset = self.filter(queryset)
             context = {
                 'students': queryset,
                 'request': request,
-                'fair_is_active': True
+                'fair_is_active': config.fair_is_active
             }
             template = render_to_string(
                 self.student_list_template, context
