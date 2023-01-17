@@ -6,6 +6,8 @@
     <div class="login-page">
         <div class="login__form-wrapper">
             <div class="login__form-container">
+                <div class="login__form-switcher login__form-switcher_active">Я тьютор</div>
+                <a class="login__form-switcher" href="{% url 'authapp:student_login' %}">Я ученик</a>
                 <div class="login__title">
                     Войдите в свой аккаунт
                 </div>

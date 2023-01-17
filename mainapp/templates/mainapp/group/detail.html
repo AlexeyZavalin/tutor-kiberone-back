@@ -1,0 +1,8 @@
+{% extends "mainapp/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}Моя группа{% endblock %}
+{% block page_title %}Моя группа{% endblock %}
+{% block inside_content %}
+    {% include 'mainapp/includes/student_table.html' %}
+{% endblock %}

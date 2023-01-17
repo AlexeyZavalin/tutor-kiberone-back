@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Вход" %}{% endblock %}
+{% block content %}
+    <div class="login-page">
+        <div class="login__form-wrapper">
+            <div class="login__form-container">
+                <a class="login__form-switcher" href="{% url 'authapp:login' %}">Я тьютор</a>
+                <div class="login__form-switcher login__form-switcher_active">Я ученик</div>
+                <div class="login__title">
+                    Войдите в свой аккаунт
+                </div>
+                <form action="{% url 'authapp:student_login' %}" method="post" class="login__form">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form_errors">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% for field in form %}
+                        <div class="form-input form-input_login {% if field.name == 'password' %}form-input_password{% endif %}">
+                            {{ field.label_tag }}
+                            {% if field.name == 'password' %}
+                                <div
+                                    class="show_password"
+                                    title="Показать пароль"
+                                    data-show-path="{% static 'img/eye_show.svg' %}"
+                                    data-hide-path="{% static 'img/eye_hide.svg' %}"
+                                    data-show-text="Показать код"
+                                    data-hide-text="Скрыть код"
+                                >
+                                    <img src="{% static 'img/eye_show.svg' %}" alt="">
+                                </div>
+                            {% endif %}
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn_yellow btn_big">{% trans "Войти" %}</button>
+                </form>
+            </div>
+            <div class="login__logo login__logo_top">
+                <img src="{% static "img/logo_top.png" %}" alt="">
+            </div>
+            <div class="login__logo login__logo_bottom">
+                <img src="{% static "img/logo_bottom.png" %}" alt="">
+            </div>
+        </div>
+    </div>
+{% endblock %}

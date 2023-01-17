@@ -215,8 +215,6 @@ function initCheckboxes() {
     }
 }
 
-initCheckboxes()
-
 function handleCheckBox(checked, value, input) {
     if (checked) {
         studentIds.add(value)
@@ -282,94 +280,96 @@ if (messagesClose) {
     })
 }
 
-// кастомное добавление киберонов
-let studnetKiberonBtns = document.querySelectorAll('.btn_student_kiberon')
+function initCustomKiberonsBtns() {
+    // кастомное добавление киберонов
+    let studnetKiberonBtns = document.querySelectorAll('.btn_student_kiberon')
 
-let createCustomRegForm = document.getElementById('customKiberonAdd');
+    let createCustomRegForm = document.getElementById('customKiberonAdd');
 
-if (createCustomRegForm) {
-    if (studnetKiberonBtns) {
-        studnetKiberonBtns.forEach(function (element) {
-            element.addEventListener('click', function (event) {
-                document.getElementById('id_add-student_id').value = element.dataset['studentId']
+    if (createCustomRegForm) {
+        if (studnetKiberonBtns) {
+            studnetKiberonBtns.forEach(function (element) {
+                element.addEventListener('click', function (event) {
+                    document.getElementById('id_add-student_id').value = element.dataset['studentId']
+                })
             })
+        }
+
+        createCustomRegForm.addEventListener('submit', function (e) {
+            e.preventDefault()
+            if (createCustomRegForm.querySelector('.form_errors')) {
+                createCustomRegForm.querySelector('.form_errors').remove()
+            }
+            const url = createCustomRegForm.dataset['action']
+            const achievement = createCustomRegForm.querySelector('#id_add-achievement').value
+            const kiberonAmount = createCustomRegForm.querySelector('#id_add-kiberons_amount').value
+            const studentId = createCustomRegForm.querySelector('#id_add-student_id').value
+            const formData = {
+                'kiberon_amount': kiberonAmount,
+                'student_id': studentId,
+                'achievement': achievement
+            }
+            postData(url, formData)
+                .then((data) => {
+                    if (data['success']) {
+                        if (data['redirect']) {
+                            window.location = data['redirect']
+                        }
+                    } else {
+                        let errorSpan = document.createElement('div')
+                        errorSpan.textContent = data['message']
+                        errorSpan.classList.add('form_errors')
+                        const btn = createCustomRegForm.querySelector('.btn')
+                        const parent = btn.parentNode
+                        parent.insertBefore(errorSpan, btn)
+                    }
+                });
         })
     }
 
-    createCustomRegForm.addEventListener('submit', function (e) {
-        e.preventDefault()
-        if (createCustomRegForm.querySelector('.form_errors')) {
-            createCustomRegForm.querySelector('.form_errors').remove()
-        }
-        const url = createCustomRegForm.dataset['action']
-        const achievement = createCustomRegForm.querySelector('#id_add-achievement').value
-        const kiberonAmount = createCustomRegForm.querySelector('#id_add-kiberons_amount').value
-        const studentId = createCustomRegForm.querySelector('#id_add-student_id').value
-        const formData = {
-            'kiberon_amount': kiberonAmount,
-            'student_id': studentId,
-            'achievement': achievement
-        }
-        postData(url, formData)
-            .then((data) => {
-                if (data['success']) {
-                    if (data['redirect']) {
-                        window.location = data['redirect']
-                    }
-                } else {
-                    let errorSpan = document.createElement('div')
-                    errorSpan.textContent = data['message']
-                    errorSpan.classList.add('form_errors')
-                    const btn = createCustomRegForm.querySelector('.btn')
-                    const parent = btn.parentNode
-                    parent.insertBefore(errorSpan, btn)
-                }
-            });
-    })
-}
+    // кастомное удаление киберонов
+    let studnetKiberonRemoveBtns = document.querySelectorAll('.btn_student_kiberon_remove')
 
-// кастомное удаление киберонов
-let studnetKiberonRemoveBtns = document.querySelectorAll('.btn_student_kiberon_remove')
+    let removeCustomKiberonForm = document.getElementById('customKiberonRemove');
 
-let removeCustomKiberonForm = document.getElementById('customKiberonRemove');
-
-if (removeCustomKiberonForm) {
-    if (studnetKiberonRemoveBtns) {
-        studnetKiberonRemoveBtns.forEach(function (element) {
-            element.addEventListener('click', function (event) {
-                document.getElementById('id_remove-student_id').value = element.dataset['studentId']
+    if (removeCustomKiberonForm) {
+        if (studnetKiberonRemoveBtns) {
+            studnetKiberonRemoveBtns.forEach(function (element) {
+                element.addEventListener('click', function (event) {
+                    document.getElementById('id_remove-student_id').value = element.dataset['studentId']
+                })
             })
+        }
+
+        removeCustomKiberonForm.addEventListener('submit', function (e) {
+            e.preventDefault()
+            if (removeCustomKiberonForm.querySelector('.form_errors')) {
+                removeCustomKiberonForm.querySelector('.form_errors').remove()
+            }
+            const url = removeCustomKiberonForm.dataset['action']
+            const kiberonAmount = removeCustomKiberonForm.querySelector('#id_remove-kiberons_amount').value
+            const studentId = removeCustomKiberonForm.querySelector('#id_remove-student_id').value
+            const formData = {
+                'kiberon_amount': kiberonAmount,
+                'student_id': studentId
+            }
+            postData(url, formData)
+                .then((data) => {
+                    if (data['success']) {
+                        if (data['redirect']) {
+                            window.location = data['redirect']
+                        }
+                    } else {
+                        let errorSpan = document.createElement('div')
+                        errorSpan.textContent = data['message']
+                        errorSpan.classList.add('form_errors')
+                        const btn = removeCustomKiberonForm.querySelector('.btn')
+                        const parent = btn.parentNode
+                        parent.insertBefore(errorSpan, btn)
+                    }
+                });
         })
     }
-
-    removeCustomKiberonForm.addEventListener('submit', function (e) {
-        e.preventDefault()
-        if (removeCustomKiberonForm.querySelector('.form_errors')) {
-            removeCustomKiberonForm.querySelector('.form_errors').remove()
-        }
-        const url = removeCustomKiberonForm.dataset['action']
-        const kiberonAmount = removeCustomKiberonForm.querySelector('#id_remove-kiberons_amount').value
-        const studentId = removeCustomKiberonForm.querySelector('#id_remove-student_id').value
-        const formData = {
-            'kiberon_amount': kiberonAmount,
-            'student_id': studentId
-        }
-        postData(url, formData)
-            .then((data) => {
-                if (data['success']) {
-                    if (data['redirect']) {
-                        window.location = data['redirect']
-                    }
-                } else {
-                    let errorSpan = document.createElement('div')
-                    errorSpan.textContent = data['message']
-                    errorSpan.classList.add('form_errors')
-                    const btn = removeCustomKiberonForm.querySelector('.btn')
-                    const parent = btn.parentNode
-                    parent.insertBefore(errorSpan, btn)
-                }
-            });
-    })
 }
 
 // удаляем лишние пустые списки с сообщениями
@@ -384,6 +384,13 @@ if (messagesLists.length) {
     })
 }
 
+function init() {
+    initModalBtns();
+    initCheckboxes();
+    initFairBtns();
+    initCustomKiberonsBtns();
+}
+
 function initSorts() {
     const sorts = document.querySelectorAll('.sort_by');
     if (sorts) {
@@ -392,7 +399,7 @@ function initSorts() {
                 const sortField = e.target.dataset.sortField;
                 const sortOrder = e.target.dataset.sortOrder;
                 const url = `${e.target.dataset['sortUrl']}?sort_by=${sortField}&sort_order=${sortOrder}`;
-                const container = document.getElementById(e.target.dataset.sortContainer)
+                let container = document.querySelector(e.target.dataset.sortContainer)
                 const loadingContainer = document.querySelector(e.target.dataset.loadingContainer);
                 const loader = loadingContainer.querySelector('.loading');
                 loader.classList.add('loading_active');
@@ -410,8 +417,7 @@ function initSorts() {
                         element.classList.add('sort_by_desc');
                         element.title = 'Сортировать по убыванию';
                     }
-                    initModalBtns();
-                    initCheckboxes();
+                    init();
                     loader.classList.remove('loading_active');
                 })
             })
@@ -419,7 +425,36 @@ function initSorts() {
     }
 }
 
-initSorts()
+initSorts();
+
+function initFilterGroup() {
+    const filters = document.querySelectorAll('.visited-filter__item');
+    if (filters) {
+       filters.forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                const filterValue = e.target.dataset.visited;
+                const url = `${e.target.dataset['sortUrl']}?visited_today=${filterValue}`;
+                const loadingContainer = document.querySelector(e.target.dataset.loadingContainer);
+                const loader = loadingContainer.querySelector('.loading');
+                loader.classList.add('loading_active');
+                getData(url, {})
+                .then(data => {
+                    document.getElementById('student_list').innerHTML = data.markup;
+                    element.classList.add('visited-filter__item_active');
+                    if (filterValue === '1') {
+                        element.previousElementSibling.classList.remove('visited-filter__item_active');
+                    } else {
+                        element.nextElementSibling.classList.remove('visited-filter__item_active');
+                    }
+                    init();
+                    loader.classList.remove('loading_active');
+                })
+            })
+        })
+    }
+}
+
+initFilterGroup()
 
 // show password
 const showPasswordBtn = document.querySelector('.show_password');

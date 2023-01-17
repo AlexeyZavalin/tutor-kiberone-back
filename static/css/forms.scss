@@ -15,10 +15,11 @@ select {
   padding: 7px 12px;
   cursor: pointer;
   outline: none;
-  background-color: transparent;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
+  background-color: #fff;
+  width: 100%;
 }
 
 .btn {
@@ -94,7 +95,10 @@ select {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
-    padding: 20px;
+    padding: 15px;
+    @media (min-width: 720px) {
+      padding: 20px;
+    }
     width: 30px;
     height: 30px;
     display: flex;
@@ -109,6 +113,21 @@ select {
     width: 35px;
     height: 35px;
     box-shadow: none;
+  }
+
+  &_round-icon {
+    padding: 7px;
+    width: 30px;
+    height: 30px;
+    @media (min-width: 720px) {
+      padding: 10px;
+      width: 40px;
+      height: 40px;
+    }
+    border-radius: 50%;
+    img {
+      max-width: 100%;
+    }
   }
 
   :disabled {
@@ -129,7 +148,7 @@ select {
   }
 
   &_login {
-    width: 360px;
+    max-width: 360px;
     margin-right: 0;
     input {
       border: none;
@@ -199,17 +218,20 @@ select {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .group-form {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .bulk-students-form {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .form-flex {

@@ -7,6 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <meta name="yandex-verification" content="6cc74f120a1c2d00" />    
     <title>{% block title %}{% endblock %}</title>
     {% block css %}
@@ -22,12 +23,12 @@
     {% block content %}{% endblock %}
     {% block modals %}{% endblock %}
     {% block js %}
-        <script src="{% static "js/cookie.js" %}"></script>
-        <script src="{% static "js/async_requests.js" %}"></script>
-        <script src="{% static "js/main.js" %}"></script>
         {% if fair_is_active %}
             <script src="{% static "js/fair.js" %}"></script>
         {% endif %}
+        <script src="{% static "js/cookie.js" %}"></script>
+        <script src="{% static "js/async_requests.js" %}"></script>
+        <script src="{% static "js/main.js" %}"></script>
     {% endblock %}
 </body>
 </html>

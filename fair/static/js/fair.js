@@ -1,97 +1,6 @@
-let fairBtns = document.querySelectorAll('.btn_fair')
+let products = new Set();
 
-if (fairBtns.length) {
-    const container = document.querySelector('.fair__souvenirs');
-    const cartContainer = document.querySelector('.fair__cart .souvenirs');
-    fairBtns.forEach(function(element) {
-        element.addEventListener('click', function (event) {
-            document.querySelector('.fair__title').textContent = element.dataset['studentName'];
-            document.querySelector('.fair__subtitle').textContent = element.dataset['kiberons'] + 'к';
-            if (document.querySelector('.btn_confirm_order')) {
-                document.querySelector('.btn_confirm_order').remove();
-            }
-            cartContainer.innerHTML = '';
-            const url = element.dataset['url'] + '?id=' + element.dataset['studentId'];
-            getData(url)
-            .then(data => {
-                if (data['markup']) {
-                    container.innerHTML = data['markup'];
-                    let order = new Order(element.dataset['studentId'], Number(element.dataset['kiberons']));
-                    let addBtns = document.querySelectorAll('.add_to_cart');
-                    let confirmBtn = document.createElement('button');
-                        confirmBtn.classList.add('btn', 'btn_yellow', 'btn_big', 'btn_confirm_order');
-                        confirmBtn.innerText = 'Оформить';
-                        confirmBtn.disabled = true;
-                        document.querySelector('.fair__cart').appendChild(confirmBtn);
-                    if (addBtns.length) {
-                        addBtns.forEach(function(btn) {
-                            btn.addEventListener('click', function(e) {
-                                if (order.canAdd(btn.dataset['kiberons'])) {
-                                    const souvenir = document.getElementById('souvenir-' + btn.dataset['id']);
-                                    let souvenirClone = souvenir.cloneNode(true);
-                                    souvenir.remove();
-                                    let souvenirInCart = souvenirClone.cloneNode(true);
-                                    souvenirInCart.querySelector('.add_to_cart').remove();
-                                    souvenirInCart.classList.add('souvenir_in-cart');
-                                    const removeBtn = document.createElement('button');
-                                    removeBtn.classList.add('btn', 'btn_red', 'remove_from_cart');
-                                    removeBtn.innerText = 'Удалить';
-                                    // souvenirInCart.appendChild(removeBtn);
-                                    cartContainer.append(souvenirInCart);
-                                    order.addProductToOrder(Number(btn.dataset['id']), Number(btn.dataset['kiberons']));
-                                    document.querySelector('.fair__subtitle').textContent = order.balance + 'к';
-                                    confirmBtn.disabled = false;
-                                }
-                            })
-                        })
-                    }
-                    confirmBtn.addEventListener('click', function(e) {
-                        const confirmUrl = window.fairCreateUrl;
-                        let orderData = order
-                        orderData.items = Array.from(order.cart.items)
-                        if (order.cart.items.size > 0) {
-                            postData(confirmUrl, orderData)
-                                .then((data) => {
-                                    if (data['success']) {
-                                        if (data['redirect']) {
-                                            window.location = data['redirect']
-                                        }
-                                    }
-                                });
-                        }
-                    })
-                }
-            })
-        })
-    })
-}
-
-function addToCartHandler(order, btn, container) {
-    if (order.canAdd(btn.dataset['kiberons'])) {
-        const souvenir = document.getElementById('souvenir-' + btn.dataset['id']);
-        let souvenirClone = souvenir.cloneNode(true);
-        souvenir.remove();
-        let souvenirInCart = souvenirClone.cloneNode(true);
-        souvenirInCart.querySelector('.add_to_cart').remove();
-        souvenirInCart.classList.add('souvenir_in-cart');
-        const btn = document.createElement('button');
-        btn.classList.add('btn', 'btn_red', 'remove_from_cart');
-        btn.innerText = 'Удалить';
-        souvenirInCart.appendChild(btn);
-        container.append(souvenirInCart);
-        order.addProductToOrder(Number(btn.dataset['id']), Number(btn.dataset['kiberons']));
-        document.querySelector('.fair__subtitle').textContent = order.balance + 'к';
-   }
-}
-
-function removeFromCartHandler(order, btn, container) {
-    order.removeProductFromOrder(Number(btn.dataset['id']), Number(btn.dataset['kiberons']));
-    const souvenir = document.getElementById('souvenir-' + btn.dataset['id']);
-    let souvenirClone = souvenir.cloneNode(true);
-    souvenir.remove();
-    let souvenirToAdd = souvenirClone.cloneNode(true);
-    container.append(souvenirToAdd);
-}
+let container = document.querySelector('.fair__souvenirs');
 
 class Order {
     constructor(studentId, balance) {
@@ -99,18 +8,92 @@ class Order {
         this.balance = balance;
         this.cart = new Cart();
     }
-    addProductToOrder(id, price) {
-        if (this.canAdd(price)) {
-            this.balance -= price;
-            this.cart.addProduct(id, price);
+
+    addProductToOrder(item) {
+        if (this.canAdd(item.price)) {
+            item.in_cart = true;
+            this.balance -= item.price;
+            products.delete(item);
+            this.cart.addProduct(item);
+            this.cart.renderCart('.fair__cart');
+            document.querySelector('.fair__subtitle').textContent = `${this.balance.toLocaleString()}К`
         }
     }
-    removeProductFromOrder(id, price) {
-        this.balance += price;
-        this.cart.removeProduct(id, price);
+
+    removeProductFromOrder(item) {
+        item.in_cart = false;
+        this.balance += item.price;
+        products.add(item);
+        this.cart.removeProduct(item);
+        this.cart.renderCart('.fair__cart');
+        document.querySelector('.fair__subtitle').textContent = `${this.balance.toLocaleString()}К`
     }
+
     canAdd(price) {
         return this.balance - price >= 0;
+    }
+
+
+}
+
+class Item {
+    constructor(id, price, name, img) {
+        this.id = id;
+        this.price = price;
+        this.name = name;
+        this.img = img;
+        this.in_cart = false;
+    }
+
+    createItemMarkup() {
+        const itemMarkup = document.createElement('div');
+        let classes = ['souvenir'];
+        if (this.in_cart) classes.push('souvenir_in-cart');
+        itemMarkup.classList.add(...classes);
+        itemMarkup.id = `souvenir-${this.id}`;
+        const imgWrapper = document.createElement('div');
+        imgWrapper.classList.add('souvenir__img-wrapper');
+        const img = document.createElement('img');
+        img.classList.add('souvenir__img');
+        img.src = this.img;
+        img.alt = this.name;
+        imgWrapper.appendChild(img);
+        const name = document.createElement('div');
+        name.classList.add('souvenir__name');
+        name.innerText = this.name;
+        const price = document.createElement('div');
+        price.classList.add('souvenir__price');
+        price.innerText = `${this.price}к`;
+        imgWrapper.appendChild(price);
+        let btn = this.createBtn(this.in_cart);
+        itemMarkup.append(imgWrapper, name, btn);
+        btn.addEventListener('click', () => {
+            this.clickHandler(this);
+            renderProducts(products, container);
+        })
+        return itemMarkup;
+    }
+
+    createBtn(in_cart = false) {
+        const btn = document.createElement('button');
+        let classes = ['btn'];
+        if (in_cart) {
+            classes.push('btn_red', 'remove_from_cart');
+            btn.innerText = 'Удалить';
+        } else {
+            classes.push('btn_blue', 'add_to_cart');
+            btn.innerText = 'Добавить';
+        }
+        btn.classList.add(...classes);
+        return btn;
+    }
+
+    clickHandler(product) {
+        if (!product.in_cart) {
+            order.addProductToOrder(product);
+        } else {
+            order.removeProductFromOrder(product);
+        }
     }
 }
 
@@ -119,12 +102,101 @@ class Cart {
         this.items = new Set();
         this.total = 0;
     }
-    addProduct(id, price) {
-        this.items.add(id);
-        this.total += price;
+
+    addProduct(item) {
+        this.items.add(item);
+        this.total += item.price;
     }
-    removeProduct(id, price) {
-        this.items.delete(id);
-        this.total -= price;
+
+    removeProduct(item) {
+        this.items.delete(item);
+        this.total -= item.price;
     }
+
+    renderCart(selector) {
+        let container = document.querySelector(selector);
+        container.innerHTML = '';
+        const list = document.createElement('div');
+        list.classList.add('souvenirs');
+        for (let item of this.items) {
+            list.appendChild(item.createItemMarkup());
+        }
+        container.appendChild(list);
+        if (this.total > 0) {
+            let summury = document.createElement('div');
+            summury.innerHTML = `Итого: <span class="summary__total">${this.total}К</span>`
+            container.appendChild(summury);
+        }
+        if (this.items.size > 0) {
+            const confirmBtn = this.confirmBtn();
+            container.appendChild(confirmBtn);
+            confirmBtn.addEventListener('click', this.confirm)
+        }
+    }
+
+    confirmBtn() {
+        const btn = document.createElement('button');
+        btn.classList.add('btn', 'btn_yellow', 'btn_big', 'btn_confirm_order', 'btn_center');
+        btn.innerText = 'Оформить';
+        return btn;
+    }
+
+    confirm(e) {
+        const confirmUrl = window.fairCreateUrl;
+        let orderData = order
+        orderData.items = Array.from(order.cart.items)
+        postData(confirmUrl, orderData)
+            .then((data) => {
+                if (data['success']) {
+                    if (data['redirect']) {
+                        window.location = data['redirect']
+                    }
+                }
+            });
+    }
+}
+
+let cart = new Cart();
+let order = new Order();
+
+function initFairBtns() {
+    products = new Set();
+    let fairBtns = document.querySelectorAll('.btn_fair')
+    order = new Order();
+    if (fairBtns.length) {
+        const cartContainer = document.querySelector('.fair__cart');
+        fairBtns.forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                products = new Set();
+                document.querySelector('.fair__title').textContent = element.dataset['studentName'];
+                document.querySelector('.fair__subtitle').textContent = Number(element.dataset['kiberons']).toLocaleString() + 'к';
+                cartContainer.innerHTML = '';
+                const url = element.dataset['url'] + '?id=' + element.dataset['studentId'];
+                getData(url).then(data => {
+                    let items = JSON.parse(data);
+                    for (const item of items) {
+                        products.add(new Item(Number(item.pk), Number(item.fields.price), item.fields.name, item.fields.image))
+                    }
+                    renderProducts(products, container);
+                    cart = new Cart();
+                    order = new Order(Number(element.dataset['studentId']), Number(element.dataset['kiberons']));
+                });
+            })
+        })
+    }
+}
+
+initFairBtns()
+
+function renderProducts(list, container) {
+    container.innerHTML = '';
+    let listItems = document.createElement('div');
+    listItems.classList.add('souvenirs');
+    for (let item of list) {
+        listItems.appendChild(item.createItemMarkup());
+    }
+    if (list.size === 0) {
+        listItems.innerText = 'Не хватает киберонов или товары закончились';
+    }
+    container.appendChild(listItems);
 }

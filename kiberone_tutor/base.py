@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get('DEBUG', default=0))
+DEBUG = bool(int(os.environ.get('DEBUG', default=0)))
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'fair.apps.FairConfig',
     'solo.apps.SoloAppConfig',
     'compressor',
-
+    'ckeditor',
     'authapp.apps.AuthappConfig',
     'mainapp.apps.MainappConfig',
     'test.apps.TestConfig',
@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'authapp.middleware.StudentMiddleware'
 ]
 
 ROOT_URLCONF = 'kiberone_tutor.urls'
@@ -202,3 +203,8 @@ STATICFILES_FINDERS = (
 
 COMPRESS_ENABLED = True
 COMPRESS_OUTPUT_DIR = 'compressed'
+
+# CKEDITOR start
+CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+# CKEDITOR end

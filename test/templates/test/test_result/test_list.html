@@ -1,0 +1,27 @@
+{% extends "mainapp/base.html" %}
+{% block title %}Результат тестов{% endblock %}
+{% block page_title %}Результат тестов{% endblock %}
+{% block inside_content %}
+    <ul class="tests_results">
+        {% for test in tests %}
+            <li>
+                <a href="{% url "test:test-result-list" test.pk %}">{{ test.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+            {% endif %}
+            <span class="current">
+                страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

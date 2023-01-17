@@ -8,12 +8,26 @@
 {% block inside_content %}
     <div class="group-form">
         <div class="btn btn_modal btn_blue" data-modal-id="create-student-modal">Добавить ученика</div>
-        <form action="" class="form_filter">
-            <div class="checkbox">
-                {{ filter_students_form.visited_today }}
+        <div class="visited-filter">
+            <div
+                class="visited-filter__item {% if not request.session.visited_today %}visited-filter__item_active{% endif %}"
+                data-visited="0"
+                data-sort-url="{% url 'mainapp:student-list' group.pk %}"
+                data-sort-container="student-list"
+                data-loading-container=".table-wrapper"
+            >
+                Все
             </div>
-            <button class="btn btn_blue" type="submit" id="filter">OK</button>
-        </form>
+            <div
+                class="visited-filter__item {% if request.session.visited_today %}visited-filter__item_active{% endif %}"
+                data-visited="1"
+                data-sort-url="{% url 'mainapp:student-list' group.pk %}"
+                data-sort-container="student-list"
+                data-loading-container=".table-wrapper"
+            >
+                Посетили сегодня
+            </div>
+        </div>
         <form action="{% url "mainapp:bulk-update-students" group.pk %}" method="post" class="bulk-students-form">
             {% csrf_token %}
             {% for field in bulk_action_form %}
@@ -54,104 +68,119 @@
 {% block modals %}
     {{ block.super }}
     <div id="create-student-modal" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_yellow">
             <span class="close" data-close-modal-id="create-student-modal">&times;</span>
-            <form id="createStudentForm"
-                  data-action="{% url "mainapp:create-student" request.resolver_match.kwargs.group_id %}">
-                {% csrf_token %}
-                {% for field in create_student_form %}
-                    {% if field not in create_student_form.hidden_fields %}
-                        <div class="form-input">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_blue btn_center" type="submit">Добавить</button>
-            </form>
+            <div class="modal__content-inside">
+                <div class="modal__title modal__title_yellow">Добавить<br>студента</div>
+                <form id="createStudentForm"
+                      data-action="{% url "mainapp:create-student" request.resolver_match.kwargs.group_id %}">
+                    {% csrf_token %}
+                    {% for field in create_student_form %}
+                        {% if field not in create_student_form.hidden_fields %}
+                            <div class="form-input">
+                                {{ field.errors }}
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                    <button class="btn btn_blue btn_center" type="submit">Добавить</button>
+                </form>
+            </div>
         </div>
     </div>
     <div id="custom-kiberon" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_yellow">
             <span class="close" data-close-modal-id="custom-kiberon">&times;</span>
-            <form id="customKiberonAdd"
-                  data-action="{% url "mainapp:add-custom-kiberons" request.resolver_match.kwargs.group_id %}">
-                {% csrf_token %}
-                {% for field in custom_kiberon_form %}
-                    {% if field not in custom_kiberon_form.hidden_fields %}
-                        <div class="form-input">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_blue btn_center" type="submit">Добавить</button>
-            </form>
+            <div class="modal__content-inside">
+                <div class="modal__title modal__title_нуддщцd">Добавить<br>кибероны</div>
+                <form id="customKiberonAdd"
+                      data-action="{% url "mainapp:add-custom-kiberons" request.resolver_match.kwargs.group_id %}">
+                    {% csrf_token %}
+                    {% for field in custom_kiberon_form %}
+                        {% if field not in custom_kiberon_form.hidden_fields %}
+                            <div class="form-input">
+                                {{ field.errors }}
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                    <button class="btn btn_blue btn_center" type="submit">Добавить</button>
+                </form>
+            </div>
         </div>
     </div>
     <div id="custom-kiberon-remove" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_red">
             <span class="close" data-close-modal-id="custom-kiberon-remove">&times;</span>
-            <form id="customKiberonRemove"
-                  data-action="{% url "mainapp:remove-custom-kiberons" request.resolver_match.kwargs.group_id %}">
-                {% csrf_token %}
-                {% for field in custom_kiberon_remove_form %}
-                    {% if field not in custom_kiberon_remove_form.hidden_fields %}
-                        <div class="form-input">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_red btn_center" type="submit">Убавить</button>
-            </form>
+            <div class="modal__content-inside">
+                <div class="modal__title modal__title_red">Удалить<br>кибероны</div>
+                <form id="customKiberonRemove"
+                      data-action="{% url "mainapp:remove-custom-kiberons" request.resolver_match.kwargs.group_id %}">
+                    {% csrf_token %}
+                    {% for field in custom_kiberon_remove_form %}
+                        {% if field not in custom_kiberon_remove_form.hidden_fields %}
+                            <div class="form-input">
+                                {{ field.errors }}
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                    <button class="btn btn_red btn_center" type="submit">Убавить</button>
+                </form>
+            </div>
         </div>
     </div>
     <div id="remove-student-modal" class="modal">
-        <div class="modal__content">
+        <div class="modal__content modal__content_red">
             <span class="close" data-close-modal-id="remove-student-modal">&times;</span>
-            <form id="removeStudentForm" data-action="{% url "mainapp:remove-student" %}">
-                {% csrf_token %}
-                {% for field in remove_student_form %}
-                    {% if field not in remove_student_form.hidden_fields %}
-                        <div class="form-input">
-                            {{ field.errors }}
-                            {{ field.label_tag }} {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
-                <button class="btn btn_red btn_center" type="submit">Удалить</button>
-            </form>
+            <div class="modal__content-inside">
+                <div class="modal__title modal__title_red">Удаление<br>студента</div>
+                <form id="removeStudentForm" data-action="{% url "mainapp:remove-student" %}">
+                    {% csrf_token %}
+                    {% for field in remove_student_form %}
+                        {% if field not in remove_student_form.hidden_fields %}
+                            <div class="form-input">
+                                {{ field.errors }}
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                    <button class="btn btn_red btn_center" type="submit">Удалить</button>
+                </form>
+            </div>
         </div>
     </div>
     {% if update_students_forms %}
         {% for update_student_form in update_students_forms %}
             <div id="update-student-modal-{{ update_student_form.instance.pk }}" class="modal">
-                <div class="modal__content">
+                <div class="modal__content modal__content_blue">
                     <span class="close"
                           data-close-modal-id="update-student-modal-{{ update_student_form.instance.pk }}">&times;</span>
-                    <form action="{% url "mainapp:update-student" update_student_form.instance.pk %}" method="post">
-                        {% csrf_token %}
-                        {% for field in update_student_form %}
-                            {% if field not in update_student_form.hidden_fields %}
-                                <div class="form-input">
-                                    {{ field.errors }}
-                                    {{ field.label_tag }} {{ field }}
-                                </div>
-                            {% else %}
-                                {{ field }}
-                            {% endif %}
-                        {% endfor %}
-                        <button class="btn btn_yellow btn_center" type="submit">Обновить</button>
-                    </form>
+                    <div class="modal__content-inside">
+                        <div class="modal__title modal__title_blue">Редактирование<br>студента</div>
+                        <form action="{% url "mainapp:update-student" update_student_form.instance.pk %}" method="post">
+                            {% csrf_token %}
+                            {% for field in update_student_form %}
+                                {% if field not in update_student_form.hidden_fields %}
+                                    <div class="form-input">
+                                        {{ field.errors }}
+                                        {{ field.label_tag }} {{ field }}
+                                    </div>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+                            {% endfor %}
+                            <button class="btn btn_yellow btn_center" type="submit">Обновить</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         {% endfor %}
@@ -163,14 +192,20 @@
                     window.fairCreateUrl = '{% url 'fair:create_fair_register' %}';
                 </script>
                 <span class="close" data-close-modal-id="fair">&times;</span>
-                <div class="container">
-                    <div class="fair__container">
-                        <div class="fair__title"></div>
-                        <div class="fair__subtitle"></div>
-                        <div class="fair__souvenirs"></div>
-                        <div class="fair__cart">
-                            <div class="souvenirs"></div>
-                        </div>
+                    <div class="container">
+                        <div class="fair__content">
+                            <div class="modal__title modal__title_yellow fair__title"></div>
+                            <div class="fair__subtitle"></div>
+                            <div class="fair__container">
+                                <div class="fair__block">
+                                    <div class="fair__block-title fair__block-title_blue">Товары</div>
+                                    <div class="fair__souvenirs"></div>
+                                </div>
+                                <div class="fair__block">
+                                    <div class="fair__block-title fair__block-title_darkblue">Корзина</div>
+                                    <div class="fair__cart"></div>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>

@@ -2,11 +2,13 @@
   background-color: $blue;
   padding-top: 15px;
   padding-bottom: 15px;
+  flex-wrap: wrap;
 
   &__content {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   &__nav {
@@ -16,6 +18,11 @@
   &__logo {
     width: 115px;
     margin-right: 25px;
+    display: block;
+  }
+  &__logo-link {
+    display: block;
+    text-decoration: none;
   }
 }
 

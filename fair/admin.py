@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.db.models import Sum
 
-from fair.models import FairRegistration, FairRegistrationSouvenir, Souvenir
+from fair.models import FairRegistration, FairRegistrationSouvenir, Souvenir, \
+    Refund
 
 
 class SouvenirInline(admin.StackedInline):
@@ -22,7 +22,7 @@ class SouvenirAdmin(admin.ModelAdmin):
 
 
 @admin.register(FairRegistration)
-class FairRegistration(admin.ModelAdmin):
+class FairRegistrationAdmin(admin.ModelAdmin):
     """ Админка записи о ярмарке """
     date_hierarchy = 'date'
     list_filter = ['student__group__tutor', 'student__group', 'date']
@@ -33,6 +33,15 @@ class FairRegistration(admin.ModelAdmin):
 
     def total(self, object):
         """ получаем сумму в киберонах """
-        return object.souvenirs.all().aggregate(Sum('price')).get('price__sum')
+        return object.total
 
     total.short_description = 'Всего потрачено'
+
+
+@admin.register(Refund)
+class RefundAdmin(admin.ModelAdmin):
+    '''
+    Админка возвратов
+    '''
+    raw_id_fields = ['fair_registration']
+    list_display = ['__str__', 'complete']

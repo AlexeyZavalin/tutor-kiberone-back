@@ -5,53 +5,65 @@ $darkblue: #295975;
 $bgc: #3681A0;
 
 .fair {
-  &__title {
-    font-size: 42px;
-    line-height: 49px;
-    text-align: center;
+  &__content {
+    overflow: clip;
+    position: relative;
+    z-index: 2;
   }
-
+  &__title {
+    font-size: 2.975rem;
+  }
   &__subtitle {
-    font-weight: bold;
-    font-size: 72px;
-    line-height: 84px;
+    font-size: 2.25rem;
     text-align: center;
-    margin-bottom: 13px;
+    margin-bottom: 3.75rem;
+    line-height: 1;
+  }
+  &__block-title {
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #fff;
+    height: 3.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    &_blue {
+      background-color: $blue;
+    }
+    &_darkblue {
+      background-color: $darkblue;
+    }
   }
 }
 
 .souvenirs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 171px);
+  grid-template-columns: repeat(auto-fill, 165px);
   grid-gap: 19px;
   margin-bottom: 40px;
 }
 
 .souvenir {
-  width: 171px;
+  width: 165px;
   background: #FFFFFF;
-  box-shadow: 0 4px 10px $blue;
-  padding: 8px 16px;
-  font-size: 18px;
-  line-height: 21px;
+  padding: 15px;
   text-align: center;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
   border-radius: 10px;
   transition: 0.3s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  &:hover {
-    box-shadow: 0 4px 20px $blue;
-  }
+  border: 1px solid $blue;
+  box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.15);
 
   &__img-wrapper {
-    width: 145px;
-    height: 145px;
+    width: 135px;
+    height: 135px;
+    border: 1px solid $blue;
+    border-radius: 10px;
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 1.125rem;
   }
 
   &__img {
@@ -69,17 +81,27 @@ $bgc: #3681A0;
   }
 
   &__name {
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
+    font-size: 0.875rem;
     word-break: break-word;
   }
 
-  &_in-cart {
-    box-shadow: 0 4px 10px $red;
-
-    &:hover {
-      box-shadow: 0 4px 20px $red;
-    }
+  &__price {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: $yellow;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: #fff;
+    font-weight: 600;
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.15);
   }
 }

@@ -2,32 +2,33 @@
 {% block title %}{{ test.name }}{% endblock %}
 {% block page_title %}{{ test.name }}{% endblock %}
 {% block inside_content %}
-    <h2>Необходимое количество правильных ответов: {{ test.corrects_to_pass }}</h2>
+    {% if test.corrects_to_pass %}
+        <h2>Необходимое количество правильных ответов: {{ test.corrects_to_pass }}</h2>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
-        <div class="form-input">
-            <label for="name">Фамилия Имя</label>
-            <input type="text" name="name" required="required">
-        </div>
         {% for question in questions %}
             <fieldset class="question" id="question{{ question.id }}">
                 <h3>Вопрос {{ forloop.counter }}</h3>
                 <p class="question__text">{{ question.question_text|safe }}</p>
                 <div class="answers">
-                    {% for answer in question.answers.all %}
-                        <div class="answer">
-                            {% if question.type == 1 %}
-                                <input type="radio" name="question{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}" required="required">
-                                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                            {% elif question.type == 2 %}
-                                <input type="checkbox" name="question{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}">
-                                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                            {% else %}
-                                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                                <textarea name="answer" id="" cols="30" rows="10"></textarea>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+                    {% if question.type == 3 %}
+                        <label for="answer_{{ question.id }}">{{ answer.answer_text }}</label>
+                        <textarea name="answer_{{ question.id }}" id="" cols="30" rows="10"></textarea>
+                    {% else %}
+                        {% for answer in question.answers.all %}
+                            <div class="answer">
+                                {% if question.type == 1 %}
+                                    <input type="radio" name="question{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}" required="required">
+                                    <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
+                                {% elif question.type == 2 %}
+                                    <input type="checkbox" name="question{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}">
+                                    <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
+
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </fieldset>
         {% endfor %}

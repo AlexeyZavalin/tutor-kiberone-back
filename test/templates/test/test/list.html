@@ -1,9 +1,13 @@
 {% extends "mainapp/base.html" %}
+{% block title %}
+    Тесты
+{% endblock %}
+{% block page_title %}Тесты{% endblock %}
 {% block inside_content %}
     <ul class="tests">
         {% for test in tests %}
-            <li>
-                <a href="{% url "test:test" test.pk %}">{{ test.name }}</a>
+            <li class="test__item">
+                <a href="{% url "test:test" test.pk %}" class="test__link">{{ test.name }}</a>
             </li>
         {% endfor %}
     </ul>
