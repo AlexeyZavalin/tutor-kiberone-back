@@ -51,7 +51,6 @@ class TestView(StudentOrTutorRequiredMixin, TemplateView):
         )
 
 
-
 class TestResultDetailView(StudentOrTutorRequiredMixin, DetailView):
     """Страница с результатом теста"""
     template_name = 'test/test_result/detail.html'
@@ -68,7 +67,14 @@ class TestResultListView(StudentOrTutorRequiredMixin, ListView):
     paginate_by = 15
 
     def get_queryset(self, *args, **kwargs):
-        return TestResult.objects.filter(test__pk=self.kwargs.get('test_id'))
+        queryset = TestResult.objects.filter(
+            test__pk=self.kwargs.get('test_id')
+        )
+        if self.request.user:
+            return queryset.filter(tutor=self.request.user)
+        if self.request.student:
+            return queryset.filter(student=self.request.student)
+        return queryset
 
 
 class TestResultsListView(ListView, StudentOrTutorRequiredMixin):

@@ -92,6 +92,18 @@ class TestResult(models.Model):
         blank=False,
         verbose_name='Имя тестируемого'
     )
+    student = models.ForeignKey(
+        to='mainapp.Student',
+        null=True,
+        verbose_name='Ученик',
+        on_delete=models.CASCADE
+    )
+    tutor = models.ForeignKey(
+        to='authapp.Tutor',
+        null=True,
+        verbose_name='Тьютор',
+        on_delete=models.CASCADE
+    )
     test = models.ForeignKey(
         to=Test,
         on_delete=models.CASCADE,
@@ -127,6 +139,11 @@ class UserAnswer(models.Model):
         on_delete=models.CASCADE,
         null=True,
         verbose_name='Ответ пользователя'
+    )
+    answer_text = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name='Текст ответа'
     )
     test_result = models.ForeignKey(
         to=TestResult,

@@ -19,6 +19,9 @@ def create_test_result(test_user: Union[Student, Tutor], test_id: int,
                                    f'{test_user.last_name}' \
             if isinstance(test_user, Tutor) else test_user.name \
             if isinstance(test_user, Student) else None
+        test_result.tutor = test_user if isinstance(test_user, Tutor) else None
+        test_result.student = test_user \
+            if isinstance(test_user, Student) else None
         test_result.test = Test.objects.get(id=test_id)
         test_result.save()
         answers = [UserAnswer(answer_id=value, test_result_id=test_result.pk)

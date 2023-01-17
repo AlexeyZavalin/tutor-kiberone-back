@@ -50,8 +50,8 @@ class StudentLoginForm(forms.Form):
             student = Student.objects.get(
                 code=cleaned_data.get('password')
             )
-        except Group.DoesNotExist:
-            raise ValidationError( _('Такого ученика не существует'))
+        except Student.DoesNotExist:
+            raise ValidationError(_('Такого ученика не существует'))
         if student.group.slug != group.slug:
             raise ValidationError(_('Вы не состоите в этой группе'))
         return cleaned_data

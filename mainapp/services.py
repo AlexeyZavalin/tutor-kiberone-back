@@ -166,17 +166,35 @@ def get_response_for_custom_adding_kiberons(kiberon_amount: int,
         redirect = reverse_lazy('mainapp:student-list',
                                 kwargs={'group_id': group_id})
         kiberon = Kiberon.objects.get(achievement=Kiberon.CUSTOM)
-        KiberonStudentReg.objects.create(student=student, kiberon=kiberon,
-                                         custom_kiberons=kiberon_amount,
-                                         custom_achievement=achievement,
-                                         tutor=tutor)
-        return JsonResponse({'success': True, 'redirect': redirect})
+        KiberonStudentReg.objects.create(
+            student=student,
+            kiberon=kiberon,
+            custom_kiberons=kiberon_amount,
+            custom_achievement=achievement,
+            tutor=tutor
+        )
+        return JsonResponse(
+            {
+                'success': True,
+                'redirect': redirect,
+            }
+        )
     except ObjectDoesNotExist:
         return JsonResponse(
-            {'success': False, 'message': 'Такого ученика нет'})
+            {
+                'success': False,
+                'message': 'Такого ученика нет'
+            },
+            status=500
+        )
     except IntegrityError:
         return JsonResponse(
-            {'success': False, 'message': 'Что-то пошло не так'})
+            {
+                'success': False,
+                'message': 'Что-то пошло не так'
+            },
+            status=500
+        )
 
 
 def get_response_for_custom_remove_kiberons(kiberon_amount: int,
