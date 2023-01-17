@@ -140,6 +140,11 @@ class UserAnswer(models.Model):
         null=True,
         verbose_name='Ответ пользователя'
     )
+    answer_text = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name='Текст ответа'
+    )
     test_result = models.ForeignKey(
         to=TestResult,
         on_delete=models.CASCADE,
