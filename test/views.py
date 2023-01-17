@@ -51,7 +51,6 @@ class TestView(StudentOrTutorRequiredMixin, TemplateView):
         )
 
 
-
 class TestResultDetailView(StudentOrTutorRequiredMixin, DetailView):
     """Страница с результатом теста"""
     template_name = 'test/test_result/detail.html'
