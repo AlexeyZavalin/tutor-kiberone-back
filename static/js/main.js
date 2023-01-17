@@ -391,6 +391,8 @@ function init() {
     initCustomKiberonsBtns();
 }
 
+init();
+
 function initSorts() {
     const sorts = document.querySelectorAll('.sort_by');
     if (sorts) {
