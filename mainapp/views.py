@@ -17,7 +17,7 @@ from .forms import BulkStudentActionsForm, CreateStudentForm, \
     RemoveGroupForm, RemoveStudentForm, UpdateStudentForm, \
     CreateUpdateGroupForm, CustomKiberonAddForm, \
     FilterStudentsForm, CustomKiberonRemoveForm
-from .mixins import StudentOrTutorRequiredMixin, StudentRequiredMixin
+from .mixins import StudentRequiredMixin
 from .models import Group, Student, KiberonStudentReg, SiteConfiguration
 from .services import form_data_processing, get_response_for_create_group, \
     get_response_for_create_student, get_response_for_remove_group, \
@@ -167,10 +167,10 @@ class StudentListView(LoginRequiredMixin, ListView):
         context['group'] = Group.objects.get(pk=self.kwargs.get('group_id'))
         context['create_student_form'] = CreateStudentForm()
         context['remove_student_form'] = RemoveStudentForm()
-        # TODO: добавить prefix и сделать через form_set
-        context['update_students_forms'] = tuple(UpdateStudentForm(
-            instance=student) for student in context[
-                                                     'students'])
+        context['update_students_forms'] = tuple(
+            UpdateStudentForm(instance=student, auto_id=False)
+            for student in context['students']
+        )
         context['bulk_action_form'] = BulkStudentActionsForm()
         initial_filters = {'visited_today': '0'}
         if 'visited_today' in self.request.session and \
@@ -197,12 +197,15 @@ class CreateStudentView(LoginRequiredMixin, CreateView):
                                                group_id=kwargs.get('group_id'))
 
 
-class UpdateStudentView(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
+class UpdateStudentView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """Обновление студента"""
     login_url = reverse_lazy('authapp:login')
     model = Student
     form_class = UpdateStudentForm
     require_http_methods = ['POST']
+
+    def get_success_message(self, cleaned_data):
+        return f'Ученик {self.get_object().name} успешно обновлен'
 
 
 class CreateCustomKiberonRegView(LoginRequiredMixin, CreateView):
@@ -211,13 +214,22 @@ class CreateCustomKiberonRegView(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
-        return get_response_for_custom_adding_kiberons(
-            kiberon_amount=body.get('kiberon_amount'),
-            student_id=int(body.get(
-                'student_id')),
-            achievement=body.get('achievement'),
+        kiberon_amount = body.get('kiberon_amount')
+        student_id = int(body.get('student_id'))
+        achievement = body.get('achievement')
+        response = get_response_for_custom_adding_kiberons(
+            kiberon_amount=kiberon_amount,
+            student_id=student_id,
+            achievement=achievement,
             group_id=kwargs.get('group_id'),
-            tutor=self.request.user)
+            tutor=self.request.user
+        )
+        if response.status_code == 200:
+            student = Student.objects.get(pk=int(body.get('student_id')))
+            message = f'{student.name} - {kiberon_amount}к - достижение ' \
+                      f'"{achievement}"'
+            messages.success(self.request, message)
+        return response
 
 
 class RemoveCustomKiberonRegView(LoginRequiredMixin, View):
@@ -238,10 +250,11 @@ class RemoveStudentView(LoginRequiredMixin, DeleteView):
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
-        return get_response_for_remove_student(student_id=body
-                                               .get('student_id'),
-                                               password=body.get('password'),
-                                               username=request.user.email)
+        return get_response_for_remove_student(
+            student_id=body.get('student_id'),
+            password=body.get('password'),
+            username=request.user.email
+        )
 
 
 @require_http_methods(['POST'])
