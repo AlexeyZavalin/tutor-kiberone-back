@@ -7,6 +7,10 @@ class Tutor(AbstractUser):
                                    default=False)
     email = models.EmailField(verbose_name='email address', blank=False,
                               unique=True)
+    dark_theme_enabled = models.BooleanField(
+        verbose_name='Темная тема включена',
+        default=False
+    )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 

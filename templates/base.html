@@ -16,7 +16,11 @@
             {% if fair_is_active %}
                 <link rel="stylesheet" href="{% static "css/fair.scss" %}" type="text/x-scss">
             {% endif %}
+            {% if not request.user.is_anonymous and request.user.dark_theme_enabled %}
+                <link rel="stylesheet" href="{% static "css/dark.scss" %}" type="text/x-scss">
+            {% endif %}
         {% endcompress %}
+
     {% endblock %}
 </head>
 <body>

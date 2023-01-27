@@ -479,3 +479,27 @@ if (showPasswordBtn) {
         }
     })
 }
+
+// переключение темы
+const themeSwitcher = document.getElementById('theme-switcher')
+
+if (themeSwitcher) {
+    themeSwitcher.addEventListener('click', function (e) {
+        let theme = 'dark';
+        const url = themeSwitcher.dataset['url'];
+        if (themeSwitcher.classList.contains('theme-switcher_light')) {
+            themeSwitcher.classList.remove('theme-switcher_light');
+            themeSwitcher.classList.add('theme-switcher_dark');
+        } else if (themeSwitcher.classList.contains('theme-switcher_dark')) {
+            themeSwitcher.classList.add('theme-switcher_light');
+            themeSwitcher.classList.remove('theme-switcher_dark');
+            theme = 'light';
+        }
+        postData(url, {'theme': theme})
+            .then((data) => {
+                if (data['success']) {
+                    window.location.reload();
+                }
+            });
+    })
+}

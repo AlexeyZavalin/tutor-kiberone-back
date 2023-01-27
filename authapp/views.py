@@ -1,8 +1,11 @@
+import json
+
 from django.contrib.auth import logout
 from django.contrib.auth import views as auth_views
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 from django.views.generic import FormView
 
 from authapp.forms import LoginForm, TutorPasswordChangeForm, StudentLoginForm
@@ -54,3 +57,20 @@ class LoginStudent(FormView):
         response = super(LoginStudent, self).form_valid(form)
         response.set_cookie('student_token', student.token)
         return response
+
+
+class SwitchUserTheme(View):
+    '''
+    изменение темы пользователя
+    '''
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        user = request.user
+        if body['theme'] == 'dark':
+            user.dark_theme_enabled = True
+            user.save()
+        elif body['theme'] == 'light':
+            user.dark_theme_enabled = False
+            user.save()
+        return JsonResponse({'success': True})
+

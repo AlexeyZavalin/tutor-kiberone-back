@@ -10,5 +10,6 @@ urlpatterns = [
     path('change-password/', views.TutorPasswordChangeView.as_view(),
          name='password-change'),
     path('student_logout/', views.logout_student, name='student_logout'),
-    path('student_login/', views.LoginStudent.as_view(), name='student_login')
+    path('student_login/', views.LoginStudent.as_view(), name='student_login'),
+    path('switch_theme/', views.SwitchUserTheme.as_view(), name='switch_theme')
 ]
