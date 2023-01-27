@@ -1,5 +1,4 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import QuerySet
 from django.db.utils import IntegrityError
 
 from authapp.models import Tutor
@@ -13,8 +12,11 @@ from django.urls import reverse_lazy, Resolver404
 from .models import Group, Student, KiberonStudentReg, Kiberon
 
 
-def get_response_for_remove_group(group_id: str, password: str,
-                                  username: str) -> JsonResponse:
+def get_response_for_remove_group(
+    group_id: str,
+    password: str,
+    username: str
+) -> JsonResponse:
     """Получаем ответ для запроса удаления группы"""
     group = get_object_or_404(Group, pk=group_id)
     if group is not None:
@@ -34,9 +36,12 @@ def get_response_for_remove_group(group_id: str, password: str,
                                     'обнови странццу'})
 
 
-def get_response_for_create_group(time: str, location: str,
-                                  day_of_week: str, user: Tutor) -> \
-        JsonResponse:
+def get_response_for_create_group(
+    time: str,
+    location: str,
+    day_of_week: str,
+    user: Tutor
+) -> JsonResponse:
     """Получаем ответ для запроса создания группы"""
     group = Group.objects.filter(
         available_time_id=time,
@@ -62,8 +67,12 @@ def get_response_for_create_group(time: str, location: str,
                          'redirect': reverse_lazy('mainapp:groups')})
 
 
-def get_response_for_create_student(name: str, info: str, group_id: int,
-                                    kiberon_amount: int = 0) -> JsonResponse:
+def get_response_for_create_student(
+    name: str,
+    info: str,
+    group_id: int,
+    kiberon_amount: int = 0
+) -> JsonResponse:
     """Получаем ответ при отправке формы добавления студента"""
     Student.objects.create(name=name, kiberon_amount=kiberon_amount,
                            info=info, group_id=group_id)
@@ -72,8 +81,11 @@ def get_response_for_create_student(name: str, info: str, group_id: int,
     return JsonResponse({'success': True, 'redirect': redirect})
 
 
-def get_response_for_remove_student(student_id: int, password: str,
-                                    username: str) -> JsonResponse:
+def get_response_for_remove_student(
+    student_id: int,
+    password: str,
+    username: str
+) -> JsonResponse:
     """Получаем ответ для запроса удаления студента"""
     student = get_object_or_404(Student, pk=student_id)
     if student is not None:
@@ -156,10 +168,13 @@ def get_groups_by_day_of_week(day_of_week: str, tutor: Tutor) -> dict:
     }
 
 
-def get_response_for_custom_adding_kiberons(kiberon_amount: int,
-                                            student_id: int,
-                                            group_id: int, achievement: str,
-                                            tutor: Tutor) -> JsonResponse:
+def get_response_for_custom_adding_kiberons(
+    kiberon_amount: int,
+    student_id: int,
+    group_id: int,
+    achievement: str,
+    tutor: Tutor
+) -> JsonResponse:
     """Получаем ответ для кастомного добавления киберонов"""
     try:
         student = Student.objects.get(pk=student_id)
@@ -197,9 +212,11 @@ def get_response_for_custom_adding_kiberons(kiberon_amount: int,
         )
 
 
-def get_response_for_custom_remove_kiberons(kiberon_amount: int,
-                                            student_id: int,
-                                            group_id: int) -> JsonResponse:
+def get_response_for_custom_remove_kiberons(
+    kiberon_amount: int,
+    student_id: int,
+    group_id: int
+) -> JsonResponse:
     """Получаем ответ для удаления киберонов"""
     try:
         student = Student.objects.get(pk=student_id)
