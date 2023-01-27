@@ -12,7 +12,7 @@
                         <img src="{% static 'img/pencil.svg' %}" alt="Редактировать">
                     </button>
                     {% if request.user == student_of_group.group.tutor %}
-                        <button class="btn btn_red btn_modal btn_round-icon" data-student-id="{{ student_of_group.pk }}"
+                        <button class="btn btn_red btn_modal btn_round-icon btn_student_remove" data-student-id="{{ student_of_group.pk }}"
                                 data-modal-id="remove-student-modal" title="Удалить">
                             <img src="{% static 'img/delete.svg' %}" alt="Удалить">
                         </button>

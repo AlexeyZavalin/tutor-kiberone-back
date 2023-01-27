@@ -143,51 +143,52 @@ if (createStudentForm) {
 }
 
 // удаление студента
-let removeFormStudentId = document.getElementById('id_remove_student_id');
-let removeStudentBtns = document.querySelectorAll('.btn_student_remove')
+function removeStudentBtnsInit() {
+    let removeFormStudentId = document.getElementById('id_remove_student_id');
+    let removeStudentBtns = document.querySelectorAll('.btn_student_remove')
 
-if (removeStudentBtns) {
-    removeStudentBtns.forEach(function (element) {
-        element.addEventListener('click', function (event) {
-            removeFormStudentId.value = element.dataset['studentId']
-            console.log(removeFormStudentId)
+    if (removeStudentBtns) {
+        removeStudentBtns.forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                removeFormStudentId.value = element.dataset['studentId']
+            })
         })
-    })
-}
-let removeStudentForm = document.getElementById('removeStudentForm')
+    }
+    let removeStudentForm = document.getElementById('removeStudentForm')
 
-if (removeStudentForm) {
-    removeStudentForm.addEventListener('submit', function (e) {
-        e.preventDefault()
-        if (removeStudentForm.querySelector('.form_errors')) {
-            removeStudentForm.querySelector('.form_errors').remove()
-        }
-        if (removeStudentForm.querySelector('.form_success')) {
-            removeStudentForm.querySelector('.form_success').remove()
-        }
-        const url = removeStudentForm.dataset['action']
-        const studentId = removeFormStudentId.value
-        const password = removeStudentForm.querySelector('#id_password').value
-        postData(url, {'student_id': studentId, 'password': password})
-            .then((data) => {
-                if (data['success']) {
-                    document.querySelector('#student-row-' + studentId).remove();
-                    let successSpan = document.createElement('div')
-                    successSpan.textContent = data['message']
-                    successSpan.classList.add('form_success')
-                    const btn = removeStudentForm.querySelector('.btn')
-                    const parent = btn.parentNode
-                    parent.insertBefore(successSpan, btn)
-                } else {
-                    let errorSpan = document.createElement('div')
-                    errorSpan.textContent = data['message']
-                    errorSpan.classList.add('form_errors')
-                    const btn = removeStudentForm.querySelector('.btn')
-                    const parent = btn.parentNode
-                    parent.insertBefore(errorSpan, btn)
-                }
-            });
-    })
+    if (removeStudentForm) {
+        removeStudentForm.addEventListener('submit', function (e) {
+            e.preventDefault()
+            if (removeStudentForm.querySelector('.form_errors')) {
+                removeStudentForm.querySelector('.form_errors').remove()
+            }
+            if (removeStudentForm.querySelector('.form_success')) {
+                removeStudentForm.querySelector('.form_success').remove()
+            }
+            const url = removeStudentForm.dataset['action']
+            const studentId = removeFormStudentId.value
+            const password = removeStudentForm.querySelector('#id_password').value
+            postData(url, {'student_id': studentId, 'password': password})
+                .then((data) => {
+                    if (data['success']) {
+                        document.querySelector('#student-row-' + studentId).remove();
+                        let successSpan = document.createElement('div')
+                        successSpan.textContent = data['message']
+                        successSpan.classList.add('form_success')
+                        const btn = removeStudentForm.querySelector('.btn')
+                        const parent = btn.parentNode
+                        parent.insertBefore(successSpan, btn)
+                    } else {
+                        let errorSpan = document.createElement('div')
+                        errorSpan.textContent = data['message']
+                        errorSpan.classList.add('form_errors')
+                        const btn = removeStudentForm.querySelector('.btn')
+                        const parent = btn.parentNode
+                        parent.insertBefore(errorSpan, btn)
+                    }
+                });
+        })
+    }
 }
 
 // массовое выделение
@@ -387,8 +388,11 @@ if (messagesLists.length) {
 function init() {
     initModalBtns();
     initCheckboxes();
-    initFairBtns();
     initCustomKiberonsBtns();
+    removeStudentBtnsInit();
+    if (typeof initFairBtns !== 'undefined') {
+        initFairBtns();
+    }
 }
 
 init();

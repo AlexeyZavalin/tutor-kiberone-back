@@ -351,6 +351,7 @@ class KiberonStudentReg(models.Model):
         verbose_name_plural = 'Записи о печатях'
         ordering = ('-date',)
         db_table = 'kiberon_register'
+        ordering = ('-id', '-date')
 
     def __str__(self):
         return f'{self.student.name} - ' \
