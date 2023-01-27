@@ -387,8 +387,10 @@ if (messagesLists.length) {
 function init() {
     initModalBtns();
     initCheckboxes();
-    initFairBtns();
     initCustomKiberonsBtns();
+    if (typeof initFairBtns !== 'undefined') {
+        initFairBtns();
+    }
 }
 
 init();
