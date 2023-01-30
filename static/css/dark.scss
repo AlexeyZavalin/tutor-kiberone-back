@@ -1,0 +1,28 @@
+body {
+  background-color: #0C2530;
+  color: #E5E5E5;
+}
+
+.page-title {
+  &__text {
+    color: #E5E5E5;
+  }
+}
+
+.header {
+  background-color: #003C3E;
+}
+
+.modal {
+  &__content {
+    background-color: #0C2530;
+  }
+}
+
+.checkbox {
+  &__label {
+    &:before {
+      border-color: #E5E5E5;
+    }
+  }
+}
