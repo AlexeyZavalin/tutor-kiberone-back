@@ -72,6 +72,7 @@ class RemoveGroup(LoginRequiredMixin, DeleteView):
 
 class CreateGroupView(LoginRequiredMixin, CreateView):
     """Представление для создания группы"""
+    login_url = reverse_lazy('authapp:login')
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)
