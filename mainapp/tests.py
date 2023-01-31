@@ -67,7 +67,7 @@ class TestGroup(TestCase):
         url = reverse_lazy('mainapp:groups')
         self.client.force_login(self.tutor)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
 
     def test_group_unauth(self):
         url = reverse_lazy(
