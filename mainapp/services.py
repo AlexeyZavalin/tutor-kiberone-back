@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy, Resolver404
+from django.urls import reverse_lazy
 
 from .models import Group, Student, KiberonStudentReg, Kiberon
 
